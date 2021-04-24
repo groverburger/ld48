@@ -156,7 +156,7 @@ function GameScene:draw()
         lg.push()
 
         -- higher depth is closer
-        local depth = utils.map(i - self.depthOffset, self.levelIndex, self.levelIndex+10, 1, 0)^2
+        local depth = utils.map(i - self.depthOffset, self.levelIndex, self.levelIndex+5, 1, 0)^2
 
         if i == self.levelIndex then
             lg.setColor(0,0,0, utils.map(depth, 1,1.035, 1,0))

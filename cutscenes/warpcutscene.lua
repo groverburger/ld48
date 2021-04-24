@@ -1,5 +1,8 @@
 WarpCutscene = class()
 
+local warpSound = soundsystem.newSound("assets/sounds/warp.wav"):setBaseVolume()
+local warpStartSound = soundsystem.newSound("assets/sounds/warpstart.wav"):setBaseVolume(0.5)
+
 function WarpCutscene:new()
     self.drawcalls = {}
     local function draw(...)
@@ -20,9 +23,14 @@ function WarpCutscene:new()
         local py = player.y
         local time = 80
         local jumpHeight = 180
+        warpStartSound:play()
         for i=1, time do
             scene:pauseFrame()
             local value = utils.map(i, 1,time, 0,1)
+
+            if i == 20 then
+                warpSound:play()
+            end
 
             if i <= time/4 then
                 player.y = py - (1-utils.map(i, 1,time/4, 1,0)^2)*jumpHeight

@@ -46,6 +46,7 @@ return function (settings)
     scenemanager = require(path .. "/scenemanager")
     input = require(path .. "/input")
     colors = require(path .. "/colors")
+    soundsystem = require(path .. "/soundsystem")
 
     -- load the components of the game
     utils.requireAll("things")
@@ -105,6 +106,7 @@ return function (settings)
                 local iter = 0
                 while accumulator > frametime and iter < 5 do
                     input.update()
+                    soundsystem.update(1,1)
                     engine.shake = math.max(engine.shake - 1, 0)
                     accumulator = accumulator - frametime
                     iter = iter + 1

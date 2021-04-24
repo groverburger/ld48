@@ -5,6 +5,9 @@ Player = class(Thing)
 local sprite = utils.newAnimation("assets/sprites/lad.png")
 local gunarm = lg.newImage("assets/sprites/gunarm.png")
 
+local jumpSound = soundsystem.newSound("assets/sounds/jump.wav"):setBaseVolume(0.5)
+local landSound = soundsystem.newSound("assets/sounds/land.wav"):setBaseVolume(0.25)
+
 local animations = {
     idle = {1,2},
     walk = {1,3, speed=0.15},
@@ -67,9 +70,10 @@ function Player:update()
         end
 
         -- squash on first hit
-        if not wasOnGround then
+        if not wasOnGround and self.speed.y > 8 then
             self.stretch.x = 1.5
             self.stretch.y = 0.4
+            landSound:play(utils.randomRange(0.8,1.2))
         end
 
         self.speed.y = 0
@@ -105,6 +109,8 @@ function Player:update()
             self.onWall = 0
             self.disabledAirControl = 7
         end
+
+        jumpSound:play(utils.randomRange(0.8,1.2))
     end
 
     self.coyoteFrames = math.max(self.coyoteFrames - 1, 0)
@@ -217,8 +223,8 @@ function Player:update()
         local angle = self.gunAngle + utils.lerp(-0.1,0.1, math.random())
         scene:createThing(Bullet(x,y,angle))
         engine.shake = 5
-        self.speed.x = self.speed.x - math.cos(angle)
-        self.speed.y = self.speed.y - math.sin(angle)
+        self.speed.x = self.speed.x - math.cos(angle)*3
+        self.speed.y = self.speed.y - math.sin(angle)*3
     end
 end
 

@@ -1,18 +1,20 @@
 require "things/thing"
 
 Bullet = class(Thing)
-
-local sprite = utils.newAnimation("assets/sprites/bullet.png")
+Bullet.sprite = utils.newAnimation("assets/sprites/bullet.png")
+local sound = soundsystem.newSound("assets/sounds/gun1.wav"):setBaseVolume(0.7)
+local colSound = soundsystem.newSound("assets/sounds/bulletCol.wav"):setBaseVolume(0.2)
 
 function Bullet:new(x,y,angle)
     Bullet.super.new(self, x,y)
 
     self.speed.mag = 30
     self.speed.x, self.speed.y = utils.lengthdir(angle, self.speed.mag)
-    self.sprite = sprite
     self.life = Alarm():set(18)
     self.animIndex = 0
     self.size = 1
+
+    sound:play(utils.randomRange(0.8,1.2))
 end
 
 function Bullet:update()
@@ -22,7 +24,12 @@ function Bullet:update()
 
     for i=1, self.speed.mag, 2 do
         local angle = utils.angle(0,0,self.speed.x,self.speed.y)
-        self.dead = self.dead or scene:isSolid(self.x + math.cos(angle)*i, self.y + math.sin(angle)*i)
+        local hit = scene:isSolid(self.x + math.cos(angle)*i, self.y + math.sin(angle)*i)
+        if hit and not self.dead then
+            colSound:play()
+            scene:createThing(Impact(self.x,self.y))
+        end
+        self.dead = self.dead or hit
     end
 
     self.life:update()

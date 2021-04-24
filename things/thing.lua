@@ -13,7 +13,7 @@ end
 
 function Thing:draw()
     if self.sprite then
-        lg.draw(self.sprite.source, self.sprite[self.animIndex], self.x, self.y, 0, 1, 1, self.sprite.size/2, self.sprite.size/2)
+        lg.draw(self.sprite.source, self.sprite[math.floor(self.animIndex)], self.x, self.y, 0, 1, 1, self.sprite.size/2, self.sprite.size/2)
     end
 end
 
