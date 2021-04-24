@@ -52,9 +52,6 @@ function GameScene:setLevel(index)
     -- create all the entities in the list
     self.thingList = {}
 
-    -- add the player if it already exists
-    if self.player then table.insert(self.thingList, self.player) end
-
     for _, entity in ipairs(level.entities) do
         -- try to get the class from the global table, and make sure it exists
         local class = _G[entity.__identifier]
@@ -62,15 +59,18 @@ function GameScene:setLevel(index)
             local instance = class(entity.px[1], entity.px[2])
 
             -- save a reference to the player
-            if class == Player then
+            if class == Player and not self.player then
                 self.player = instance
+            else
+                table.insert(self.thingList, instance)
             end
-
-            table.insert(self.thingList, instance)
         else
             print("class " .. entity.__identifier .. " not found!")
         end
     end
+
+    -- add the player if it already exists
+    if self.player then table.insert(self.thingList, self.player) end
 end
 
 function GameScene:getLevel()
@@ -78,10 +78,20 @@ function GameScene:getLevel()
 end
 
 function GameScene:update()
-    for i, thing in ipairs(self.thingList) do
-        thing:update()
+    -- update all things in the scene, cull the dead ones
+    local i = 1
+    while i <= #self.thingList do
+        local thing = self.thingList[i]
+
+        if thing.dead then
+            table.remove(self.thingList, i)
+        else
+            thing:update()
+            i = i + 1
+        end
     end
 
+    -- camera tracking player and staying centered on level
     local currentLevel = self:getLevel()
     local px, py = self.player.x - 1024/2, self.player.y - 768/2
     local cx, cy = currentLevel.width*64/2 - 1024/2, currentLevel.height*64/2 - 768/2
@@ -90,6 +100,9 @@ function GameScene:update()
 end
 
 function GameScene:isSolid(x,y)
+    -- out of bounds horizontally is solid
+    if x <= 0 or x >= 20*64 then return true end
+
     local level = self:getLevel()
     local x, y = math.floor(x/64)+1, math.floor(y/64)+1
 
@@ -101,6 +114,8 @@ function GameScene:isSolid(x,y)
 end
 
 function GameScene:draw()
+    -- draw the level and the levels further back
+    -- in painter's order
     for i=math.min(#levels, self.levelIndex+3), self.levelIndex, -1 do
         lg.push()
         local depth = utils.map(i, self.levelIndex, self.levelIndex+10, 1, 0)^2
@@ -120,6 +135,7 @@ function GameScene:draw()
         lg.pop()
     end
 
+    -- draw the things in the level
     lg.push()
     lg.translate(-self.camera.x, -self.camera.y)
     for i, thing in ipairs(self.thingList) do

@@ -1,4 +1,6 @@
-Player = class()
+require "things/thing"
+
+Player = class(Thing)
 
 local sprite = utils.newAnimation("assets/sprites/lad.png")
 local gunarm = lg.newImage("assets/sprites/gunarm.png")
@@ -23,6 +25,8 @@ function Player:new(x,y)
 
     self.animIndex = 1
     self.animTimer = 0
+
+    self.currentWarp = nil
 end
 
 function Player:update()
@@ -193,12 +197,6 @@ function Player:update()
     end
 
     wasSpaceDown = love.keyboard.isDown("space")
-end
-
-function Player:animate(anim)
-    self.animTimer = self.animTimer + (anim.speed or 0.1)
-    self.animTimer = ((self.animTimer-1) % #anim) + 1
-    self.animIndex = anim[math.floor(self.animTimer)]
 end
 
 function Player:draw()
