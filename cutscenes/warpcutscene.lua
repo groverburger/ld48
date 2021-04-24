@@ -8,14 +8,30 @@ function WarpCutscene:new()
 
     self.routine = coroutine.create(function ()
         local scene = scenemanager.get()
-        scene.player.currentWarp = nil
-        local py = scene.player.y
+        local player = scene.player
+        player.currentWarp = nil
+        player.stretch.x = 1
+        player.stretch.y = 1
+        player.speed.x = 0
+        player.speed.y = 15
+        player.coyoteFrames = 0
+        player.animIndex = 3
 
-        for i=1, 60 do
+        local py = player.y
+        local time = 80
+        local jumpHeight = 180
+        for i=1, time do
             scene:pauseFrame()
-            local value = utils.map(i, 1,60, 0,math.pi/2)
-            scene.player.y = py - math.sin(value*2)*200
-            scene.depthOffset = value*2/math.pi
+            local value = utils.map(i, 1,time, 0,1)
+
+            if i <= time/4 then
+                player.y = py - (1-utils.map(i, 1,time/4, 1,0)^2)*jumpHeight
+            end
+            if i >= time*3/4 then
+                player.y = py - (1-utils.map(i, time*3/4,time, 0,1)^2)*jumpHeight
+            end
+
+            scene.depthOffset = math.sin(utils.map(value, 0.25, 0.75, 0, math.pi/2, true))
             coroutine.yield()
         end
 

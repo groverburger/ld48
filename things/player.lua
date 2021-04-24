@@ -30,7 +30,7 @@ end
 
 function Player:update()
     local walkSpeed = 1.1
-    local airSpeed = 0.5
+    local airSpeed = 0.7
     local walkFriction = 0.9
     local stopFriction = 0.75
     local maxWalkSpeed = 8--walkSpeed / (1-walkFriction)
@@ -104,7 +104,9 @@ function Player:update()
             self.disabledAirControl = 7
         end
     end
+
     self.coyoteFrames = math.max(self.coyoteFrames - 1, 0)
+    if self.coyoteFrames <= 0 then self.onWall = 0 end
     self.disabledAirControl = math.max(self.disabledAirControl - 1, 0)
 
     -- variable jump height
@@ -159,14 +161,15 @@ function Player:update()
     end
 
     -- wall slide collision testing
-    self.onWall = 0
     if not self.onGround then
-        if scene:isSolid(self.x+width+2, self.y+height-4)
+        if (scene:isSolid(self.x+width+2, self.y+height-4)
+        or  scene:isSolid(self.x+width+2, self.y-height+4))
         and scene:isSolid(self.x+width+2, self.y) then
             self.onWall = 1
             self.coyoteFrames = 7
         end
-        if scene:isSolid(self.x-width-2, self.y+height-4)
+        if (scene:isSolid(self.x-width-2, self.y+height-4)
+        or  scene:isSolid(self.x-width-2, self.y-height+4))
         and scene:isSolid(self.x-width-2, self.y) then
             self.onWall = -1
             self.coyoteFrames = 7

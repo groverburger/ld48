@@ -11,8 +11,12 @@ local totalArgs = ""
 local showMem
 local paused = false
 function hooks.pre_load(args)
-    console:addCommand("showmem", function(args)
+    console:addCommand("showmem", function (args)
         showMem = not showMem
+    end)
+
+    console:addCommand("reset", function (args)
+        scenemanager.set(GameScene())
     end)
 
     -- compile all args into one long string
@@ -32,12 +36,9 @@ function hooks.post_load()
     end
 end
 
-function hooks.pre_update(dt)
+function hooks.pre_update()
     lurker.update()
-    console:update(dt)
-
-    -- hack to add in fast forwarding
-    if love.keyboard.isDown("f") then return dt*4 end
+    console:update()
 end
 
 function hooks.post_draw()

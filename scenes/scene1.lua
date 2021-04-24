@@ -142,16 +142,35 @@ end
 function GameScene:draw()
     lg.clear(lume.color("#A7BFEF"))
 
+    local nearestDepth = 1 + 10*self.depthOffset^2
+    local furthestLevel = self.levelIndex+3
+
     -- draw the level and the levels further back
     -- in painter's order
-    for i=math.min(#levels, self.levelIndex+3), self.levelIndex, -1 do
+    for i=math.min(furthestLevel, #levels), self.levelIndex, -1 do
         lg.push()
-        local depth = utils.map(i, self.levelIndex + self.depthOffset, self.levelIndex+10, 1, 0)^2
 
-        if depth >= 1 then
-            lg.setColor(0,0,0, utils.map(depth, 1,1.1, 1,0))
+        -- higher depth is closer
+        local depth = utils.map(i - self.depthOffset, self.levelIndex, self.levelIndex+10, 1, 0)^2
+
+        if i == self.levelIndex then
+            lg.setColor(0,0,0, utils.map(depth, 1,1.035, 1,0))
+            depth = nearestDepth
         else
-            lg.setColor(utils.colorGradient(1-depth, "#505B72", "#A7BFEF"))
+            lg.setColor(utils.colorGradient(depth, "#A7BFEF", "#505B72"))
+
+            if i == self.levelIndex + 1 then
+                local r,g,b = lg.getColor()
+                r = utils.lerp(r, 0, self.depthOffset)
+                g = utils.lerp(g, 0, self.depthOffset)
+                b = utils.lerp(b, 0, self.depthOffset)
+                lg.setColor(r,g,b)
+            end
+
+            if i == furthestLevel then
+                local r,g,b = lg.getColor()
+                lg.setColor(r,g,b, self.depthOffset)
+            end
         end
 
         lg.translate(-self.camera.x*depth, -self.camera.y*depth)
@@ -165,11 +184,26 @@ function GameScene:draw()
 
     -- draw the things in the level
     lg.push()
+    lg.translate(640, 7.5*64)
+    lg.scale(nearestDepth)
+    lg.translate(-640, -7.5*64)
     lg.translate(-self.camera.x, -self.camera.y)
     for i, thing in ipairs(self.thingList) do
-        lg.setColor(1,1,1)
-        thing:draw()
+        if thing ~= self.player then
+            lg.setColor(1,1,1)
+            thing:draw()
+        end
     end
     lg.setColor(1,1,1)
+    lg.pop()
+
+    -- draw the player seperately
+    -- because the player is not affected by depth
+    lg.push()
+    lg.translate(-self.camera.x, -self.camera.y)
+    if self.player then
+        lg.setColor(1,1,1)
+        self.player:draw()
+    end
     lg.pop()
 end

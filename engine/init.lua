@@ -113,6 +113,7 @@ return function (settings)
                     if love.draw then love.draw() end
 
                     -- render the canvas
+                    lg.setColor(1,1,1)
                     lg.setCanvas()
                     local size = math.min(lg.getWidth()/canvas:getWidth(), lg.getHeight()/canvas:getHeight())
                     lg.draw(canvas, lg.getWidth()/2, lg.getHeight()/2, 0, size, size, canvas:getWidth()/2, canvas:getHeight()/2)
