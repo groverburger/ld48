@@ -1,7 +1,7 @@
 engine = require "engine"
 
 function love.load(arg)
-    scenemanager.set(FirstScene())
+    scenemanager.set(GameScene())
 end
 
 function love.update()

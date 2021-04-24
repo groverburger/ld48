@@ -13,6 +13,7 @@ inspect = require(path .. "/inspect")
 class = require(path .. "/oops")
 utils = require(path .. "/utils")
 Alarm = require(path .. "/alarm")
+json = require(path .. "/json")
 scenemanager = require(path .. "/scenemanager")
 
 -- load the components of the game
