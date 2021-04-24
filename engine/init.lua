@@ -1,98 +1,130 @@
-local engine = {}
-
--- make the debug console work correctly on windows
-io.stdout:setvbuf("no")
-
-lg = love.graphics
-lg.setDefaultFilter("nearest")
-
--- make some useful libraries globally scoped
 local path = ...
-lume = require(path .. "/lume")
-inspect = require(path .. "/inspect")
-class = require(path .. "/oops")
-utils = require(path .. "/utils")
-Alarm = require(path .. "/alarm")
-json = require(path .. "/json")
-scenemanager = require(path .. "/scenemanager")
 
--- load the components of the game
-utils.requireAll("things")
-utils.requireAll("scenes")
+return function (settings)
+    -- global engine table
+    engine = {}
 
-local accumulator = 0
-local frametime = 1/60
-local rollingAverage = {}
-local scene
+    engine.settings = settings or {}
 
-function engine.getInterpolation()
-    return accumulator / frametime
-end
+    -- make the debug console work correctly on windows
+    io.stdout:setvbuf("no")
 
-function engine.resetFramerateSmoothing()
-    rollingAverage = {}
-end
+    lg = love.graphics
+    lg.setDefaultFilter("nearest")
 
--- hijack love.run with a better one
-function love.run(configs)
-    if love.load then love.load(love.arg.parseGameArguments(arg), arg) end
+    -- make some useful libraries globally scoped
+    lume = require(path .. "/lume")
+    inspect = require(path .. "/inspect")
+    class = require(path .. "/oops")
+    utils = require(path .. "/utils")
+    Alarm = require(path .. "/alarm")
+    json = require(path .. "/json")
+    scenemanager = require(path .. "/scenemanager")
+    input = require(path .. "/input")
 
-    -- don't include load time in timestep
-    love.timer.step()
+    -- load the components of the game
+    utils.requireAll("things")
+    utils.requireAll("scenes")
 
-    -- main loop function
-	return function()
-        -- process events
-		if love.event then
-			love.event.pump()
-			for name, a,b,c,d,e,f in love.event.poll() do
-				if name == "quit" then
-					if not love.quit or not love.quit() then
-						return a or 0
-					end
-				end
-				love.handlers[name](a,b,c,d,e,f)
-			end
-		end
+    local accumulator = 0
+    local frametime = 1/60
+    local rollingAverage = {}
+    local canvas = lg.newCanvas(engine.settings.gameWidth, engine.settings.gameHeight)
 
-		-- don't update or draw when game window is not focused
-        if love.window.hasFocus() then
-            -- smooth out the delta time
-            table.insert(rollingAverage, love.timer.step())
-            if #rollingAverage > 60 then
-                table.remove(rollingAverage, 1)
-            end
-            local avg = 0
-            for i,v in ipairs(rollingAverage) do
-                avg = avg + v
-            end
+    function engine.getInterpolation()
+        return accumulator / frametime
+    end
 
-            -- fixed timestep
-            accumulator = accumulator + avg/#rollingAverage
-            local iter = 0
-            while accumulator > frametime and iter < 10 do
-                accumulator = accumulator - frametime
-                iter = iter + 1
-                if love.update then love.update() end
-            end
-            accumulator = accumulator % frametime
+    function engine.resetFramerateSmoothing()
+        rollingAverage = {}
+    end
 
-            -- render the game
-            if love.graphics and love.graphics.isActive() then
-                love.graphics.origin()
-                love.graphics.clear(love.graphics.getBackgroundColor())
+    -- pcalls don't work in web, so this automatically
+    -- becomes disabled in the release build!
+    xpcall(require, print, "engine/debugtools")
 
-                if love.draw then love.draw() end
+    -- hijack love.run with a better one
+    return function ()
+        if love.load then love.load(love.arg.parseGameArguments(arg), arg) end
 
-                love.graphics.present()
+        -- don't include load time in timestep
+        love.timer.step()
+
+        -- main loop function
+        return function()
+            -- process events
+            if love.event then
+                love.event.pump()
+                for name, a,b,c,d,e,f in love.event.poll() do
+                    if name == "quit" then
+                        if not love.quit or not love.quit() then
+                            return a or 0
+                        end
+                    end
+                    love.handlers[name](a,b,c,d,e,f)
+
+                    -- resize the canvas according to engine settings
+                    local fixedCanvas = engine.settings.gameWidth or engine.settings.gameHeight
+                    if name == "resize" and not fixedCanvas then
+                        canvas = lg.newCanvas()
+                    end
+                end
             end
 
-            love.timer.sleep(0.001)
-        else
-            love.timer.step()
-            love.timer.sleep(0.05)
+            -- don't update or draw when game window is not focused
+            if love.window.hasFocus() then
+                --------------------------------------------------------------------------------
+                -- update
+                --------------------------------------------------------------------------------
+
+                input.update()
+
+                -- smooth out the delta time
+                table.insert(rollingAverage, love.timer.step())
+                if #rollingAverage > 60 then
+                    table.remove(rollingAverage, 1)
+                end
+                local avg = 0
+                for i,v in ipairs(rollingAverage) do
+                    avg = avg + v
+                end
+
+                -- fixed timestep
+                accumulator = accumulator + avg/#rollingAverage
+                local iter = 0
+                while accumulator > frametime and iter < 5 do
+                    accumulator = accumulator - frametime
+                    iter = iter + 1
+                    if love.update then love.update() end
+                end
+                accumulator = accumulator % frametime
+
+                --------------------------------------------------------------------------------
+                -- draw
+                --------------------------------------------------------------------------------
+
+                -- render the game onto a canvas
+                if love.graphics and love.graphics.isActive() then
+                    -- set the canvas
+                    lg.setCanvas(canvas)
+                    love.graphics.origin()
+                    love.graphics.clear(love.graphics.getBackgroundColor())
+
+                    if love.draw then love.draw() end
+
+                    -- render the canvas
+                    lg.setCanvas()
+                    local size = math.min(lg.getWidth()/canvas:getWidth(), lg.getHeight()/canvas:getHeight())
+                    lg.draw(canvas, lg.getWidth()/2, lg.getHeight()/2, 0, size, size, canvas:getWidth()/2, canvas:getHeight()/2)
+
+                    love.graphics.present()
+                end
+
+                love.timer.sleep(0.001)
+            else
+                love.timer.step()
+                love.timer.sleep(0.05)
+            end
         end
-	end
+    end
 end
-
-return engine

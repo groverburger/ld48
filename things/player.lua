@@ -4,11 +4,10 @@ Player = class(Thing)
 
 local sprite = utils.newAnimation("assets/sprites/lad.png")
 local gunarm = lg.newImage("assets/sprites/gunarm.png")
-local wasSpaceDown = false
 
 local animations = {
     idle = {1,2},
-    walk = {1,3},
+    walk = {1,3, speed=0.15},
 }
 
 function Player:new(x,y)
@@ -88,7 +87,7 @@ function Player:update()
     end
 
     -- start the jump
-    if self.coyoteFrames > 0 and love.keyboard.isDown("space") and not wasSpaceDown then
+    if self.coyoteFrames > 0 and input.isPressed("jump") then
         self.coyoteFrames = 0
         self.speed.y = -15
         self.stretch.x = 0.5
@@ -104,7 +103,7 @@ function Player:update()
     self.disabledAirControl = math.max(self.disabledAirControl - 1, 0)
 
     -- variable jump height
-    if not love.keyboard.isDown("space") and self.speed.y < 0 then
+    if not input.isDown("jump") and self.speed.y < 0 then
         self.speed.y = self.speed.y * 0.7
     end
 
@@ -119,11 +118,11 @@ function Player:update()
     local walking = false
     local speed = self.onGround and walkSpeed or airSpeed
     if self.onGround or self.disabledAirControl <= 0 then
-        if love.keyboard.isDown("d") then
+        if input.isDown("right") then
             self.speed.x = self.speed.x + speed
             self.speed.x = math.min(self.speed.x, maxWalkSpeed)
             walking = true
-        elseif love.keyboard.isDown("a") then
+        elseif input.isDown("left") then
             self.speed.x = self.speed.x - speed
             self.speed.x = math.max(self.speed.x, -maxWalkSpeed)
             walking = true
@@ -195,8 +194,6 @@ function Player:update()
     for i, v in pairs(self.stretch) do
         self.stretch[i] = utils.lerp(v, 1, 0.25)
     end
-
-    wasSpaceDown = love.keyboard.isDown("space")
 end
 
 function Player:draw()
@@ -205,7 +202,7 @@ function Player:draw()
 
     lg.setColor(1,1,1)
     local sx, sy = lg.transformPoint(dx, dy)
-    local gunAngle = utils.angle(sx, sy, love.mouse.getPosition())
+    local gunAngle = utils.angle(sx, sy, input.mouse.x, input.mouse.y)
     local gunflip = utils.sign(math.cos(gunAngle))
     lg.draw(sprite.source, sprite[self.animIndex], dx, dy + 32*math.max(1-self.stretch.y, 0), 0, gunflip*self.stretch.x, self.stretch.y, 24, 32)
     lg.draw(gunarm, dx + 7*gunflip, dy + 10, gunAngle, 1, gunflip, 0, 16)

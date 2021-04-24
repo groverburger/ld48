@@ -41,7 +41,6 @@ end
 
 function GameScene:new()
     self.camera = {x=0,y=0}
-    lg.setBackgroundColor(lume.color("#A7BFEF"))
     self:setLevel(1)
 end
 
@@ -114,6 +113,8 @@ function GameScene:isSolid(x,y)
 end
 
 function GameScene:draw()
+    lg.clear(lume.color("#A7BFEF"))
+
     -- draw the level and the levels further back
     -- in painter's order
     for i=math.min(#levels, self.levelIndex+3), self.levelIndex, -1 do

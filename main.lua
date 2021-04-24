@@ -1,5 +1,3 @@
-engine = require "engine"
-
 function love.load(arg)
     scenemanager.set(GameScene())
 end
@@ -14,12 +12,17 @@ end
 
 function love.draw()
     local scene = scenemanager.get()
-
     if scene.draw then
         scene:draw()
     end
 end
 
--- pcalls don't work in web, so this automatically
--- becomes disabled in the release build!
-xpcall(require, print, "engine/debugtools")
+love.run = require("engine")({
+    gameWidth = 1024,
+    gameHeight = 768,
+})
+
+input.addButton("left", {"a"})
+input.addButton("right", {"d"})
+input.addButton("jump", {"space", "w"})
+input.addButton("shoot", {}, {1})
