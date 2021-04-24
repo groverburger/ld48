@@ -1,16 +1,40 @@
 local path = ...
 
 return function (settings)
-    -- global engine table
-    engine = {}
-
-    engine.settings = settings or {}
+    --------------------------------------------------------------------------------
+    -- basic setup
+    --------------------------------------------------------------------------------
 
     -- make the debug console work correctly on windows
     io.stdout:setvbuf("no")
-
     lg = love.graphics
     lg.setDefaultFilter("nearest")
+    local accumulator = 0
+    local frametime = 1/60
+    local rollingAverage = {}
+    local canvas = lg.newCanvas(settings.gameWidth, settings.gameHeight)
+
+    --------------------------------------------------------------------------------
+    -- initialize engine
+    --------------------------------------------------------------------------------
+
+    engine = {
+        settings = settings or {},
+        shake = 0,
+        shakeSize = 1,
+    }
+
+    function engine.getInterpolation()
+        return accumulator / frametime
+    end
+
+    function engine.resetFramerateSmoothing()
+        rollingAverage = {}
+    end
+
+    --------------------------------------------------------------------------------
+    -- load modules
+    --------------------------------------------------------------------------------
 
     -- make some useful libraries globally scoped
     lume = require(path .. "/lume")
@@ -21,24 +45,12 @@ return function (settings)
     json = require(path .. "/json")
     scenemanager = require(path .. "/scenemanager")
     input = require(path .. "/input")
+    colors = require(path .. "/colors")
 
     -- load the components of the game
     utils.requireAll("things")
     utils.requireAll("scenes")
     utils.requireAll("cutscenes")
-
-    local accumulator = 0
-    local frametime = 1/60
-    local rollingAverage = {}
-    local canvas = lg.newCanvas(engine.settings.gameWidth, engine.settings.gameHeight)
-
-    function engine.getInterpolation()
-        return accumulator / frametime
-    end
-
-    function engine.resetFramerateSmoothing()
-        rollingAverage = {}
-    end
 
     -- pcalls don't work in web, so this automatically
     -- becomes disabled in the release build!
@@ -93,6 +105,7 @@ return function (settings)
                 local iter = 0
                 while accumulator > frametime and iter < 5 do
                     input.update()
+                    engine.shake = math.max(engine.shake - 1, 0)
                     accumulator = accumulator - frametime
                     iter = iter + 1
                     if love.update then love.update() end
@@ -106,19 +119,24 @@ return function (settings)
                 -- render the game onto a canvas
                 if love.graphics and love.graphics.isActive() then
                     -- set the canvas
+                    lg.origin()
+                    lg.clear(0,0,0,0)
                     lg.setCanvas(canvas)
-                    love.graphics.origin()
-                    love.graphics.clear(love.graphics.getBackgroundColor())
+                    lg.clear(love.graphics.getBackgroundColor())
 
                     if love.draw then love.draw() end
 
                     -- render the canvas
                     lg.setColor(1,1,1)
                     lg.setCanvas()
-                    local size = math.min(lg.getWidth()/canvas:getWidth(), lg.getHeight()/canvas:getHeight())
-                    lg.draw(canvas, lg.getWidth()/2, lg.getHeight()/2, 0, size, size, canvas:getWidth()/2, canvas:getHeight()/2)
+                    local screenSize = math.min(lg.getWidth()/canvas:getWidth(), lg.getHeight()/canvas:getHeight())
+                    local shake = engine.shake
+                    local shakeSize = engine.shakeSize
+                    local shakex = shake > 0 and math.sin(math.random()*2*math.pi)*shakeSize*screenSize or 0
+                    local shakey = shake > 0 and math.sin(math.random()*2*math.pi)*shakeSize*screenSize or 0
+                    lg.draw(canvas, lg.getWidth()/2 + shakex, lg.getHeight()/2 + shakey, 0, screenSize, screenSize, canvas:getWidth()/2, canvas:getHeight()/2)
 
-                    love.graphics.present()
+                    lg.present()
                 end
 
                 love.timer.sleep(0.001)

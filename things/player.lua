@@ -26,6 +26,8 @@ function Player:new(x,y)
     self.animTimer = 0
 
     self.currentWarp = nil
+    self.gunAngle = 0
+    self.gx, self.gy = x, y
 end
 
 function Player:update()
@@ -199,10 +201,24 @@ function Player:update()
 
     if not self.onGround then
         self.animIndex = 3
+
+        if self.onWall ~= 0 then
+            self.animIndex = 4
+        end
     end
 
     for i, v in pairs(self.stretch) do
         self.stretch[i] = utils.lerp(v, 1, 0.25)
+    end
+
+    if input.isPressed("shoot") then
+        local x = self.x + self.gx + math.cos(self.gunAngle)*20
+        local y = self.y + self.gy + math.sin(self.gunAngle)*20
+        local angle = self.gunAngle + utils.lerp(-0.1,0.1, math.random())
+        scene:createThing(Bullet(x,y,angle))
+        engine.shake = 5
+        self.speed.x = self.speed.x - math.cos(angle)
+        self.speed.y = self.speed.y - math.sin(angle)
     end
 end
 
@@ -210,10 +226,28 @@ function Player:draw()
     local interp = engine.getInterpolation()
     local dx, dy = self.x + self.speed.x * interp, self.y + self.speed.y * interp
 
-    lg.setColor(1,1,1)
+    colors.white()
     local sx, sy = lg.transformPoint(dx, dy)
     local gunAngle = utils.angle(sx, sy, input.mouse.x, input.mouse.y)
     local gunflip = utils.sign(math.cos(gunAngle))
+    local gx, gy = 7*gunflip, 10
+    if self.onWall ~= 0 then
+        if gunflip == self.onWall then
+            if math.sin(gunAngle) < 0 then
+                gunAngle = math.pi*1.5
+            else
+                gunAngle = math.pi*0.5
+            end
+        end
+
+        gunflip = -1*self.onWall
+        gx = 0
+    end
+
+    -- store this calculation for reals here because this is the easiest place to do it
+    self.gunAngle = gunAngle
+    self.gx, self.gy = gx, gy
+
     lg.draw(sprite.source, sprite[self.animIndex], dx, dy + 32*math.max(1-self.stretch.y, 0), 0, gunflip*self.stretch.x, self.stretch.y, 24, 32)
-    lg.draw(gunarm, dx + 7*gunflip, dy + 10, gunAngle, 1, gunflip, 0, 16)
+    lg.draw(gunarm, dx + gx, dy + gy, gunAngle, 1, gunflip, 0, 16)
 end

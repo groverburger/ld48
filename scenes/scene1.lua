@@ -46,6 +46,11 @@ function GameScene:new()
     self:setLevel(1)
 end
 
+function GameScene:createThing(thing)
+    table.insert(self.thingList, thing)
+    return thing
+end
+
 function GameScene:nextLevel()
     self:setLevel(self.levelIndex + 1)
 end
@@ -121,8 +126,8 @@ function GameScene:update()
     local currentLevel = self:getLevel()
     local px, py = self.player.x - 1024/2, self.player.y - 768/2
     local cx, cy = currentLevel.width*64/2 - 1024/2, currentLevel.height*64/2 - 768/2
-    self.camera.x = utils.clamp((px+cx)/2, 0, currentLevel.width*64 - 1024)
-    self.camera.y = utils.clamp((py+cy)/2, 0, currentLevel.height*64 - 768)
+    self.camera.x = utils.round(utils.lerp(self.camera.x, utils.clamp((px+cx)/2, 0, currentLevel.width*64 - 1024), 0.2))
+    self.camera.y = utils.round(utils.lerp(self.camera.y, utils.clamp((py+cy)/2, 0, currentLevel.height*64 - 768), 0.2))
 end
 
 function GameScene:isSolid(x,y)
@@ -140,7 +145,7 @@ function GameScene:isSolid(x,y)
 end
 
 function GameScene:draw()
-    lg.clear(lume.color("#A7BFEF"))
+    lg.clear(lume.color(colors.hex.blue))
 
     local nearestDepth = 1 + 10*self.depthOffset^2
     local furthestLevel = self.levelIndex+3
@@ -190,11 +195,11 @@ function GameScene:draw()
     lg.translate(-self.camera.x, -self.camera.y)
     for i, thing in ipairs(self.thingList) do
         if thing ~= self.player then
-            lg.setColor(1,1,1)
+            colors.white()
             thing:draw()
         end
     end
-    lg.setColor(1,1,1)
+    colors.white()
     lg.pop()
 
     -- draw the player seperately
@@ -202,7 +207,7 @@ function GameScene:draw()
     lg.push()
     lg.translate(-self.camera.x, -self.camera.y)
     if self.player then
-        lg.setColor(1,1,1)
+        colors.white()
         self.player:draw()
     end
     lg.pop()
