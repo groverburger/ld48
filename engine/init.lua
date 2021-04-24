@@ -25,6 +25,7 @@ return function (settings)
     -- load the components of the game
     utils.requireAll("things")
     utils.requireAll("scenes")
+    utils.requireAll("cutscenes")
 
     local accumulator = 0
     local frametime = 1/60
@@ -77,8 +78,6 @@ return function (settings)
                 -- update
                 --------------------------------------------------------------------------------
 
-                input.update()
-
                 -- smooth out the delta time
                 table.insert(rollingAverage, love.timer.step())
                 if #rollingAverage > 60 then
@@ -93,6 +92,7 @@ return function (settings)
                 accumulator = accumulator + avg/#rollingAverage
                 local iter = 0
                 while accumulator > frametime and iter < 5 do
+                    input.update()
                     accumulator = accumulator - frametime
                     iter = iter + 1
                     if love.update then love.update() end

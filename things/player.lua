@@ -66,8 +66,8 @@ function Player:update()
 
         -- squash on first hit
         if not wasOnGround then
-            self.stretch.x = 1.4
-            self.stretch.y = 0.5
+            self.stretch.x = 1.5
+            self.stretch.y = 0.4
         end
 
         self.speed.y = 0
@@ -88,10 +88,15 @@ function Player:update()
 
     -- start the jump
     if self.coyoteFrames > 0 and input.isPressed("jump") then
+        if self.currentWarp then
+            scene.cutscene = WarpCutscene()
+            return
+        end
+
         self.coyoteFrames = 0
         self.speed.y = -15
-        self.stretch.x = 0.5
-        self.stretch.y = 1.4
+        self.stretch.x = 0.4
+        self.stretch.y = 1.5
 
         if self.onWall ~= 0 then
             self.speed.x = self.onWall*-0.8*maxWalkSpeed
@@ -156,11 +161,13 @@ function Player:update()
     -- wall slide collision testing
     self.onWall = 0
     if not self.onGround then
-        if scene:isSolid(self.x+width+2, self.y+height-4) then
+        if scene:isSolid(self.x+width+2, self.y+height-4)
+        and scene:isSolid(self.x+width+2, self.y) then
             self.onWall = 1
             self.coyoteFrames = 7
         end
-        if scene:isSolid(self.x-width-2, self.y+height-4) then
+        if scene:isSolid(self.x-width-2, self.y+height-4)
+        and scene:isSolid(self.x-width-2, self.y) then
             self.onWall = -1
             self.coyoteFrames = 7
         end

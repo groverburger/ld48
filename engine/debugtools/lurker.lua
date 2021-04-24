@@ -158,7 +158,7 @@ function lurker.onerror(e, nostacktrace)
     end
 
     love.graphics.setBackgroundColor(colors[1])
-    love.graphics.clear()
+    love.graphics.clear(0,0,0,1)
 
     drawtext("An error has occurred", pad, pad, colors[2])
     drawtext("lurker", width - love.graphics.getFont():getWidth("lurker") -

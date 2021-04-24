@@ -41,11 +41,18 @@ end
 
 function GameScene:new()
     self.camera = {x=0,y=0}
+    self.cutscene = nil
+    self.depthOffset = 0
     self:setLevel(1)
+end
+
+function GameScene:nextLevel()
+    self:setLevel(self.levelIndex + 1)
 end
 
 function GameScene:setLevel(index)
     self.levelIndex = index
+    self.depthOffset = 0
     local level = self:getLevel()
 
     -- create all the entities in the list
@@ -69,14 +76,34 @@ function GameScene:setLevel(index)
     end
 
     -- add the player if it already exists
-    if self.player then table.insert(self.thingList, self.player) end
+    if self.player then
+        self.player.spawnPoint.x = self.player.x
+        self.player.spawnPoint.y = self.player.y
+        table.insert(self.thingList, self.player)
+    end
 end
 
 function GameScene:getLevel()
     return levels[self.levelIndex]
 end
 
+function GameScene:pauseFrame()
+    self.pausedThisFrame = true
+end
+
 function GameScene:update()
+    if self.cutscene then
+        self.cutscene:update()
+        if self.cutscene.dead then
+            self.cutscene = nil
+        end
+    end
+
+    if self.pausedThisFrame then
+        self.pausedThisFrame = false
+        return
+    end
+
     -- update all things in the scene, cull the dead ones
     local i = 1
     while i <= #self.thingList do
@@ -119,10 +146,10 @@ function GameScene:draw()
     -- in painter's order
     for i=math.min(#levels, self.levelIndex+3), self.levelIndex, -1 do
         lg.push()
-        local depth = utils.map(i, self.levelIndex, self.levelIndex+10, 1, 0)^2
+        local depth = utils.map(i, self.levelIndex + self.depthOffset, self.levelIndex+10, 1, 0)^2
 
-        if depth == 1 then
-            lg.setColor(0,0,0)
+        if depth >= 1 then
+            lg.setColor(0,0,0, utils.map(depth, 1,1.1, 1,0))
         else
             lg.setColor(utils.colorGradient(1-depth, "#505B72", "#A7BFEF"))
         end
