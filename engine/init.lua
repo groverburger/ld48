@@ -55,18 +55,18 @@ function love.run(configs)
 			end
 		end
 
-        -- smooth out the delta time
-        table.insert(rollingAverage, love.timer.step())
-        if #rollingAverage > 60 then
-            table.remove(rollingAverage, 1)
-        end
-        local avg = 0
-        for i,v in ipairs(rollingAverage) do
-            avg = avg + v
-        end
-
 		-- don't update or draw when game window is not focused
         if love.window.hasFocus() then
+            -- smooth out the delta time
+            table.insert(rollingAverage, love.timer.step())
+            if #rollingAverage > 60 then
+                table.remove(rollingAverage, 1)
+            end
+            local avg = 0
+            for i,v in ipairs(rollingAverage) do
+                avg = avg + v
+            end
+
             -- fixed timestep
             accumulator = accumulator + avg/#rollingAverage
             local iter = 0
@@ -89,6 +89,7 @@ function love.run(configs)
 
             love.timer.sleep(0.001)
         else
+            love.timer.step()
             love.timer.sleep(0.05)
         end
 	end

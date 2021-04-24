@@ -83,8 +83,10 @@ function GameScene:update()
     end
 
     local currentLevel = self:getLevel()
-    self.camera.x = utils.clamp(self.player.x - 1024/2, 0, currentLevel.width*64 - 1024)
-    self.camera.y = utils.clamp(self.player.y - 768/2, 0, currentLevel.height*64 - 768)
+    local px, py = self.player.x - 1024/2, self.player.y - 768/2
+    local cx, cy = currentLevel.width*64/2 - 1024/2, currentLevel.height*64/2 - 768/2
+    self.camera.x = utils.clamp((px+cx)/2, 0, currentLevel.width*64 - 1024)
+    self.camera.y = utils.clamp((py+cy)/2, 0, currentLevel.height*64 - 768)
 end
 
 function GameScene:isSolid(x,y)
@@ -99,11 +101,31 @@ function GameScene:isSolid(x,y)
 end
 
 function GameScene:draw()
+    for i=math.min(#levels, self.levelIndex+3), self.levelIndex, -1 do
+        lg.push()
+        local depth = utils.map(i, self.levelIndex, self.levelIndex+10, 1, 0)^2
+
+        if depth == 1 then
+            lg.setColor(0,0,0)
+        else
+            lg.setColor(utils.colorGradient(1-depth, "#505B72", "#A7BFEF"))
+        end
+
+        lg.translate(-self.camera.x*depth, -self.camera.y*depth)
+        local sprite = levels[i].sprite
+        lg.translate(480, 4.5*64)
+        lg.scale(depth)
+        lg.translate(-480, -4.5*64)
+        lg.draw(sprite)
+        lg.pop()
+    end
+
     lg.push()
     lg.translate(-self.camera.x, -self.camera.y)
     for i, thing in ipairs(self.thingList) do
+        lg.setColor(1,1,1)
         thing:draw()
     end
-    lg.draw(self:getLevel().sprite)
+    lg.setColor(1,1,1)
     lg.pop()
 end
