@@ -31,6 +31,7 @@ function Enemy:update()
             if player.speed.y > 1 then
                 self:hit(player)
                 player:jump()
+            elseif player.speed.y <= 1 and player.y < self.y then
             else
                 player:hit(self)
             end
@@ -65,11 +66,11 @@ function Enemy:onDeath()
 end
 
 function Enemy:drawKey()
-    if not self.keycolor or not self:isLevelActive() then return end
+    if not self.keycolor then return end
 
     local r,g,b,a = lg.getColor()
     colors[self.keycolor](a)
-    Key.subdraw(Key, self.x,self.y,1,1,1,0)
+    Key.subdraw(Key, self.x+32,self.y+32,1,1,1,0)
     lg.setColor(1,1,1,a)
 end
 

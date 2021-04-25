@@ -110,6 +110,11 @@ function Player:update()
         self.coyoteFrames = 7
     end
 
+    -- start the jump
+    if self.coyoteFrames > 0 and input.isPressed("jump") then
+        self:jump()
+    end
+
     -- hit ceiling
     if self:isSolid(self.x-width,self.y+self.speed.y-height, true,true)
     or self:isSolid(self.x+width,self.y+self.speed.y-height, true,true) then
@@ -117,12 +122,7 @@ function Player:update()
         and not self:isSolid(self.x+width,self.y-height-1, true,true) do
             self.y = self.y - 1
         end
-        self.speed.y = 1
-    end
-
-    -- start the jump
-    if self.coyoteFrames > 0 and input.isPressed("jump") then
-        self:jump()
+        self.speed.y = 0
     end
 
     self.coyoteFrames = math.max(self.coyoteFrames - 1, 0)

@@ -27,15 +27,14 @@ function hooks.pre_load(args)
             local x, y = tonumber(args[3]), tonumber(args[4])
             scene.player.x = x
             scene.player.y = y
+            scene.player.spawnPoint.x = x
+            scene.player.spawnPoint.y = y
         end
     end)
 
     -- compile all args into one long string
     for i, arg in ipairs(args) do
-        totalArgs = totalArgs .. arg
-        if i < #arg then
-            totalArgs = totalArgs .. " "
-        end
+        totalArgs = totalArgs .. arg .. " "
     end
 
     love.window.maximize()
@@ -47,6 +46,8 @@ function hooks.post_load()
     for _, command in ipairs(commandList) do
         console:execute(lume.trim(command))
     end
+
+    local scene = scenemanager.get()
 end
 
 function hooks.pre_update()

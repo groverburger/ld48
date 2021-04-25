@@ -89,12 +89,13 @@ function GameScene:new()
     self.cutscene = nil
     self.depthOffset = 0
     self.levelThings = {}
+    self.cameraTracking = true
 
     self.depthProps = {
-        [15] = {
-            scale = 12,
+        [7] = {
+            scale = 10,
             xoff = 0,
-            yoff = -600,
+            yoff = -500,
             sprite = lg.newImage("assets/sprites/castle.png"),
         },
     }
@@ -115,6 +116,10 @@ function GameScene:createThing(thing, levelIndex)
         table.insert(self.thingList, thing)
     else
         table.insert(self.levelThings[levelIndex], thing)
+    end
+
+    if thing:instanceOf(Enemy) and levelIndex == self.levelIndex then
+        table.insert(self.enemyList, thing)
     end
 
     if thing.init then
@@ -252,11 +257,13 @@ function GameScene:update()
     end
 
     -- camera tracking player and staying centered on level
-    local currentLevel = self:getLevel(self.levelIndex)
-    local px, py = self.player.x, self.player.y
-    local cx, cy = currentLevel.width*32, currentLevel.height*32
-    self.camera.x = utils.round(utils.lerp(self.camera.x, utils.clamp((px+cx)/2, 1024/2, currentLevel.width*64 - 1024/2), 0.2))
-    self.camera.y = utils.round(utils.lerp(self.camera.y, utils.clamp((py+cy)/2, 768/2, currentLevel.height*64 - 768/2), 0.2))
+    if self.cameraTracking then
+        local currentLevel = self:getLevel(self.levelIndex)
+        local px, py = self.player.x, self.player.y
+        local cx, cy = currentLevel.width*32, currentLevel.height*32
+        self.camera.x = utils.round(utils.lerp(self.camera.x, utils.clamp((px+cx)/2, 1024/2, currentLevel.width*64 - 1024/2), 0.2))
+        self.camera.y = utils.round(utils.lerp(self.camera.y, utils.clamp((py+cy)/2, 768/2, currentLevel.height*64 - 768/2), 0.2))
+    end
 end
 
 local furthest = 20
@@ -312,11 +319,10 @@ function GameScene:draw()
 
         local prop = self.depthProps[i]
         if prop and i ~= self.levelIndex then
+            bgFadeShader:send("bgcolor", {r,g,b,getDepth(i-0.8)^8})
             lg.translate(currentLevel.width*32, currentLevel.height*32)
-            lg.translate(0, utils.map(depth, 0,1, -1200,0))
             local r,g,b = lg.getColor()
             if i == self.levelIndex+1 then
-                print(depth)
                 lg.setColor(r,g,b, utils.map(depth, 0.8,1, 1,0))
             end
 

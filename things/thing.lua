@@ -40,7 +40,7 @@ end
 
 function Thing:createThing(thing)
     local scene = scenemanager.get()
-    scene:createThing(thing, self.levelIndex)
+    return scene:createThing(thing, self.levelIndex)
 end
 
 function Thing:isSolid(x,y, tile,hoob,voob)
@@ -51,7 +51,7 @@ function Thing:isSolid(x,y, tile,hoob,voob)
     if voob and (y <= 0 or y >= level.height*64) then return true end
 
     if tile then
-        local x, y = math.floor(x/64)+1, math.floor(y/64)+1
+        local x, y = math.floor(x/64)+1, math.max(math.floor(y/64)+1, 1)
         if level[x] and level[x][y] then
             return level[x][y] == 1
         end

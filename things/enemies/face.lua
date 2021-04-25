@@ -32,11 +32,6 @@ function Glasses:new(x,y)
     }
 end
 
-function Glasses:init()
-    self.xdir = self:isSolid(self.x+64, self.y, true,true,true) and -1 or 1
-    self.x = self.x + self.xdir*48
-end
-
 function Glasses:update()
     Glasses.super.update(self)
     self.animIndex = self.alarms.blink:isActive() and 2 or 1

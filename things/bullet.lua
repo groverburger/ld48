@@ -78,12 +78,14 @@ end
 function Bullet:draw()
     if self.animIndex == 0 then self.animIndex = 1 end
 
+    local r,g,b,a = lg.getColor()
+
     self.size = 1
     if self.animIndex == 2 then
-        colors.red()
+        colors.red(a)
         self:subdraw(self.x + self.speed.x*-1, self.y + self.speed.y*-1)
         self:subdraw(self.x + self.speed.x*-0.5,  self.y + self.speed.y*-0.5)
-        colors.white()
+        colors.white(a)
         self:subdraw()
     else
         self.size = 1.5
