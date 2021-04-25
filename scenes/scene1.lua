@@ -39,14 +39,20 @@ for levelIndex, level in ipairs(map.levels) do
     end
 end
 
+local bgFadeShader = lg.newShader("assets/shaders/bgfade.frag")
+
 function GameScene:new()
     self.camera = {x=0,y=0}
     self.cutscene = nil
     self.depthOffset = 0
+    self.levelThings = {}
 end
 
 function GameScene:init()
-    self:setLevel(1)
+    for i, level in ipairs(levels) do
+        self:loadLevel(i, level)
+    end
+    self:setLevelActive(1)
 end
 
 function GameScene:createThing(thing)
@@ -55,21 +61,40 @@ function GameScene:createThing(thing)
 end
 
 function GameScene:nextLevel()
-    self:setLevel(self.levelIndex + 1)
+    self.levelIndex = self.levelIndex + 1
+    self:setLevelActive(self.levelIndex)
 end
 
 function GameScene:resetLevel()
-    self:setLevel(self.levelIndex)
+    self:loadLevel(self.levelIndex, levels[self.levelIndex])
+    self:setLevelActive(self.levelIndex)
 end
 
-function GameScene:setLevel(index)
+function GameScene:setLevelActive(index)
+    if self.player and self.levelThings[self.levelIndex] then
+        lume.remove(self.levelThings[self.levelIndex], self.player)
+    end
+
     self.levelIndex = index
     self.depthOffset = 0
-    local level = self:getLevel()
+    self.thingList = self.levelThings[index]
 
-    -- create all the entities in the list
-    self.thingList = {}
+    -- put all the enemies in their own list
     self.enemyList = {}
+    for _, thing in ipairs(self.thingList) do
+        if thing:instanceOf(Enemy) then
+            table.insert(self.enemyList, thing)
+        end
+    end
+
+    if self.player then
+        table.insert(self.thingList, self.player)
+    end
+end
+
+function GameScene:loadLevel(index, level)
+    local thingList = {}
+    self.levelThings[index] = thingList
 
     for _, entity in ipairs(level.entities) do
         -- try to get the class from the global table, and make sure it exists
@@ -77,24 +102,20 @@ function GameScene:setLevel(index)
         if class and type(class) == "table" and class.getClass then
             local instance = class(entity.px[1], entity.px[2])
 
+            -- set the instance's index so it knows where it is
+            instance.levelIndex = index
+
             -- save a reference to the player
             if class == Player then
                 if not self.player then
                     self.player = instance
                 end
             else
-                table.insert(self.thingList, instance)
+                table.insert(thingList, instance)
             end
         else
             print("class " .. entity.__identifier .. " not found!")
         end
-    end
-
-    -- add the player if it already exists
-    if self.player then
-        self.player.spawnPoint.x = self.player.x
-        self.player.spawnPoint.y = self.player.y
-        table.insert(self.thingList, self.player)
     end
 end
 
@@ -135,6 +156,15 @@ function GameScene:update()
         end
     end
 
+    local thingList = self.levelThings[self.levelIndex+1]
+    if thingList then
+        for _, thing in ipairs(thingList) do
+            if thing ~= self.player then
+                thing:update()
+            end
+        end
+    end
+
     -- camera tracking player and staying centered on level
     local currentLevel = self:getLevel()
     local px, py = self.player.x - 1024/2, self.player.y - 768/2
@@ -165,55 +195,34 @@ function GameScene:draw()
 
     -- draw the level and the levels further back
     -- in painter's order
-    for i=math.min(furthestLevel, #levels), self.levelIndex, -1 do
+    for i=math.min(furthestLevel, #levels), math.max(self.levelIndex-1, 1), -1 do
         lg.push()
+        colors.white()
 
         -- higher depth is closer
         local depth = utils.map(i - self.depthOffset, self.levelIndex, self.levelIndex+5, 1, 0)^2
+        local r,g,b = lume.color("#A7BFEF")
 
-        if i == self.levelIndex then
-            lg.setColor(0,0,0, utils.map(depth, 1,1.035, 1,0))
-            depth = nearestDepth
-        else
-            lg.setColor(utils.colorGradient(depth, "#A7BFEF", "#505B72"))
-
-            if i == self.levelIndex + 1 then
-                local r,g,b = lg.getColor()
-                r = utils.lerp(r, 0, self.depthOffset)
-                g = utils.lerp(g, 0, self.depthOffset)
-                b = utils.lerp(b, 0, self.depthOffset)
-                lg.setColor(r,g,b)
-            end
-
-            if i == furthestLevel then
-                local r,g,b = lg.getColor()
-                lg.setColor(r,g,b, self.depthOffset)
-            end
+        if i <= self.levelIndex then
+            colors.white(utils.map(depth, 1,1.035, 1,0))
         end
 
+        bgFadeShader:send("bgcolor", {r,g,b,depth})
+        lg.setShader(bgFadeShader)
         lg.translate(-self.camera.x*depth, -self.camera.y*depth)
         local sprite = levels[i].sprite
-        lg.translate(480, 4.5*64)
+        lg.translate(640*0.8, 4.5*64)
         lg.scale(depth)
-        lg.translate(-480, -4.5*64)
+        lg.translate(-640*0.8, -4.5*64)
         lg.draw(sprite)
-        lg.pop()
-    end
-
-    -- draw the things in the level
-    lg.push()
-    lg.translate(640, 7.5*64)
-    lg.scale(nearestDepth)
-    lg.translate(-640, -7.5*64)
-    lg.translate(-self.camera.x, -self.camera.y)
-    for i, thing in ipairs(self.thingList) do
-        if thing ~= self.player then
-            colors.white()
-            thing:draw()
+        for _, thing in ipairs(self.levelThings[i]) do
+            if thing ~= self.player then
+                thing:draw()
+            end
         end
+        lg.pop()
+        lg.setShader()
     end
-    colors.white()
-    lg.pop()
 
     -- draw the player seperately
     -- because the player is not affected by depth

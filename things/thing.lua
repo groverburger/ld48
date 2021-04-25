@@ -6,13 +6,14 @@ function Thing:new(x, y)
     self.speed = {x=0,y=0}
     self.animIndex = 1
     self.animTimer = 0
+    self.levelIndex = 1 -- updated by the scene
 end
 
 function Thing:update()
 end
 
 function Thing:draw()
-    if self.sprite then
+    if self.sprite and not self.dead then
         self:subdraw()
     end
 end
@@ -23,6 +24,10 @@ end
 
 function Thing:animate(anim)
     self.animTimer = self.animTimer + (anim.speed or 0.1)
-    self.animTimer = ((self.animTimer-1) % #anim) + 1
-    self.animIndex = anim[math.floor(self.animTimer)]
+    self.animIndex = anim[math.floor(self.animTimer % #anim) + 1]
+end
+
+function Thing:isLevelActive()
+    local scene = scenemanager.get()
+    return scene.player.levelIndex == scene.levelIndex
 end

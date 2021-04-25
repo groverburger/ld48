@@ -3,7 +3,7 @@ require "things/thing"
 Bullet = class(Thing)
 Bullet.sprite = utils.newAnimation("assets/sprites/bullet.png")
 local sound = soundsystem.newSound("assets/sounds/gun1.wav"):setBaseVolume(0.7)
-local colSound = soundsystem.newSound("assets/sounds/bulletCol.wav"):setBaseVolume(0.2)
+local colSound = soundsystem.newSound("assets/sounds/bulletcol.wav"):setBaseVolume(0.2)
 local hitSound = soundsystem.newSound("assets/sounds/bullethit.wav"):setBaseVolume(0.3)
 local hitSound2 = soundsystem.newSound("assets/sounds/bullethit2.wav"):setBaseVolume(0.3)
 
@@ -48,6 +48,7 @@ function Bullet:update()
             utils.choose({hitSound, hitSound2}):play(utils.randomRange(0.8,1.2))
             enemy:hit(self)
             self.dead = true
+            scene:createThing(Impact(self.x,self.y))
         end
     end
 end

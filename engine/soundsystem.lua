@@ -41,8 +41,19 @@ function sound:setLooping()
 end
 
 function sound:play(pitch, x,y,z)
+    -- web safety
+    if not self.source then return end
+
     self.source:setPitch((pitch or 1) * self.basePitch)
-    self.source:seek(0)
+
+    -- more web safety
+    -- got some crashes when trying to use seek
+    if self.source.seek then
+        self.source:seek(0)
+    else
+        self.source:stop()
+    end
+
     if self:isSpatial() then
         assert(x and y, "Spatial sounds must be given a position!")
 
@@ -59,7 +70,6 @@ function sound:play(pitch, x,y,z)
     -- so that this sound can get updated before it starts playing
     -- preventing weird sound cutoff glitches
     self.queuedPlay = true
-    --self.source:play()
 
     return self
 end

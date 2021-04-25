@@ -57,7 +57,7 @@ function Player:update()
     local walkSpeed = 1.1
     local airSpeed = 0.7
     local walkFriction = 0.9
-    local stopFriction = 0.75
+    local stopFriction = 0.65
     local maxWalkSpeed = 8--walkSpeed / (1-walkFriction)
     local scene = scenemanager.get()
     local width, height = 12, 32
@@ -122,7 +122,9 @@ function Player:update()
     -- start the jump
     if self.coyoteFrames > 0 and input.isPressed("jump") then
         if self.currentWarp then
-            scene.cutscene = WarpCutscene()
+            self.spawnPoint.x = self.x
+            self.spawnPoint.y = self.y
+            scene.cutscene = WarpCutscene(self.currentWarp:instanceOf(BackWarp) and -1 or 1)
             return
         end
 
@@ -215,10 +217,7 @@ function Player:update()
     self.x = self.x + self.speed.x
 
     -- death plane
-    if self.y >= 15*64 and not self.alarms.respawn:isActive() then
-        deathSound:play()
-        self.alarms.respawn:set(60)
-    end
+    if self.y >= 15*64 then self:die() end
 
     --------------------------------------------------------------------------------
     -- animation
@@ -251,9 +250,19 @@ function Player:update()
         local angle = self.gunAngle + utils.lerp(-0.1,0.1, math.random())
         scene:createThing(Bullet(x,y,angle))
         engine.shake = 5
-        self.speed.x = self.speed.x - math.cos(angle)*3
-        self.speed.y = self.speed.y - math.sin(angle)*3
+        self.speed.x = self.speed.x - math.cos(angle)*2
+        self.speed.y = self.speed.y - math.sin(angle)*2
     end
+end
+
+function Player:die()
+    if self.alarms.respawn:isActive() then return end
+    deathSound:play()
+    self.alarms.respawn:set(60)
+end
+
+function Player:hit(attacker)
+    self:die()
 end
 
 function Player:draw()

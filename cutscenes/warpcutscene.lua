@@ -3,7 +3,7 @@ WarpCutscene = class()
 local warpSound = soundsystem.newSound("assets/sounds/warp.wav"):setBaseVolume()
 local warpStartSound = soundsystem.newSound("assets/sounds/warpstart.wav"):setBaseVolume(0.5)
 
-function WarpCutscene:new()
+function WarpCutscene:new(warpDir)
     self.drawcalls = {}
     local function draw(...)
         table.insert(self.drawcalls, {...})
@@ -39,11 +39,12 @@ function WarpCutscene:new()
                 player.y = py - (1-utils.map(i, time*3/4,time, 0,1)^2)*jumpHeight
             end
 
-            scene.depthOffset = math.sin(utils.map(value, 0.25, 0.75, 0, math.pi/2, true))
+            scene.depthOffset = math.sin(utils.map(value, 0.25, 0.75, 0, math.pi/2, true)) * warpDir
             coroutine.yield()
         end
 
-        scene:nextLevel()
+        scene.levelIndex = scene.levelIndex + warpDir
+        scene:setLevelActive(scene.levelIndex)
     end)
 end
 

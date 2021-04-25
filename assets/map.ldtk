@@ -9,7 +9,7 @@
 		"url": "https://ldtk.io"
 	},
 	"jsonVersion": "0.9.3",
-	"nextUid": 12,
+	"nextUid": 13,
 	"worldLayout": "LinearVertical",
 	"worldGridWidth": 256,
 	"worldGridHeight": 256,
@@ -35,7 +35,7 @@
 			"identifier": "Entities",
 			"type": "Entities",
 			"uid": 6,
-			"gridSize": 64,
+			"gridSize": 32,
 			"displayOpacity": 1,
 			"pxOffsetX": 0,
 			"pxOffsetY": 0,
@@ -120,6 +120,31 @@
 			"fieldDefs": []
 		},
 		{
+			"identifier": "BackWarp",
+			"uid": 12,
+			"tags": [],
+			"width": 128,
+			"height": 64,
+			"resizableX": false,
+			"resizableY": false,
+			"keepAspectRatio": false,
+			"fillOpacity": 1,
+			"lineOpacity": 1,
+			"hollow": false,
+			"color": "#EC6545",
+			"renderMode": "Rectangle",
+			"showName": true,
+			"tilesetId": null,
+			"tileId": null,
+			"tileRenderMode": "FitInside",
+			"maxCount": 0,
+			"limitScope": "PerLevel",
+			"limitBehavior": "MoveLastOne",
+			"pivotX": 0.5,
+			"pivotY": 0.5,
+			"fieldDefs": []
+		},
+		{
 			"identifier": "Bat",
 			"uid": 11,
 			"tags": [],
@@ -185,9 +210,9 @@
 				{
 					"__identifier": "Entities",
 					"__type": "Entities",
-					"__cWid": 20,
-					"__cHei": 15,
-					"__gridSize": 64,
+					"__cWid": 40,
+					"__cHei": 30,
+					"__gridSize": 32,
 					"__opacity": 1,
 					"__pxTotalOffsetX": 0,
 					"__pxTotalOffsetY": 0,
@@ -208,7 +233,7 @@
 					"entityInstances": [
 						{
 							"__identifier": "Player",
-							"__grid": [2,10],
+							"__grid": [4,20],
 							"__pivot": [0,0],
 							"__tile": null,
 							"width": 64,
@@ -219,7 +244,7 @@
 						},
 						{
 							"__identifier": "Warp",
-							"__grid": [17,8],
+							"__grid": [34,16],
 							"__pivot": [0.5,0.5],
 							"__tile": null,
 							"width": 128,
@@ -230,7 +255,7 @@
 						},
 						{
 							"__identifier": "Bat",
-							"__grid": [5,7],
+							"__grid": [10,14],
 							"__pivot": [0,0],
 							"__tile": null,
 							"width": 64,
@@ -241,7 +266,7 @@
 						},
 						{
 							"__identifier": "Bat",
-							"__grid": [7,8],
+							"__grid": [14,16],
 							"__pivot": [0,0],
 							"__tile": null,
 							"width": 64,
@@ -252,7 +277,7 @@
 						},
 						{
 							"__identifier": "Bat",
-							"__grid": [10,6],
+							"__grid": [20,12],
 							"__pivot": [0,0],
 							"__tile": null,
 							"width": 64,
@@ -263,7 +288,7 @@
 						},
 						{
 							"__identifier": "Bat",
-							"__grid": [13,5],
+							"__grid": [26,10],
 							"__pivot": [0,0],
 							"__tile": null,
 							"width": 64,
@@ -420,9 +445,9 @@
 				{
 					"__identifier": "Entities",
 					"__type": "Entities",
-					"__cWid": 20,
-					"__cHei": 15,
-					"__gridSize": 64,
+					"__cWid": 40,
+					"__cHei": 30,
+					"__gridSize": 32,
 					"__opacity": 1,
 					"__pxTotalOffsetX": 0,
 					"__pxTotalOffsetY": 0,
@@ -443,13 +468,46 @@
 					"entityInstances": [
 						{
 							"__identifier": "Warp",
-							"__grid": [1,5],
+							"__grid": [2,10],
 							"__pivot": [0.5,0.5],
 							"__tile": null,
 							"width": 128,
 							"height": 64,
 							"defUid": 5,
 							"px": [64,320],
+							"fieldInstances": []
+						},
+						{
+							"__identifier": "Bat",
+							"__grid": [30,24],
+							"__pivot": [0,0],
+							"__tile": null,
+							"width": 64,
+							"height": 64,
+							"defUid": 11,
+							"px": [960,768],
+							"fieldInstances": []
+						},
+						{
+							"__identifier": "Bat",
+							"__grid": [34,20],
+							"__pivot": [0,0],
+							"__tile": null,
+							"width": 64,
+							"height": 64,
+							"defUid": 11,
+							"px": [1088,640],
+							"fieldInstances": []
+						},
+						{
+							"__identifier": "BackWarp",
+							"__grid": [33,16],
+							"__pivot": [0.5,0.5],
+							"__tile": null,
+							"width": 128,
+							"height": 64,
+							"defUid": 12,
+							"px": [1056,512],
 							"fieldInstances": []
 						}
 					]
@@ -577,9 +635,9 @@
 				{
 					"__identifier": "Entities",
 					"__type": "Entities",
-					"__cWid": 20,
-					"__cHei": 15,
-					"__gridSize": 64,
+					"__cWid": 40,
+					"__cHei": 30,
+					"__gridSize": 32,
 					"__opacity": 1,
 					"__pxTotalOffsetX": 0,
 					"__pxTotalOffsetY": 0,
@@ -600,7 +658,7 @@
 					"entityInstances": [
 						{
 							"__identifier": "Warp",
-							"__grid": [1,4],
+							"__grid": [2,8],
 							"__pivot": [0.5,0.5],
 							"__tile": null,
 							"width": 128,
@@ -748,9 +806,9 @@
 				{
 					"__identifier": "Entities",
 					"__type": "Entities",
-					"__cWid": 20,
-					"__cHei": 15,
-					"__gridSize": 64,
+					"__cWid": 40,
+					"__cHei": 30,
+					"__gridSize": 32,
 					"__opacity": 1,
 					"__pxTotalOffsetX": 0,
 					"__pxTotalOffsetY": 0,
@@ -771,7 +829,7 @@
 					"entityInstances": [
 						{
 							"__identifier": "Warp",
-							"__grid": [1,4],
+							"__grid": [2,8],
 							"__pivot": [0.5,0.5],
 							"__tile": null,
 							"width": 128,
