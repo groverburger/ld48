@@ -12,6 +12,7 @@ function WarpCutscene:new(warpDir)
     self.routine = coroutine.create(function ()
         local scene = scenemanager.get()
         local player = scene.player
+        local warpThing = player.currentWarp
         player.currentWarp = nil
         player.stretch.x = 1
         player.stretch.y = 1
@@ -27,6 +28,7 @@ function WarpCutscene:new(warpDir)
         for i=1, time do
             scene:pauseFrame()
             local value = utils.map(i, 1,time, 0,1)
+            player.x = utils.lerp(player.x, warpThing.x, 0.1)
 
             if i == 20 then
                 warpSound:play()
@@ -42,6 +44,9 @@ function WarpCutscene:new(warpDir)
             scene.depthOffset = math.sin(utils.map(value, 0.25, 0.75, 0, math.pi/2, true)) * warpDir
             coroutine.yield()
         end
+
+        player.spawnPoint.x = player.x
+        player.spawnPoint.y = player.y
 
         scene.levelIndex = scene.levelIndex + warpDir
         scene:setLevelActive(scene.levelIndex)

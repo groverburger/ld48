@@ -89,12 +89,15 @@ function Player:update()
 
     -- hit ground
     local wasOnGround = self.onGround
+    local iter = 0
     self.onGround = false
     if self:isSolid(self.x-width,self.y+self.speed.y+height, true,true)
     or self:isSolid(self.x+width,self.y+self.speed.y+height, true,true) then
         while not self:isSolid(self.x-width,self.y+height+1, true,true)
-        and not self:isSolid(self.x+width,self.y+height+1, true,true) do
+        and not self:isSolid(self.x+width,self.y+height+1, true,true)
+        and iter < 32 do
             self.y = self.y + 1
+            iter = iter + 1
         end
 
         -- squash on first hit
@@ -116,11 +119,14 @@ function Player:update()
     end
 
     -- hit ceiling
+    local iter = 0
     if self:isSolid(self.x-width,self.y+self.speed.y-height, true,true)
     or self:isSolid(self.x+width,self.y+self.speed.y-height, true,true) then
         while not self:isSolid(self.x-width,self.y-height-1, true,true)
-        and not self:isSolid(self.x+width,self.y-height-1, true,true) do
+        and not self:isSolid(self.x+width,self.y-height-1, true,true) 
+        and iter < 32 do
             self.y = self.y - 1
+            iter = iter + 1
         end
         self.speed.y = 0
     end
@@ -161,21 +167,27 @@ function Player:update()
     end
 
     -- hit left wall
+    local iter = 0
     if self:isSolid(self.x+self.speed.x-width,self.y+height-1, true,true)
     or self:isSolid(self.x+self.speed.x-width,self.y-height+1, true,true) then
         while not self:isSolid(self.x-1-width,self.y+height-1, true,true)
-        and not self:isSolid(self.x-1-width,self.y-height+1, true,true) do
+        and not self:isSolid(self.x-1-width,self.y-height+1, true,true)
+        and iter < 32 do
             self.x = self.x - 1
+            iter = iter + 1
         end
         self.speed.x = 0
     end
 
     -- hit right wall
+    local iter = 0
     if self:isSolid(self.x+self.speed.x+width,self.y+height-1, true,true)
     or self:isSolid(self.x+self.speed.x+width,self.y-height+1, true,true) then
         while not self:isSolid(self.x+1+width,self.y+height-1, true,true)
-        and not self:isSolid(self.x+1+width,self.y-height+1, true,true) do
+        and not self:isSolid(self.x+1+width,self.y-height+1, true,true)
+        and iter < 32 do
             self.x = self.x + 1
+            iter = iter + 1
         end
         self.speed.x = 0
     end
@@ -241,7 +253,7 @@ end
 function Player:jump()
     local scene = scenemanager.get()
 
-    if self.currentWarp then
+    if self.currentWarp and self.onGround then
         self.spawnPoint.x = self.x
         self.spawnPoint.y = self.y
         scene.cutscene = WarpCutscene(self.currentWarp:instanceOf(BackWarp) and -1 or 1)

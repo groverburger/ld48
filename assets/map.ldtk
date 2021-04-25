@@ -477,7 +477,7 @@
 			"fieldDefs": []
 		},
 		{
-			"identifier": "King",
+			"identifier": "Throne",
 			"uid": 39,
 			"tags": [],
 			"width": 256,
@@ -866,12 +866,12 @@
 							"px": [784,480],
 							"fieldInstances": [{
 								"__identifier": "message",
-								"__value": "click to shoot enemies!",
+								"__value": "use the mouse to shoot enemies!",
 								"__type": "String",
 								"defUid": 27,
 								"realEditorValues": [{
 									"id": "V_String",
-									"params": ["click to shoot enemies!"]
+									"params": ["use the mouse to shoot enemies!"]
 								}]
 							}]
 						}
@@ -2380,12 +2380,12 @@
 							"px": [208,176],
 							"fieldInstances": [{
 								"__identifier": "keycolor",
-								"__value": "yellow",
+								"__value": "blue",
 								"__type": "String",
 								"defUid": 35,
 								"realEditorValues": [{
 									"id": "V_String",
-									"params": ["yellow"]
+									"params": ["blue"]
 								}]
 							}]
 						},
@@ -2783,12 +2783,12 @@
 							"px": [1024,576],
 							"fieldInstances": [{
 								"__identifier": "keycolor",
-								"__value": "yellow",
+								"__value": "blue",
 								"__type": "String",
 								"defUid": 31,
 								"realEditorValues": [{
 									"id": "V_String",
-									"params": ["yellow"]
+									"params": ["blue"]
 								}]
 							}]
 						},
@@ -3160,7 +3160,7 @@
 					"gridTiles": [],
 					"entityInstances": [
 						{
-							"__identifier": "King",
+							"__identifier": "Throne",
 							"__grid": [32,20],
 							"__pivot": [0,0],
 							"__tile": null,

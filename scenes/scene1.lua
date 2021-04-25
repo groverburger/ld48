@@ -4,7 +4,7 @@ GameScene = class()
 -- load the game map
 ----------------------------------------------------------------------------------------------------
 
-local castlePoint = 7
+local castlePoint = 6.1
 local map = json.decode(love.filesystem.read("assets/map.ldtk"))
 local levels = {}
 local levelTexture = lg.newImage("assets/sprites/tile.png")
@@ -112,12 +112,12 @@ end
 
 function GameScene:createThing(thing, levelIndex)
     assert(levelIndex, "no level index given!")
-    thing.levelIndex = levelIndex or self.levelIndex
-    if not levelIndex or levelIndex == self.levelIndex then
-        table.insert(self.thingList, thing)
-    else
+    thing.levelIndex = levelIndex
+    --if levelIndex == self.levelIndex then
+        --table.insert(self.thingList, thing)
+    --else
         table.insert(self.levelThings[levelIndex], thing)
-    end
+    --end
 
     if thing:instanceOf(Enemy) and levelIndex == self.levelIndex then
         table.insert(self.enemyList, thing)
@@ -275,10 +275,10 @@ local function getDepth(i)
 end
 
 function GameScene:draw()
-    if self.levelIndex < castlePoint then
-        lg.clear(lume.color(colors.hex.skyblue))
-    else
+    if self.levelIndex + self.depthOffset >= castlePoint then
         lg.clear(lume.color("#555555"))
+    else
+        lg.clear(lume.color(colors.hex.skyblue))
     end
 
     local nearestDepth = 1 + 10*self.depthOffset^2
@@ -294,7 +294,7 @@ function GameScene:draw()
         -- higher depth is closer
         local depth = getDepth(i)
         local r,g,b = lume.color("#7D95C4")
-        if self.levelIndex >= castlePoint then
+        if self.levelIndex + self.depthOffset >= castlePoint then
             r,g,b = lume.color("#444444")
         end
         local alpha = 1--utils.map(depth, 0.18,0.2, 0,1)
@@ -350,12 +350,16 @@ function GameScene:draw()
         colors.white()
         self.player:draw()
     end
+
+    if self.cutscene then
+        self.cutscene:draw()
+    end
     lg.pop()
 
     local i = 0
     local player = self.player
     for color, _ in pairs(player.keys) do
-        colors[color]()
+        colors[color](0.8)
         lg.draw(Key.sprite.source, i*80 + 32, 32)
         i = i + 1
     end

@@ -4,8 +4,6 @@ King = class(Enemy)
 King.sprite = utils.newAnimation("assets/sprites/king.png")
 King.state = 1
 
-local throne = lg.newImage("assets/sprites/throne.png")
-
 local startSound = soundsystem.newSound("assets/sounds/bossstart.wav")
 local laughSound = soundsystem.newSound("assets/sounds/bosslaugh.wav")
 local teleportSound = soundsystem.newSound("assets/sounds/bosstp.wav")
@@ -116,11 +114,11 @@ end
 
 local function laugh(self)
     laughSound:play(utils.randomRange(0.8,1.2))
-    self.alarms.laugh:set(utils.randomRange(60*6,60*10)*2)
+    self.alarms.laugh:set(utils.randomRange(60*6,60*10)*3)
 end
 
 function King:new(x,y)
-    King.super.new(self, x+128,y+128)
+    King.super.new(self, x,y)
     self.hp = 70
     self.ohp = self.hp
     self.ox = x+128
@@ -139,7 +137,7 @@ function King:update()
     local scene = scenemanager.get()
     local player = scene.player
 
-    if self.state == 1 and self:isLevelActive() and not self.alarms.wakeup:isActive() then
+    if self.state == 1 and self:isLevelActive() and not self.alarms.wakeup:isActive() and player.onGround then
         self.alarms.wakeup:set(130)
         scene.cameraTracking = false
         startSound:play()
@@ -195,8 +193,6 @@ function King:hit(attacker)
 end
 
 function King:draw()
-    lg.draw(throne, 640, 15*64/2 - 36, 0, 1, 1, throne:getWidth()/2, throne:getHeight()/2)
-
     local wakeshake = self.alarms.wakeup:isActive() and self.alarms.wakeup:getProgress()*math.cos(math.random()*2*math.pi)*4 or 0
     local dx = self.x + wakeshake
     local dy = self.y

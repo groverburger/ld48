@@ -22,7 +22,7 @@ function Lock:update()
     and utils.distance(self.x,self.y, player.x,player.y) <= 100
     and player.keys[self.keycolor] then
         self.dead = true
-        player.keys[self.keycolor] = nil
+        --player.keys[self.keycolor] = nil
     end
 end
 
