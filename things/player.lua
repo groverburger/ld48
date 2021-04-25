@@ -43,6 +43,7 @@ function Player:new(x,y)
     self.animIndex = 1
     self.animTimer = 0
 
+    self.keys = {}
     self.currentWarp = nil
     self.gunAngle = 0
     self.gx, self.gy = x, y

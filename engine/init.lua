@@ -92,7 +92,8 @@ return function (settings)
                 --------------------------------------------------------------------------------
 
                 -- smooth out the delta time
-                table.insert(rollingAverage, love.timer.step())
+                local delta = love.timer.step()
+                table.insert(rollingAverage, math.min(delta))
                 if #rollingAverage > 60 then
                     table.remove(rollingAverage, 1)
                 end
@@ -145,6 +146,7 @@ return function (settings)
             else
                 love.timer.step()
                 love.timer.sleep(0.05)
+                love.timer.step()
             end
         end
     end

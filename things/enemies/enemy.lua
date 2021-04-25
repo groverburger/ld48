@@ -56,10 +56,30 @@ function Enemy:onDeath()
         x, y = x + self.x, y + self.y
         self:createThing(Boom(x,y))
     end
+
+    if self.keycolor then
+        local key = Key(self.x,self.y)
+        key.keycolor = self.keycolor
+        self:createThing(key)
+    end
+end
+
+function Enemy:drawKey()
+    if not self.keycolor or not self:isLevelActive() then return end
+
+    local r,g,b,a = lg.getColor()
+    colors[self.keycolor](a)
+    Key.subdraw(Key, self.x,self.y,1,1,1,0)
+    lg.setColor(1,1,1,a)
 end
 
 function Enemy:subdraw(...)
     if self.hitflash > 0 then lg.setShader(hitShader) end
     Enemy.super.subdraw(self, ...)
     if self.hitflash > 0 then lg.setShader() end
+end
+
+function Enemy:draw()
+    self:drawKey()
+    Enemy.super.draw(self)
 end

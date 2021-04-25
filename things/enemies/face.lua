@@ -1,8 +1,11 @@
+require "things/enemies/enemy"
+
 Glasses = class(Enemy)
 Glasses.sprite = utils.newAnimation("assets/sprites/glasses.png")
 
 local function shoot(self)
     self.alarms.shoot:set(120)
+    if not self:isLevelActive() then return end
     self.alarms.blink:set(20)
     self.alarms.shot1:set(5)
     self.alarms.shot2:set(10)

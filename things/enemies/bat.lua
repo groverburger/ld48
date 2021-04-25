@@ -1,4 +1,4 @@
-require "things/enemy"
+require "things/enemies/enemy"
 
 local batfly = soundsystem.newSound("assets/sounds/batfly.wav")
 
@@ -8,8 +8,8 @@ Bat.animIndex = 3
 Bat.state = 1
 
 local anims = {
-    {3},
-    {1,2, speed=0.05},
+    {3,4},
+    {1,2, speed=0.075},
 }
 
 function Bat:new(x,y)
@@ -62,6 +62,7 @@ function Bat:update()
         if not self:isSolid(self.x + self.speed.x, self.y, true, true, true) then
             self.x = self.x + self.speed.x
         end
+
         if not self:isSolid(self.x, self.y + self.speed.y, true, true, true) then
             self.y = self.y + self.speed.y
         end
@@ -72,5 +73,6 @@ function Bat:draw()
     local scene = scenemanager.get()
     local dir = self.state == 2 and scene.player.x < self.x and -1 or 1
 
+    self:drawKey()
     self:subdraw(nil,nil,nil,dir,nil)
 end

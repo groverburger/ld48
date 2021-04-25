@@ -1,3 +1,5 @@
+require "things/enemies/enemy"
+
 Star = class(Enemy)
 Star.sprite = utils.newAnimation("assets/sprites/star.png")
 
@@ -45,5 +47,6 @@ function Star:update()
 end
 
 function Star:draw()
+    self:drawKey()
     self:subdraw(nil,nil,nil,nil,nil,self.rot)
 end

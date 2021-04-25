@@ -1,3 +1,5 @@
+require "things/thing"
+
 Impact = class(Thing)
 Impact.sprite = utils.newAnimation("assets/sprites/impact.png")
 

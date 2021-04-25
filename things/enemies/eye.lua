@@ -1,3 +1,5 @@
+require "things/enemies/enemy"
+
 Eye = class(Enemy)
 Eye.sprite = utils.newAnimation("assets/sprites/eye.png")
 
@@ -31,5 +33,6 @@ function Eye:update()
 end
 
 function Eye:draw()
+    self:drawKey()
     self:subdraw(nil,nil,nil,self.xdir*1.2,1.2)
 end

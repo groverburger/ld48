@@ -21,7 +21,7 @@ function Warp:update()
     and player.y < self.y
     and self.levelIndex == scene.levelIndex then
         if player.currentWarp ~= self then
-            stepSound:play()
+            stepSound:play(utils.randomRange(0.8,1.2))
         end
 
         player.currentWarp = self

@@ -1,8 +1,10 @@
 local hex = {
     white = "#FFFFFF",
     black = "#000000",
-    blue = "#A7BFEF",
+    skyblue = "#A7BFEF",
+    blue = "#5959FF",
     red = "#EA2D23",
+    yellow = "#FFCC4C",
 }
 
 local colors = {}

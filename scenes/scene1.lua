@@ -168,8 +168,18 @@ function GameScene:loadLevel(index, level)
         if class and type(class) == "table" and class.getClass then
             local instance = class(entity.px[1], entity.px[2])
 
-            -- set the instance's index so it knows where it is
+            -- set the instance's level index so it knows what level it's in
             instance.levelIndex = index
+
+            for _, field in ipairs(entity.fieldInstances) do
+                if field.__identifier == "message" and class == Text then
+                    instance.message = field.__value
+                end
+
+                if field.__identifier == "keycolor" then
+                    instance.keycolor = field.__value
+                end
+            end
 
             -- save a reference to the player
             if class == Player then
@@ -257,10 +267,11 @@ local function getDepth(i)
 end
 
 function GameScene:draw()
-    lg.clear(lume.color(colors.hex.blue))
+    lg.clear(lume.color(colors.hex.skyblue))
 
     local nearestDepth = 1 + 10*self.depthOffset^2
     local furthestLevel = self.levelIndex+furthest
+    local currentLevel = self:getLevel(self.levelIndex)
 
     -- draw the level and the levels further back
     -- in painter's order
@@ -272,8 +283,11 @@ function GameScene:draw()
         local depth = getDepth(i)
         local r,g,b = lume.color("#7D95C4")
 
+        local alpha = 1
+
         if i <= self.levelIndex then
-            colors.white(utils.map(depth, 1,1.035, 1,0.1))
+            alpha = utils.map(depth, 1,1.035, 1,0.1)
+            colors.white(alpha)
         end
 
         bgFadeShader:send("bgcolor", {r,g,b,depth^8})
@@ -282,11 +296,12 @@ function GameScene:draw()
         lg.translate(1024/2, 768/2)
         lg.scale(depth)
 
-        if levels[i] then
+        if levels[i] and i >= self.levelIndex then
             local sprite = levels[i].sprite
             lg.draw(sprite)
             for _, thing in ipairs(self.levelThings[i]) do
                 if thing ~= self.player then
+                    colors.white(alpha)
                     thing:draw()
                 end
             end
@@ -294,10 +309,10 @@ function GameScene:draw()
 
         local prop = self.depthProps[i]
         if prop and i ~= self.levelIndex then
-            lg.translate(1024/2, 768/2)
+            lg.translate(currentLevel.width*32, currentLevel.height*32)
             local r,g,b = lg.getColor()
             if i == self.levelIndex+1 then
-                lg.setColor(r,g,b, utils.map(self.depthOffset, 0,1, 1,0))
+                lg.setColor(r,g,b, alpha)
             end
 
             lg.draw(prop.sprite, prop.xoff or 0, prop.yoff or 0, 0, prop.scale, prop.scale, prop.sprite:getWidth()/2, prop.sprite:getHeight()/2)
@@ -317,4 +332,12 @@ function GameScene:draw()
         self.player:draw()
     end
     lg.pop()
+
+    local i = 0
+    local player = self.player
+    for color, _ in pairs(player.keys) do
+        colors[color]()
+        lg.draw(Key.sprite.source, i*80 + 32, 32)
+        i = i + 1
+    end
 end
