@@ -2,6 +2,8 @@ Key = class(Thing)
 Key.sprite = utils.newAnimation("assets/sprites/key.png")
 Key.keycolor = "#ffffff"
 
+local sound = soundsystem.newSound("assets/sounds/keyget.wav"):setBaseVolume(0.5)
+
 function Key:new(x,y)
     Key.super.new(self, x,y)
     self.time = 0
@@ -19,6 +21,7 @@ function Key:update()
     and self.keycolor then
         self.dead = true
         player.keys[self.keycolor] = true
+        sound:play()
     end
 end
 

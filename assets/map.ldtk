@@ -9,7 +9,7 @@
 		"url": "https://ldtk.io"
 	},
 	"jsonVersion": "0.9.3",
-	"nextUid": 32,
+	"nextUid": 34,
 	"worldLayout": "LinearVertical",
 	"worldGridWidth": 256,
 	"worldGridHeight": 256,
@@ -185,10 +185,7 @@
 					"max": null,
 					"regex": null,
 					"acceptFileTypes": null,
-					"defaultOverride": {
-						"id": "V_String",
-						"params": ["yellow"]
-					},
+					"defaultOverride": null,
 					"textLanguageMode": null
 				}
 			]
@@ -216,7 +213,28 @@
 			"limitBehavior": "MoveLastOne",
 			"pivotX": 0,
 			"pivotY": 0,
-			"fieldDefs": []
+			"fieldDefs": [
+				{
+					"identifier": "keycolor",
+					"__type": "String",
+					"uid": 33,
+					"type": "F_String",
+					"isArray": false,
+					"canBeNull": true,
+					"arrayMinLength": null,
+					"arrayMaxLength": null,
+					"editorDisplayMode": "Hidden",
+					"editorDisplayPos": "Above",
+					"editorAlwaysShow": false,
+					"editorCutLongValues": true,
+					"min": null,
+					"max": null,
+					"regex": null,
+					"acceptFileTypes": null,
+					"defaultOverride": null,
+					"textLanguageMode": null
+				}
+			]
 		},
 		{
 			"identifier": "Eye",
@@ -266,7 +284,28 @@
 			"limitBehavior": "MoveLastOne",
 			"pivotX": 0,
 			"pivotY": 0,
-			"fieldDefs": []
+			"fieldDefs": [
+				{
+					"identifier": "keycolor",
+					"__type": "String",
+					"uid": 32,
+					"type": "F_String",
+					"isArray": false,
+					"canBeNull": true,
+					"arrayMinLength": null,
+					"arrayMaxLength": null,
+					"editorDisplayMode": "Hidden",
+					"editorDisplayPos": "Above",
+					"editorAlwaysShow": false,
+					"editorCutLongValues": true,
+					"min": null,
+					"max": null,
+					"regex": null,
+					"acceptFileTypes": null,
+					"defaultOverride": null,
+					"textLanguageMode": null
+				}
+			]
 		},
 		{
 			"identifier": "Text",
@@ -509,28 +548,6 @@
 									"params": ["jump to activate a warp!"]
 								}]
 							}]
-						},
-						{
-							"__identifier": "Lock",
-							"__grid": [36,36],
-							"__pivot": [0,0],
-							"__tile": null,
-							"width": 64,
-							"height": 64,
-							"defUid": 28,
-							"px": [576,576],
-							"fieldInstances": [{ "__identifier": "keycolor", "__value": "yellow", "__type": "String", "defUid": 31, "realEditorValues": [] }]
-						},
-						{
-							"__identifier": "Bat",
-							"__grid": [27,23],
-							"__pivot": [0,0],
-							"__tile": null,
-							"width": 64,
-							"height": 64,
-							"defUid": 11,
-							"px": [432,368],
-							"fieldInstances": [{ "__identifier": "keycolor", "__value": "yellow", "__type": "String", "defUid": 30, "realEditorValues": [] }]
 						}
 					]
 				},
@@ -729,7 +746,7 @@
 							"height": 64,
 							"defUid": 11,
 							"px": [496,320],
-							"fieldInstances": [{ "__identifier": "keycolor", "__value": "yellow", "__type": "String", "defUid": 30, "realEditorValues": [] }]
+							"fieldInstances": [{ "__identifier": "keycolor", "__value": null, "__type": "String", "defUid": 30, "realEditorValues": [] }]
 						},
 						{
 							"__identifier": "Warp",
@@ -953,7 +970,7 @@
 							"height": 64,
 							"defUid": 11,
 							"px": [448,384],
-							"fieldInstances": [{ "__identifier": "keycolor", "__value": "yellow", "__type": "String", "defUid": 30, "realEditorValues": [] }]
+							"fieldInstances": [{ "__identifier": "keycolor", "__value": null, "__type": "String", "defUid": 30, "realEditorValues": [] }]
 						},
 						{
 							"__identifier": "Bat",
@@ -964,7 +981,7 @@
 							"height": 64,
 							"defUid": 11,
 							"px": [784,384],
-							"fieldInstances": [{ "__identifier": "keycolor", "__value": "yellow", "__type": "String", "defUid": 30, "realEditorValues": [] }]
+							"fieldInstances": [{ "__identifier": "keycolor", "__value": null, "__type": "String", "defUid": 30, "realEditorValues": [] }]
 						},
 						{
 							"__identifier": "Text",
@@ -1163,7 +1180,7 @@
 							"height": 64,
 							"defUid": 11,
 							"px": [560,448],
-							"fieldInstances": [{ "__identifier": "keycolor", "__value": "yellow", "__type": "String", "defUid": 30, "realEditorValues": [] }]
+							"fieldInstances": [{ "__identifier": "keycolor", "__value": null, "__type": "String", "defUid": 30, "realEditorValues": [] }]
 						},
 						{
 							"__identifier": "Warp",
@@ -1185,7 +1202,7 @@
 							"height": 64,
 							"defUid": 11,
 							"px": [416,448],
-							"fieldInstances": [{ "__identifier": "keycolor", "__value": "yellow", "__type": "String", "defUid": 30, "realEditorValues": [] }]
+							"fieldInstances": [{ "__identifier": "keycolor", "__value": null, "__type": "String", "defUid": 30, "realEditorValues": [] }]
 						}
 					]
 				},
@@ -1403,7 +1420,7 @@
 							"height": 64,
 							"defUid": 13,
 							"px": [304,80],
-							"fieldInstances": []
+							"fieldInstances": [{ "__identifier": "keycolor", "__value": null, "__type": "String", "defUid": 33, "realEditorValues": [] }]
 						},
 						{
 							"__identifier": "Star",
@@ -1414,7 +1431,7 @@
 							"height": 64,
 							"defUid": 13,
 							"px": [704,144],
-							"fieldInstances": []
+							"fieldInstances": [{ "__identifier": "keycolor", "__value": null, "__type": "String", "defUid": 33, "realEditorValues": [] }]
 						},
 						{
 							"__identifier": "Eye",
@@ -1436,6 +1453,17 @@
 							"height": 64,
 							"defUid": 5,
 							"px": [1024,640],
+							"fieldInstances": []
+						},
+						{
+							"__identifier": "Warp",
+							"__grid": [57,16],
+							"__pivot": [0,0],
+							"__tile": null,
+							"width": 128,
+							"height": 64,
+							"defUid": 5,
+							"px": [912,256],
 							"fieldInstances": []
 						}
 					]
@@ -1651,39 +1679,6 @@
 							"fieldInstances": []
 						},
 						{
-							"__identifier": "Star",
-							"__grid": [19,41],
-							"__pivot": [0,0],
-							"__tile": null,
-							"width": 64,
-							"height": 64,
-							"defUid": 13,
-							"px": [304,656],
-							"fieldInstances": []
-						},
-						{
-							"__identifier": "Star",
-							"__grid": [35,24],
-							"__pivot": [0,0],
-							"__tile": null,
-							"width": 64,
-							"height": 64,
-							"defUid": 13,
-							"px": [560,384],
-							"fieldInstances": []
-						},
-						{
-							"__identifier": "Star",
-							"__grid": [29,14],
-							"__pivot": [0,0],
-							"__tile": null,
-							"width": 64,
-							"height": 64,
-							"defUid": 13,
-							"px": [464,224],
-							"fieldInstances": []
-						},
-						{
 							"__identifier": "Bat",
 							"__grid": [8,28],
 							"__pivot": [0,0],
@@ -1692,7 +1687,7 @@
 							"height": 64,
 							"defUid": 11,
 							"px": [128,448],
-							"fieldInstances": [{ "__identifier": "keycolor", "__value": "yellow", "__type": "String", "defUid": 30, "realEditorValues": [] }]
+							"fieldInstances": [{ "__identifier": "keycolor", "__value": null, "__type": "String", "defUid": 30, "realEditorValues": [] }]
 						},
 						{
 							"__identifier": "Warp",
@@ -1706,15 +1701,66 @@
 							"fieldInstances": []
 						},
 						{
+							"__identifier": "Lock",
+							"__grid": [36,36],
+							"__pivot": [0,0],
+							"__tile": null,
+							"width": 64,
+							"height": 64,
+							"defUid": 28,
+							"px": [576,576],
+							"fieldInstances": [{
+								"__identifier": "keycolor",
+								"__value": "yellow",
+								"__type": "String",
+								"defUid": 31,
+								"realEditorValues": [{
+									"id": "V_String",
+									"params": ["yellow"]
+								}]
+							}]
+						},
+						{
+							"__identifier": "BackWarp",
+							"__grid": [35,16],
+							"__pivot": [0,0],
+							"__tile": null,
+							"width": 128,
+							"height": 64,
+							"defUid": 12,
+							"px": [560,256],
+							"fieldInstances": []
+						},
+						{
+							"__identifier": "Star",
+							"__grid": [18,8],
+							"__pivot": [0,0],
+							"__tile": null,
+							"width": 64,
+							"height": 64,
+							"defUid": 13,
+							"px": [288,128],
+							"fieldInstances": [{
+								"__identifier": "keycolor",
+								"__value": "yellow",
+								"__type": "String",
+								"defUid": 33,
+								"realEditorValues": [{
+									"id": "V_String",
+									"params": ["yellow"]
+								}]
+							}]
+						},
+						{
 							"__identifier": "Bat",
-							"__grid": [26,36],
+							"__grid": [20,28],
 							"__pivot": [0,0],
 							"__tile": null,
 							"width": 64,
 							"height": 64,
 							"defUid": 11,
-							"px": [416,576],
-							"fieldInstances": [{ "__identifier": "keycolor", "__value": "yellow", "__type": "String", "defUid": 30, "realEditorValues": [] }]
+							"px": [320,448],
+							"fieldInstances": [{ "__identifier": "keycolor", "__value": null, "__type": "String", "defUid": 30, "realEditorValues": [] }]
 						}
 					]
 				},
@@ -1746,6 +1792,13 @@
 						{ "coordId": 81, "v": 0 },
 						{ "coordId": 82, "v": 0 },
 						{ "coordId": 83, "v": 0 },
+						{ "coordId": 84, "v": 0 },
+						{ "coordId": 85, "v": 0 },
+						{ "coordId": 86, "v": 0 },
+						{ "coordId": 87, "v": 0 },
+						{ "coordId": 88, "v": 0 },
+						{ "coordId": 89, "v": 0 },
+						{ "coordId": 90, "v": 0 },
 						{ "coordId": 91, "v": 0 },
 						{ "coordId": 94, "v": 0 },
 						{ "coordId": 95, "v": 0 },
@@ -1757,8 +1810,13 @@
 						{ "coordId": 101, "v": 0 },
 						{ "coordId": 102, "v": 0 },
 						{ "coordId": 103, "v": 0 },
+						{ "coordId": 104, "v": 0 },
+						{ "coordId": 105, "v": 0 },
 						{ "coordId": 106, "v": 0 },
 						{ "coordId": 107, "v": 0 },
+						{ "coordId": 108, "v": 0 },
+						{ "coordId": 109, "v": 0 },
+						{ "coordId": 110, "v": 0 },
 						{ "coordId": 111, "v": 0 },
 						{ "coordId": 114, "v": 0 },
 						{ "coordId": 115, "v": 0 },
@@ -1770,23 +1828,33 @@
 						{ "coordId": 121, "v": 0 },
 						{ "coordId": 122, "v": 0 },
 						{ "coordId": 123, "v": 0 },
+						{ "coordId": 124, "v": 0 },
+						{ "coordId": 125, "v": 0 },
 						{ "coordId": 126, "v": 0 },
 						{ "coordId": 127, "v": 0 },
+						{ "coordId": 128, "v": 0 },
+						{ "coordId": 129, "v": 0 },
+						{ "coordId": 130, "v": 0 },
 						{ "coordId": 131, "v": 0 },
 						{ "coordId": 134, "v": 0 },
 						{ "coordId": 139, "v": 0 },
-						{ "coordId": 146, "v": 0 },
-						{ "coordId": 147, "v": 0 },
+						{ "coordId": 148, "v": 0 },
+						{ "coordId": 149, "v": 0 },
+						{ "coordId": 150, "v": 0 },
 						{ "coordId": 151, "v": 0 },
 						{ "coordId": 154, "v": 0 },
 						{ "coordId": 159, "v": 0 },
-						{ "coordId": 166, "v": 0 },
-						{ "coordId": 167, "v": 0 },
-						{ "coordId": 171, "v": 0 },
+						{ "coordId": 168, "v": 0 },
+						{ "coordId": 169, "v": 0 },
+						{ "coordId": 170, "v": 0 },
 						{ "coordId": 179, "v": 0 },
-						{ "coordId": 191, "v": 0 },
 						{ "coordId": 199, "v": 0 },
+						{ "coordId": 208, "v": 0 },
+						{ "coordId": 209, "v": 0 },
+						{ "coordId": 210, "v": 0 },
 						{ "coordId": 211, "v": 0 },
+						{ "coordId": 212, "v": 0 },
+						{ "coordId": 213, "v": 0 },
 						{ "coordId": 214, "v": 0 },
 						{ "coordId": 215, "v": 0 },
 						{ "coordId": 216, "v": 0 },
@@ -1796,7 +1864,15 @@
 						{ "coordId": 220, "v": 0 },
 						{ "coordId": 221, "v": 0 },
 						{ "coordId": 222, "v": 0 },
+						{ "coordId": 225, "v": 0 },
+						{ "coordId": 226, "v": 0 },
+						{ "coordId": 227, "v": 0 },
+						{ "coordId": 228, "v": 0 },
+						{ "coordId": 229, "v": 0 },
+						{ "coordId": 230, "v": 0 },
 						{ "coordId": 231, "v": 0 },
+						{ "coordId": 232, "v": 0 },
+						{ "coordId": 233, "v": 0 },
 						{ "coordId": 234, "v": 0 },
 						{ "coordId": 235, "v": 0 },
 						{ "coordId": 236, "v": 0 },
@@ -1806,7 +1882,15 @@
 						{ "coordId": 240, "v": 0 },
 						{ "coordId": 241, "v": 0 },
 						{ "coordId": 242, "v": 0 },
+						{ "coordId": 245, "v": 0 },
+						{ "coordId": 246, "v": 0 },
+						{ "coordId": 247, "v": 0 },
+						{ "coordId": 248, "v": 0 },
+						{ "coordId": 249, "v": 0 },
+						{ "coordId": 250, "v": 0 },
 						{ "coordId": 251, "v": 0 },
+						{ "coordId": 252, "v": 0 },
+						{ "coordId": 253, "v": 0 },
 						{ "coordId": 254, "v": 0 },
 						{ "coordId": 255, "v": 0 },
 						{ "coordId": 256, "v": 0 },
@@ -1816,13 +1900,15 @@
 						{ "coordId": 260, "v": 0 },
 						{ "coordId": 261, "v": 0 },
 						{ "coordId": 262, "v": 0 },
-						{ "coordId": 263, "v": 0 },
-						{ "coordId": 264, "v": 0 },
 						{ "coordId": 265, "v": 0 },
+						{ "coordId": 266, "v": 0 },
+						{ "coordId": 267, "v": 0 },
 						{ "coordId": 268, "v": 0 },
 						{ "coordId": 269, "v": 0 },
 						{ "coordId": 270, "v": 0 },
 						{ "coordId": 271, "v": 0 },
+						{ "coordId": 272, "v": 0 },
+						{ "coordId": 273, "v": 0 },
 						{ "coordId": 274, "v": 0 },
 						{ "coordId": 275, "v": 0 },
 						{ "coordId": 276, "v": 0 },
@@ -1832,13 +1918,15 @@
 						{ "coordId": 280, "v": 0 },
 						{ "coordId": 281, "v": 0 },
 						{ "coordId": 282, "v": 0 },
-						{ "coordId": 283, "v": 0 },
-						{ "coordId": 284, "v": 0 },
 						{ "coordId": 285, "v": 0 },
+						{ "coordId": 286, "v": 0 },
+						{ "coordId": 287, "v": 0 },
 						{ "coordId": 288, "v": 0 },
 						{ "coordId": 289, "v": 0 },
 						{ "coordId": 290, "v": 0 },
 						{ "coordId": 291, "v": 0 },
+						{ "coordId": 292, "v": 0 },
+						{ "coordId": 293, "v": 0 },
 						{ "coordId": 294, "v": 0 },
 						{ "coordId": 295, "v": 0 },
 						{ "coordId": 296, "v": 0 },
@@ -1849,13 +1937,13 @@
 					"intGridCsv": [
 						0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,
-						0,1,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,0,0,1,0,0,1,1,1,1,1,1,1,1,1,1,0,
-						0,1,1,0,0,0,1,0,0,1,1,1,1,1,1,1,1,1,1,0,0,1,1,0,0,0,1,0,0,1,0,0,0,0,1,
-						0,0,0,0,0,0,1,1,0,0,0,1,0,0,1,0,0,0,0,1,0,0,0,0,0,0,1,1,0,0,0,1,0,0,0,
-						0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,
-						0,1,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,1,0,0,1,1,1,1,1,1,1,1,1,0,0,
-						0,0,0,0,0,0,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,1,1,0,0,1,1,1,1,1,1,
-						1,1,1,1,1,1,0,0,1,1,1,1,0,0,1,1,1,1,1,1
+						0,1,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,
+						1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,0,0,0,0,1,
+						0,0,0,0,0,0,0,0,1,1,1,1,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,
+						0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,1,
+						1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,
+						1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+						1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 					],
 					"autoLayerTiles": [],
 					"seed": 989737,
@@ -1921,25 +2009,14 @@
 						},
 						{
 							"__identifier": "Glasses",
-							"__grid": [34,26],
+							"__grid": [59,37],
 							"__pivot": [0,0],
 							"__tile": null,
 							"width": 64,
 							"height": 64,
 							"defUid": 25,
-							"px": [544,416],
-							"fieldInstances": []
-						},
-						{
-							"__identifier": "Glasses",
-							"__grid": [46,27],
-							"__pivot": [0,0],
-							"__tile": null,
-							"width": 64,
-							"height": 64,
-							"defUid": 25,
-							"px": [736,432],
-							"fieldInstances": []
+							"px": [944,592],
+							"fieldInstances": [{ "__identifier": "keycolor", "__value": null, "__type": "String", "defUid": 32, "realEditorValues": [] }]
 						}
 					]
 				},
@@ -1961,8 +2038,6 @@
 					"visible": true,
 					"optionalRules": [],
 					"intGrid": [
-						{ "coordId": 19, "v": 0 },
-						{ "coordId": 39, "v": 0 },
 						{ "coordId": 49, "v": 0 },
 						{ "coordId": 50, "v": 0 },
 						{ "coordId": 51, "v": 0 },
@@ -1998,10 +2073,12 @@
 						{ "coordId": 183, "v": 0 },
 						{ "coordId": 184, "v": 0 },
 						{ "coordId": 185, "v": 0 },
+						{ "coordId": 199, "v": 0 },
 						{ "coordId": 200, "v": 0 },
 						{ "coordId": 203, "v": 0 },
 						{ "coordId": 204, "v": 0 },
 						{ "coordId": 205, "v": 0 },
+						{ "coordId": 219, "v": 0 },
 						{ "coordId": 220, "v": 0 },
 						{ "coordId": 221, "v": 0 },
 						{ "coordId": 222, "v": 0 },
@@ -2072,13 +2149,13 @@
 						{ "coordId": 299, "v": 0 }
 					],
 					"intGridCsv": [
-						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-						0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,0,1,0,0,0,0,0,0,0,0,0,0,
+						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+						0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,0,1,0,0,0,0,0,0,0,0,0,0,
 						0,0,0,0,0,0,1,0,0,1,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,1,0,0,1,0,
 						0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,
 						1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,
-						0,1,0,0,1,1,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,1,1,0,0,0,0,
-						0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,
+						0,1,0,0,1,1,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,1,1,1,0,0,0,0,
+						0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,
 						1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,
 						1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1
 					],

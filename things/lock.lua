@@ -19,7 +19,7 @@ function Lock:update()
     local scene = scenemanager.get()
     local player = scene.player
     if self:isLevelActive()
-    and utils.distance(self.x,self.y, player.x,player.y) <= 64
+    and utils.distance(self.x,self.y, player.x,player.y) <= 100
     and player.keys[self.keycolor] then
         self.dead = true
         player.keys[self.keycolor] = nil

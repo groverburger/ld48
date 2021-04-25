@@ -282,8 +282,7 @@ function GameScene:draw()
         -- higher depth is closer
         local depth = getDepth(i)
         local r,g,b = lume.color("#7D95C4")
-
-        local alpha = 1
+        local alpha = 1--utils.map(depth, 0.18,0.2, 0,1)
 
         if i <= self.levelIndex then
             alpha = utils.map(depth, 1,1.035, 1,0.1)
@@ -296,13 +295,17 @@ function GameScene:draw()
         lg.translate(1024/2, 768/2)
         lg.scale(depth)
 
-        if levels[i] and i >= self.levelIndex then
+        if levels[i] then
             local sprite = levels[i].sprite
+            colors.white(alpha)
             lg.draw(sprite)
-            for _, thing in ipairs(self.levelThings[i]) do
-                if thing ~= self.player then
-                    colors.white(alpha)
-                    thing:draw()
+            local things = self.levelThings[i]
+            if things and i >= self.levelIndex then
+                for _, thing in ipairs(things) do
+                    if thing ~= self.player then
+                        colors.white(alpha)
+                        thing:draw()
+                    end
                 end
             end
         end
@@ -310,9 +313,11 @@ function GameScene:draw()
         local prop = self.depthProps[i]
         if prop and i ~= self.levelIndex then
             lg.translate(currentLevel.width*32, currentLevel.height*32)
+            lg.translate(0, utils.map(depth, 0,1, -1200,0))
             local r,g,b = lg.getColor()
             if i == self.levelIndex+1 then
-                lg.setColor(r,g,b, alpha)
+                print(depth)
+                lg.setColor(r,g,b, utils.map(depth, 0.8,1, 1,0))
             end
 
             lg.draw(prop.sprite, prop.xoff or 0, prop.yoff or 0, 0, prop.scale, prop.scale, prop.sprite:getWidth()/2, prop.sprite:getHeight()/2)
