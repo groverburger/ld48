@@ -7,11 +7,26 @@ local gunarm = lg.newImage("assets/sprites/gunarm.png")
 
 local jumpSound = soundsystem.newSound("assets/sounds/jump.wav"):setBaseVolume(0.5)
 local landSound = soundsystem.newSound("assets/sounds/land.wav"):setBaseVolume(0.25)
+local deathSound = soundsystem.newSound("assets/sounds/death.wav"):setBaseVolume()
 
 local animations = {
     idle = {1,2},
     walk = {1,3, speed=0.15},
 }
+
+local function reload(self)
+    self.reloaded = true
+end
+
+local function respawn(self)
+    for i, v in pairs(self.spawnPoint) do
+        self[i] = v
+        self.speed[i] = 0
+    end
+
+    local scene = scenemanager.get()
+    scene:resetLevel()
+end
 
 function Player:new(x,y)
     self.x = x
@@ -31,6 +46,11 @@ function Player:new(x,y)
     self.currentWarp = nil
     self.gunAngle = 0
     self.gx, self.gy = x, y
+    self.reloaded = true
+    self.alarms = {
+        gun = Alarm(reload, self):set(8),
+        respawn = Alarm(respawn, self),
+    }
 end
 
 function Player:update()
@@ -40,7 +60,14 @@ function Player:update()
     local stopFriction = 0.75
     local maxWalkSpeed = 8--walkSpeed / (1-walkFriction)
     local scene = scenemanager.get()
-    local width, height = 16, 32
+    local width, height = 12, 32
+
+    -- update all my alarms
+    for _, alarm in pairs(self.alarms) do
+        alarm:update()
+    end
+
+    if self.alarms.respawn:isActive() then return end
 
     --------------------------------------------------------------------------------
     -- vertical physics
@@ -188,11 +215,9 @@ function Player:update()
     self.x = self.x + self.speed.x
 
     -- death plane
-    if self.y > 20*64 then
-        for i, v in pairs(self.spawnPoint) do
-            self[i] = v
-            self.speed[i] = 0
-        end
+    if self.y >= 15*64 and not self.alarms.respawn:isActive() then
+        deathSound:play()
+        self.alarms.respawn:set(60)
     end
 
     --------------------------------------------------------------------------------
@@ -217,7 +242,10 @@ function Player:update()
         self.stretch[i] = utils.lerp(v, 1, 0.25)
     end
 
-    if input.isPressed("shoot") then
+    -- shoot!
+    if input.isDown("shoot") and self.reloaded then
+        self.reloaded = false
+        self.alarms.gun:reset()
         local x = self.x + self.gx + math.cos(self.gunAngle)*20
         local y = self.y + self.gy + math.sin(self.gunAngle)*20
         local angle = self.gunAngle + utils.lerp(-0.1,0.1, math.random())

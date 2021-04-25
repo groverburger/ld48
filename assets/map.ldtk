@@ -9,7 +9,7 @@
 		"url": "https://ldtk.io"
 	},
 	"jsonVersion": "0.9.3",
-	"nextUid": 11,
+	"nextUid": 12,
 	"worldLayout": "LinearVertical",
 	"worldGridWidth": 256,
 	"worldGridHeight": 256,
@@ -118,6 +118,31 @@
 			"pivotX": 0.5,
 			"pivotY": 0.5,
 			"fieldDefs": []
+		},
+		{
+			"identifier": "Bat",
+			"uid": 11,
+			"tags": [],
+			"width": 64,
+			"height": 64,
+			"resizableX": false,
+			"resizableY": false,
+			"keepAspectRatio": false,
+			"fillOpacity": 1,
+			"lineOpacity": 1,
+			"hollow": false,
+			"color": "#E72173",
+			"renderMode": "Rectangle",
+			"showName": true,
+			"tilesetId": null,
+			"tileId": null,
+			"tileRenderMode": "FitInside",
+			"maxCount": 0,
+			"limitScope": "PerLevel",
+			"limitBehavior": "MoveLastOne",
+			"pivotX": 0,
+			"pivotY": 0,
+			"fieldDefs": []
 		}
 	], "tilesets": [
 		{
@@ -194,13 +219,57 @@
 						},
 						{
 							"__identifier": "Warp",
-							"__grid": [3,11],
+							"__grid": [17,8],
 							"__pivot": [0.5,0.5],
 							"__tile": null,
 							"width": 128,
 							"height": 64,
 							"defUid": 5,
-							"px": [192,704],
+							"px": [1088,512],
+							"fieldInstances": []
+						},
+						{
+							"__identifier": "Bat",
+							"__grid": [5,7],
+							"__pivot": [0,0],
+							"__tile": null,
+							"width": 64,
+							"height": 64,
+							"defUid": 11,
+							"px": [320,448],
+							"fieldInstances": []
+						},
+						{
+							"__identifier": "Bat",
+							"__grid": [7,8],
+							"__pivot": [0,0],
+							"__tile": null,
+							"width": 64,
+							"height": 64,
+							"defUid": 11,
+							"px": [448,512],
+							"fieldInstances": []
+						},
+						{
+							"__identifier": "Bat",
+							"__grid": [10,6],
+							"__pivot": [0,0],
+							"__tile": null,
+							"width": 64,
+							"height": 64,
+							"defUid": 11,
+							"px": [640,384],
+							"fieldInstances": []
+						},
+						{
+							"__identifier": "Bat",
+							"__grid": [13,5],
+							"__pivot": [0,0],
+							"__tile": null,
+							"width": 64,
+							"height": 64,
+							"defUid": 11,
+							"px": [832,320],
 							"fieldInstances": []
 						}
 					]

@@ -4,6 +4,8 @@ Bullet = class(Thing)
 Bullet.sprite = utils.newAnimation("assets/sprites/bullet.png")
 local sound = soundsystem.newSound("assets/sounds/gun1.wav"):setBaseVolume(0.7)
 local colSound = soundsystem.newSound("assets/sounds/bulletCol.wav"):setBaseVolume(0.2)
+local hitSound = soundsystem.newSound("assets/sounds/bullethit.wav"):setBaseVolume(0.3)
+local hitSound2 = soundsystem.newSound("assets/sounds/bullethit2.wav"):setBaseVolume(0.3)
 
 function Bullet:new(x,y,angle)
     Bullet.super.new(self, x,y)
@@ -40,10 +42,14 @@ function Bullet:update()
     else
         self.animIndex = 2
     end
-end
 
-function Bullet:subdraw(x, y, frame)
-    lg.draw(self.sprite.source, self.sprite[frame or self.animIndex], x or self.x, y or self.y, 0, self.size, self.size, self.sprite.size/2, self.sprite.size/2)
+    for _, enemy in ipairs(scene.enemyList) do
+        if enemy:collisionAt(self.x,self.y) then
+            utils.choose({hitSound, hitSound2}):play(utils.randomRange(0.8,1.2))
+            enemy:hit(self)
+            self.dead = true
+        end
+    end
 end
 
 function Bullet:draw()

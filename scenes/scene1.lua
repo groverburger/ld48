@@ -43,6 +43,9 @@ function GameScene:new()
     self.camera = {x=0,y=0}
     self.cutscene = nil
     self.depthOffset = 0
+end
+
+function GameScene:init()
     self:setLevel(1)
 end
 
@@ -55,6 +58,10 @@ function GameScene:nextLevel()
     self:setLevel(self.levelIndex + 1)
 end
 
+function GameScene:resetLevel()
+    self:setLevel(self.levelIndex)
+end
+
 function GameScene:setLevel(index)
     self.levelIndex = index
     self.depthOffset = 0
@@ -62,6 +69,7 @@ function GameScene:setLevel(index)
 
     -- create all the entities in the list
     self.thingList = {}
+    self.enemyList = {}
 
     for _, entity in ipairs(level.entities) do
         -- try to get the class from the global table, and make sure it exists
@@ -70,8 +78,10 @@ function GameScene:setLevel(index)
             local instance = class(entity.px[1], entity.px[2])
 
             -- save a reference to the player
-            if class == Player and not self.player then
-                self.player = instance
+            if class == Player then
+                if not self.player then
+                    self.player = instance
+                end
             else
                 table.insert(self.thingList, instance)
             end
@@ -116,6 +126,9 @@ function GameScene:update()
 
         if thing.dead then
             table.remove(self.thingList, i)
+            if thing.onDeath then
+                thing:onDeath()
+            end
         else
             thing:update()
             i = i + 1

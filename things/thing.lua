@@ -13,8 +13,12 @@ end
 
 function Thing:draw()
     if self.sprite then
-        lg.draw(self.sprite.source, self.sprite[math.floor(self.animIndex)], self.x, self.y, 0, 1, 1, self.sprite.size/2, self.sprite.size/2)
+        self:subdraw()
     end
+end
+
+function Thing:subdraw(x, y, frame, xs, ys)
+    lg.draw(self.sprite.source, self.sprite[frame or math.floor(self.animIndex)], x or self.x, y or self.y, 0, xs or 1, ys or 1, self.sprite.size/2, self.sprite.size/2)
 end
 
 function Thing:animate(anim)
