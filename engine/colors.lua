@@ -2,7 +2,7 @@ local hex = {
     white = "#FFFFFF",
     black = "#000000",
     blue = "#A7BFEF",
-    red = "#EF0C4B",
+    red = "#EA2D23",
 }
 
 local colors = {}

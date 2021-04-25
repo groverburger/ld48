@@ -3,20 +3,27 @@ require "things/thing"
 Bullet = class(Thing)
 Bullet.sprite = utils.newAnimation("assets/sprites/bullet.png")
 local sound = soundsystem.newSound("assets/sounds/gun1.wav"):setBaseVolume(0.7)
+local esound = soundsystem.newSound("assets/sounds/ebullet.wav"):setBaseVolume(0.4)
 local colSound = soundsystem.newSound("assets/sounds/bulletcol.wav"):setBaseVolume(0.2)
 local hitSound = soundsystem.newSound("assets/sounds/bullethit.wav"):setBaseVolume(0.3)
 local hitSound2 = soundsystem.newSound("assets/sounds/bullethit2.wav"):setBaseVolume(0.3)
 
-function Bullet:new(x,y,angle)
+function Bullet:new(x,y,angle,owner,speed,time)
     Bullet.super.new(self, x,y)
 
-    self.speed.mag = 30
+    self.speed.mag = speed or 30
     self.speed.x, self.speed.y = utils.lengthdir(angle, self.speed.mag)
-    self.life = Alarm():set(18)
+    self.life = Alarm():set(time or 18)
     self.animIndex = 0
     self.size = 1
+    local player = scenemanager.get().player
+    self.owner = owner or player
 
-    sound:play(utils.randomRange(0.8,1.2))
+    if self.owner == player then
+        sound:play(utils.randomRange(0.8,1.2))
+    elseif self:isLevelActive() then
+        esound:play(utils.randomRange(0.8,1.2))
+    end
 end
 
 function Bullet:update()
@@ -28,7 +35,7 @@ function Bullet:update()
         local angle = utils.angle(0,0,self.speed.x,self.speed.y)
         local hit = scene:isSolid(self.x + math.cos(angle)*i, self.y + math.sin(angle)*i)
         if hit and not self.dead then
-            colSound:play()
+            if self:isLevelActive() then colSound:play() end
             scene:createThing(Impact(self.x,self.y))
         end
         self.dead = self.dead or hit
@@ -44,12 +51,21 @@ function Bullet:update()
     end
 
     for _, enemy in ipairs(scene.enemyList) do
-        if enemy:collisionAt(self.x,self.y) then
+        if enemy:collisionAt(self.x,self.y) and enemy ~= self.owner then
             utils.choose({hitSound, hitSound2}):play(utils.randomRange(0.8,1.2))
             enemy:hit(self)
             self.dead = true
             scene:createThing(Impact(self.x,self.y))
         end
+    end
+
+    local player = scene.player
+    if math.abs(self.x - player.x) <= 12
+    and math.abs(self.y - player.y) <= 32
+    and player ~= self.owner then
+        player:hit(self)
+        self.dead = true
+        scene:createThing(Impact(self.x,self.y))
     end
 end
 

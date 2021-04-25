@@ -199,15 +199,15 @@ function Player:update()
 
     -- wall slide collision testing
     if not self.onGround then
-        if (scene:isSolid(self.x+width+2, self.y+height-4)
-        or  scene:isSolid(self.x+width+2, self.y-height+4))
-        and scene:isSolid(self.x+width+2, self.y) then
+        if (scene:isSolidNoOob(self.x+width+2, self.y+height-4)
+        or  scene:isSolidNoOob(self.x+width+2, self.y-height+4))
+        and scene:isSolidNoOob(self.x+width+2, self.y) then
             self.onWall = 1
             self.coyoteFrames = 7
         end
-        if (scene:isSolid(self.x-width-2, self.y+height-4)
-        or  scene:isSolid(self.x-width-2, self.y-height+4))
-        and scene:isSolid(self.x-width-2, self.y) then
+        if (scene:isSolidNoOob(self.x-width-2, self.y+height-4)
+        or  scene:isSolidNoOob(self.x-width-2, self.y-height+4))
+        and scene:isSolidNoOob(self.x-width-2, self.y) then
             self.onWall = -1
             self.coyoteFrames = 7
         end
@@ -259,6 +259,13 @@ function Player:die()
     if self.alarms.respawn:isActive() then return end
     deathSound:play()
     self.alarms.respawn:set(60)
+
+    local scene = scenemanager.get()
+    for i=1, 3 do
+        local x, y = utils.lengthdir(math.random()*2*math.pi, utils.randomRange(10,20))
+        x, y = x + self.x, y + self.y
+        scene:createThing(Boom(x,y))
+    end
 end
 
 function Player:hit(attacker)
@@ -266,6 +273,8 @@ function Player:hit(attacker)
 end
 
 function Player:draw()
+    if self.alarms.respawn:isActive() then return end
+
     local interp = engine.getInterpolation()
     local dx, dy = self.x + self.speed.x * interp, self.y + self.speed.y * interp
 

@@ -10,6 +10,12 @@ function Thing:new(x, y)
 end
 
 function Thing:update()
+    -- update my alarms
+    if self.alarms then
+        for _, alarm in pairs(self.alarms) do
+            alarm:update()
+        end
+    end
 end
 
 function Thing:draw()
@@ -18,8 +24,8 @@ function Thing:draw()
     end
 end
 
-function Thing:subdraw(x, y, frame, xs, ys)
-    lg.draw(self.sprite.source, self.sprite[frame or math.floor(self.animIndex)], x or self.x, y or self.y, 0, xs or 1, ys or 1, self.sprite.size/2, self.sprite.size/2)
+function Thing:subdraw(x, y, frame, xs, ys, rot)
+    lg.draw(self.sprite.source, self.sprite[frame or math.floor(self.animIndex)], x or self.x, y or self.y, rot or 0, xs or 1, ys or 1, self.sprite.size/2, self.sprite.size/2)
 end
 
 function Thing:animate(anim)
@@ -29,5 +35,5 @@ end
 
 function Thing:isLevelActive()
     local scene = scenemanager.get()
-    return scene.player.levelIndex == scene.levelIndex
+    return scene.levelIndex == self.levelIndex
 end

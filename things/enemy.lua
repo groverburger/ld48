@@ -3,6 +3,7 @@ require "things/thing"
 Enemy = class(Thing)
 
 local hitShader = lg.newShader("assets/shaders/white.frag")
+local deathSound = soundsystem.newSound("assets/sounds/edeath.wav"):setBaseVolume(0.3)
 
 function Enemy:new(x,y)
     Enemy.super.new(self, x,y)
@@ -41,6 +42,7 @@ function Enemy:onDeath()
         end
     end
 
+    deathSound:play(utils.randomRange(0.8,1.2))
     for i=1, 3 do
         local x, y = utils.lengthdir(math.random()*2*math.pi, utils.randomRange(10,20))
         x, y = x + self.x, y + self.y
@@ -51,5 +53,5 @@ end
 function Enemy:subdraw(...)
     if self.hitflash > 0 then lg.setShader(hitShader) end
     Enemy.super.subdraw(self, ...)
-    lg.setShader()
+    if self.hitflash > 0 then lg.setShader() end
 end

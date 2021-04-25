@@ -42,13 +42,23 @@ end
 local bgFadeShader = lg.newShader("assets/shaders/bgfade.frag")
 
 function GameScene:new()
-    self.camera = {x=0,y=0}
+    self.camera = {x=640,y=7.5*64}
     self.cutscene = nil
     self.depthOffset = 0
     self.levelThings = {}
+
+    self.depthProps = {
+        [2] = {
+            scale = 12,
+            xoff = 0,
+            yoff = -400,
+            sprite = lg.newImage("assets/sprites/castle.png"),
+        },
+    }
 end
 
 function GameScene:init()
+    self.levelIndex = 1
     for i, level in ipairs(levels) do
         self:loadLevel(i, level)
     end
@@ -82,6 +92,7 @@ function GameScene:setLevelActive(index)
     -- put all the enemies in their own list
     self.enemyList = {}
     for _, thing in ipairs(self.thingList) do
+        thing.levelIndex = index
         if thing:instanceOf(Enemy) then
             table.insert(self.enemyList, thing)
         end
@@ -167,10 +178,10 @@ function GameScene:update()
 
     -- camera tracking player and staying centered on level
     local currentLevel = self:getLevel()
-    local px, py = self.player.x - 1024/2, self.player.y - 768/2
-    local cx, cy = currentLevel.width*64/2 - 1024/2, currentLevel.height*64/2 - 768/2
-    self.camera.x = utils.round(utils.lerp(self.camera.x, utils.clamp((px+cx)/2, 0, currentLevel.width*64 - 1024), 0.2))
-    self.camera.y = utils.round(utils.lerp(self.camera.y, utils.clamp((py+cy)/2, 0, currentLevel.height*64 - 768), 0.2))
+    local px, py = self.player.x, self.player.y
+    local cx, cy = currentLevel.width*32, currentLevel.height*32
+    self.camera.x = utils.round(utils.lerp(self.camera.x, utils.clamp((px+cx)/2, 1024/2, currentLevel.width*64 - 1024/2), 0.2))
+    self.camera.y = utils.round(utils.lerp(self.camera.y, utils.clamp((py+cy)/2, 768/2, currentLevel.height*64 - 768/2), 0.2))
 end
 
 function GameScene:isSolid(x,y)
@@ -187,6 +198,31 @@ function GameScene:isSolid(x,y)
     return false
 end
 
+function GameScene:isSolidNoOob(x,y)
+    local level = self:getLevel()
+    local x, y = math.floor(x/64)+1, math.floor(y/64)+1
+
+    if level[x] and level[x][y] then
+        return level[x][y] == 1
+    end
+
+    return false
+end
+
+-- out of bounds
+function GameScene:isOob(x,y)
+    -- out of bounds horizontally is solid
+    if x <= 0 or x >= 20*64 then return true end
+    if y <= 0 or y >= 15*64 then return true end
+
+    return false
+end
+
+local function getDepth(i)
+    local scene = scenemanager.get()
+    return utils.map(i - scene.depthOffset, scene.levelIndex, scene.levelIndex+10, 1, 0.05)^5
+end
+
 function GameScene:draw()
     lg.clear(lume.color(colors.hex.blue))
 
@@ -200,7 +236,7 @@ function GameScene:draw()
         colors.white()
 
         -- higher depth is closer
-        local depth = utils.map(i - self.depthOffset, self.levelIndex, self.levelIndex+5, 1, 0)^2
+        local depth = getDepth(i)
         local r,g,b = lume.color("#A7BFEF")
 
         if i <= self.levelIndex then
@@ -209,17 +245,28 @@ function GameScene:draw()
 
         bgFadeShader:send("bgcolor", {r,g,b,depth})
         lg.setShader(bgFadeShader)
-        lg.translate(-self.camera.x*depth, -self.camera.y*depth)
         local sprite = levels[i].sprite
-        lg.translate(640*0.8, 4.5*64)
+        lg.translate(-self.camera.x*depth, -self.camera.y*depth)
+        lg.translate(1024/2, 768/2)
         lg.scale(depth)
-        lg.translate(-640*0.8, -4.5*64)
         lg.draw(sprite)
         for _, thing in ipairs(self.levelThings[i]) do
             if thing ~= self.player then
                 thing:draw()
             end
         end
+
+        local prop = self.depthProps[i]
+        if prop and i ~= self.levelIndex then
+            lg.translate(1024/2, 768/2)
+            local r,g,b = lg.getColor()
+            if i == self.levelIndex+1 then
+                lg.setColor(r,g,b, utils.map(self.depthOffset, 0,1, 1,0))
+            end
+
+            lg.draw(prop.sprite, prop.xoff or 0, prop.yoff or 0, 0, prop.scale, prop.scale, prop.sprite:getWidth()/2, prop.sprite:getHeight()/2)
+        end
+
         lg.pop()
         lg.setShader()
     end
@@ -228,6 +275,7 @@ function GameScene:draw()
     -- because the player is not affected by depth
     lg.push()
     lg.translate(-self.camera.x, -self.camera.y)
+    lg.translate(1024/2, 768/2)
     if self.player then
         colors.white()
         self.player:draw()
