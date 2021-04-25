@@ -29,14 +29,12 @@ function Star:update()
     Star.super.update(self)
 
     local scene = scenemanager.get()
-    if scene:isSolid(self.x + self.speed.x, self.y)
-    or scene:isOob(self.x + self.speed.x, self.y) then
+    if self:isSolid(self.x + self.speed.x, self.y, true,true,true) then
         self.speed.x = self.speed.x * -1
     end
     self.x = self.x + self.speed.x
 
-    if scene:isSolid(self.x, self.y + self.speed.y)
-    or scene:isOob(self.x, self.y + self.speed.y) then
+    if self:isSolid(self.x, self.y + self.speed.y, true,true,true) then
         self.speed.y = self.speed.y * -1
     end
     self.y = self.y + self.speed.y

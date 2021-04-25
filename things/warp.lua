@@ -9,7 +9,7 @@ local ready = {2}
 local notready = {1}
 
 function Warp:new(x, y)
-    Warp.super.new(self, x, y)
+    Warp.super.new(self, x+64, y+56)
     self.oy = y+56
 end
 

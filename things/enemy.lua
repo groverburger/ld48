@@ -14,7 +14,7 @@ end
 function Enemy:hit(bullet)
     self.hp = self.hp - 1
     self.hitflash = 4
-    love.timer.sleep(0.03)
+    love.timer.sleep(0.02)
 end
 
 function Enemy:update()
@@ -46,7 +46,7 @@ function Enemy:onDeath()
     for i=1, 3 do
         local x, y = utils.lengthdir(math.random()*2*math.pi, utils.randomRange(10,20))
         x, y = x + self.x, y + self.y
-        scene:createThing(Boom(x,y))
+        self:createThing(Boom(x,y))
     end
 end
 

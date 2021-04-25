@@ -47,12 +47,8 @@ function sound:play(pitch, x,y,z)
     self.source:setPitch((pitch or 1) * self.basePitch)
 
     -- more web safety
-    -- got some crashes when trying to use seek
-    if self.source.seek then
-        self.source:seek(0)
-    else
-        self.source:stop()
-    end
+    -- web crashes when trying to use seek
+    self.source:stop()
 
     if self:isSpatial() then
         assert(x and y, "Spatial sounds must be given a position!")

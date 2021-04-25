@@ -19,6 +19,17 @@ function hooks.pre_load(args)
         scenemanager.set(GameScene())
     end)
 
+    console:addCommand("level", function (args)
+        local scene = scenemanager.get()
+        scene:setLevelActive(tonumber(args[2]))
+
+        if args[3] and args[4] then
+            local x, y = tonumber(args[3]), tonumber(args[4])
+            scene.player.x = x
+            scene.player.y = y
+        end
+    end)
+
     -- compile all args into one long string
     for i, arg in ipairs(args) do
         totalArgs = totalArgs .. arg
@@ -26,6 +37,8 @@ function hooks.pre_load(args)
             totalArgs = totalArgs .. " "
         end
     end
+
+    love.window.maximize()
 end
 
 function hooks.post_load()
@@ -42,7 +55,7 @@ function hooks.pre_update()
 end
 
 function hooks.post_draw()
-    console:draw()
+    console:draw(engine.settings.gameWidth, engine.settings.gameHeight)
     if showMem then
         lg.setColor(0,0,0)
         lg.print(utils.round(collectgarbage("count")))

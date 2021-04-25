@@ -15,7 +15,7 @@ for levelIndex, level in ipairs(map.levels) do
         if layer.__identifier == "IntGrid" then
             local width, height = layer.__cWid, layer.__cHei
 
-            local sb = lg.newSpriteBatch(levelTexture, width*height)
+            local sb = lg.newSpriteBatch(levelTexture)
 
             -- load the data itself
             currentLevel.width = width
@@ -29,6 +29,49 @@ for levelIndex, level in ipairs(map.levels) do
                 -- add tiles to the spritebatch
                 if v == 1 then
                     sb:add((x-1)*64 - 8, (y-1)*64 - 8)
+
+                    if y == height then
+                        sb:add((x-1)*64 - 8, (y)*64 - 8)
+                        sb:add((x-1)*64 - 8, (y+1)*64 - 8)
+                        sb:add((x-1)*64 - 8, (y+2)*64 - 8)
+                        sb:add((x-1)*64 - 8, (y+3)*64 - 8)
+                        sb:add((x-1)*64 - 8, (y+4)*64 - 8)
+                        sb:add((x-1)*64 - 8, (y+5)*64 - 8)
+
+                        if x == width then
+                            for xx=1, 5 do
+                                for yy=0, 7 do
+                                    sb:add((x+xx)*64 - 8, (y+yy)*64 - 8)
+                                end
+                            end
+                        end
+
+                        if x == 1 then
+                            for xx=1, 5 do
+                                for yy=0, 7 do
+                                    sb:add((x-xx)*64 - 8, (y+yy)*64 - 8)
+                                end
+                            end
+                        end
+                    end
+
+                    if x == width then
+                        sb:add((x-1)*64 - 8, (y-1)*64 - 8)
+                        sb:add((x)*64 - 8, (y-1)*64 - 8)
+                        sb:add((x+1)*64 - 8, (y-1)*64 - 8)
+                        sb:add((x+2)*64 - 8, (y-1)*64 - 8)
+                        sb:add((x+3)*64 - 8, (y-1)*64 - 8)
+                        sb:add((x+4)*64 - 8, (y-1)*64 - 8)
+                    end
+
+                    if x == 1 then
+                        sb:add((x-1)*64 - 8, (y-1)*64 - 8)
+                        sb:add((x-2)*64 - 8, (y-1)*64 - 8)
+                        sb:add((x-3)*64 - 8, (y-1)*64 - 8)
+                        sb:add((x-4)*64 - 8, (y-1)*64 - 8)
+                        sb:add((x-5)*64 - 8, (y-1)*64 - 8)
+                        sb:add((x-6)*64 - 8, (y-1)*64 - 8)
+                    end
                 end
             end
         end
@@ -48,7 +91,7 @@ function GameScene:new()
     self.levelThings = {}
 
     self.depthProps = {
-        [2] = {
+        [18] = {
             scale = 12,
             xoff = 0,
             yoff = -400,
@@ -65,8 +108,19 @@ function GameScene:init()
     self:setLevelActive(1)
 end
 
-function GameScene:createThing(thing)
-    table.insert(self.thingList, thing)
+function GameScene:createThing(thing, levelIndex)
+    assert(levelIndex, "no level index given!")
+    thing.levelIndex = levelIndex or self.levelIndex
+    if not levelIndex or levelIndex == self.levelIndex then
+        table.insert(self.thingList, thing)
+    else
+        table.insert(self.levelThings[levelIndex], thing)
+    end
+
+    if thing.init then
+        thing:init()
+    end
+
     return thing
 end
 
@@ -100,6 +154,7 @@ function GameScene:setLevelActive(index)
 
     if self.player then
         table.insert(self.thingList, self.player)
+        self.player.levelIndex = self.levelIndex
     end
 end
 
@@ -123,6 +178,10 @@ function GameScene:loadLevel(index, level)
                 end
             else
                 table.insert(thingList, instance)
+
+                if instance.init then
+                    instance:init()
+                end
             end
         else
             print("class " .. entity.__identifier .. " not found!")
@@ -130,13 +189,15 @@ function GameScene:loadLevel(index, level)
     end
 end
 
-function GameScene:getLevel()
-    return levels[self.levelIndex]
+function GameScene:getLevel(index)
+    return levels[index]
 end
 
 function GameScene:pauseFrame()
     self.pausedThisFrame = true
 end
+
+local neighbors = {1,0,2,-1}
 
 function GameScene:update()
     if self.cutscene then
@@ -152,107 +213,82 @@ function GameScene:update()
     end
 
     -- update all things in the scene, cull the dead ones
-    local i = 1
-    while i <= #self.thingList do
-        local thing = self.thingList[i]
+    for _, v in pairs(neighbors) do
+        local thingList = self.levelThings[self.levelIndex+v]
+        if thingList then
+            local i = 1
+            while i <= #thingList do
+                local thing = thingList[i]
 
-        if thing.dead then
-            table.remove(self.thingList, i)
-            if thing.onDeath then
-                thing:onDeath()
-            end
-        else
-            thing:update()
-            i = i + 1
-        end
-    end
+                local canupdate = v >= 1 and thing ~= self.player
+                canupdate = canupdate or v == 0
+                canupdate = canupdate or v == -1 and thing:instanceOf(Bullet)
 
-    local thingList = self.levelThings[self.levelIndex+1]
-    if thingList then
-        for _, thing in ipairs(thingList) do
-            if thing ~= self.player then
-                thing:update()
+                if canupdate then
+                    if thing.dead then
+                        table.remove(thingList, i)
+                        if thing.onDeath then
+                            thing:onDeath()
+                        end
+                    else
+                        thing:update()
+                        i = i + 1
+                    end
+                else
+                    i = i + 1
+                end
             end
         end
     end
 
     -- camera tracking player and staying centered on level
-    local currentLevel = self:getLevel()
+    local currentLevel = self:getLevel(self.levelIndex)
     local px, py = self.player.x, self.player.y
     local cx, cy = currentLevel.width*32, currentLevel.height*32
     self.camera.x = utils.round(utils.lerp(self.camera.x, utils.clamp((px+cx)/2, 1024/2, currentLevel.width*64 - 1024/2), 0.2))
     self.camera.y = utils.round(utils.lerp(self.camera.y, utils.clamp((py+cy)/2, 768/2, currentLevel.height*64 - 768/2), 0.2))
 end
 
-function GameScene:isSolid(x,y)
-    -- out of bounds horizontally is solid
-    if x <= 0 or x >= 20*64 then return true end
-
-    local level = self:getLevel()
-    local x, y = math.floor(x/64)+1, math.floor(y/64)+1
-
-    if level[x] and level[x][y] then
-        return level[x][y] == 1
-    end
-
-    return false
-end
-
-function GameScene:isSolidNoOob(x,y)
-    local level = self:getLevel()
-    local x, y = math.floor(x/64)+1, math.floor(y/64)+1
-
-    if level[x] and level[x][y] then
-        return level[x][y] == 1
-    end
-
-    return false
-end
-
--- out of bounds
-function GameScene:isOob(x,y)
-    -- out of bounds horizontally is solid
-    if x <= 0 or x >= 20*64 then return true end
-    if y <= 0 or y >= 15*64 then return true end
-
-    return false
-end
+local furthest = 20
 
 local function getDepth(i)
     local scene = scenemanager.get()
-    return utils.map(i - scene.depthOffset, scene.levelIndex, scene.levelIndex+10, 1, 0.05)^5
+    return utils.lerp(0.1, 1, utils.map(i - scene.depthOffset, scene.levelIndex, scene.levelIndex+furthest, 1, 0)^5)
 end
 
 function GameScene:draw()
     lg.clear(lume.color(colors.hex.blue))
 
     local nearestDepth = 1 + 10*self.depthOffset^2
-    local furthestLevel = self.levelIndex+3
+    local furthestLevel = self.levelIndex+furthest
 
     -- draw the level and the levels further back
     -- in painter's order
-    for i=math.min(furthestLevel, #levels), math.max(self.levelIndex-1, 1), -1 do
+    for i=furthestLevel, math.max(self.levelIndex-1, 1), -1 do
         lg.push()
         colors.white()
 
         -- higher depth is closer
         local depth = getDepth(i)
-        local r,g,b = lume.color("#A7BFEF")
+        local r,g,b = lume.color("#7D95C4")
 
         if i <= self.levelIndex then
-            colors.white(utils.map(depth, 1,1.035, 1,0))
+            colors.white(utils.map(depth, 1,1.035, 1,0.1))
         end
 
-        bgFadeShader:send("bgcolor", {r,g,b,depth})
+        bgFadeShader:send("bgcolor", {r,g,b,depth^8})
         lg.setShader(bgFadeShader)
-        local sprite = levels[i].sprite
         lg.translate(-self.camera.x*depth, -self.camera.y*depth)
         lg.translate(1024/2, 768/2)
         lg.scale(depth)
-        lg.draw(sprite)
-        for _, thing in ipairs(self.levelThings[i]) do
-            if thing ~= self.player then
-                thing:draw()
+
+        if levels[i] then
+            local sprite = levels[i].sprite
+            lg.draw(sprite)
+            for _, thing in ipairs(self.levelThings[i]) do
+                if thing ~= self.player then
+                    thing:draw()
+                end
             end
         end
 

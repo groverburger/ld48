@@ -37,3 +37,24 @@ function Thing:isLevelActive()
     local scene = scenemanager.get()
     return scene.levelIndex == self.levelIndex
 end
+
+function Thing:createThing(thing)
+    local scene = scenemanager.get()
+    scene:createThing(thing, self.levelIndex)
+end
+
+function Thing:isSolid(x,y, tile,hoob,voob)
+    if hoob and (x <= 0 or x >= 20*64) then return true end
+    if voob and (y <= 0 or y >= 15*64) then return true end
+
+    if tile then
+        local scene = scenemanager.get()
+        local level = scene:getLevel(self.levelIndex)
+        local x, y = math.floor(x/64)+1, math.floor(y/64)+1
+        if level[x] and level[x][y] then
+            return level[x][y] == 1
+        end
+    end
+
+    return false
+end

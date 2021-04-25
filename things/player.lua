@@ -89,10 +89,10 @@ function Player:update()
     -- hit ground
     local wasOnGround = self.onGround
     self.onGround = false
-    if scene:isSolid(self.x-width,self.y+self.speed.y+height)
-    or scene:isSolid(self.x+width,self.y+self.speed.y+height) then
-        while not scene:isSolid(self.x-width,self.y+height+1)
-        and not scene:isSolid(self.x+width,self.y+height+1) do
+    if self:isSolid(self.x-width,self.y+self.speed.y+height, true,true)
+    or self:isSolid(self.x+width,self.y+self.speed.y+height, true,true) then
+        while not self:isSolid(self.x-width,self.y+height+1, true,true)
+        and not self:isSolid(self.x+width,self.y+height+1, true,true) do
             self.y = self.y + 1
         end
 
@@ -110,10 +110,10 @@ function Player:update()
     end
 
     -- hit ceiling
-    if scene:isSolid(self.x-width,self.y+self.speed.y-height)
-    or scene:isSolid(self.x+width,self.y+self.speed.y-height) then
-        while not scene:isSolid(self.x-width,self.y-height-1)
-        and not scene:isSolid(self.x+width,self.y-height-1) do
+    if self:isSolid(self.x-width,self.y+self.speed.y-height, true,true)
+    or self:isSolid(self.x+width,self.y+self.speed.y-height, true,true) then
+        while not self:isSolid(self.x-width,self.y-height-1, true,true)
+        and not self:isSolid(self.x+width,self.y-height-1, true,true) do
             self.y = self.y - 1
         end
         self.speed.y = 1
@@ -178,20 +178,20 @@ function Player:update()
     end
 
     -- hit left wall
-    if scene:isSolid(self.x+self.speed.x-width,self.y+height-1)
-    or scene:isSolid(self.x+self.speed.x-width,self.y-height+1) then
-        while not scene:isSolid(self.x-1-width,self.y+height-1)
-        and not scene:isSolid(self.x-1-width,self.y-height+1) do
+    if self:isSolid(self.x+self.speed.x-width,self.y+height-1, true,true)
+    or self:isSolid(self.x+self.speed.x-width,self.y-height+1, true,true) then
+        while not self:isSolid(self.x-1-width,self.y+height-1, true,true)
+        and not self:isSolid(self.x-1-width,self.y-height+1, true,true) do
             self.x = self.x - 1
         end
         self.speed.x = 0
     end
 
     -- hit right wall
-    if scene:isSolid(self.x+self.speed.x+width,self.y+height-1)
-    or scene:isSolid(self.x+self.speed.x+width,self.y-height+1) then
-        while not scene:isSolid(self.x+1+width,self.y+height-1)
-        and not scene:isSolid(self.x+1+width,self.y-height+1) do
+    if self:isSolid(self.x+self.speed.x+width,self.y+height-1, true,true)
+    or self:isSolid(self.x+self.speed.x+width,self.y-height+1, true,true) then
+        while not self:isSolid(self.x+1+width,self.y+height-1, true,true)
+        and not self:isSolid(self.x+1+width,self.y-height+1, true,true) do
             self.x = self.x + 1
         end
         self.speed.x = 0
@@ -199,15 +199,15 @@ function Player:update()
 
     -- wall slide collision testing
     if not self.onGround then
-        if (scene:isSolidNoOob(self.x+width+2, self.y+height-4)
-        or  scene:isSolidNoOob(self.x+width+2, self.y-height+4))
-        and scene:isSolidNoOob(self.x+width+2, self.y) then
+        if (self:isSolid(self.x+width+2, self.y+height-4, true)
+        or  self:isSolid(self.x+width+2, self.y-height+4, true))
+        and self:isSolid(self.x+width+2, self.y, true) then
             self.onWall = 1
             self.coyoteFrames = 7
         end
-        if (scene:isSolidNoOob(self.x-width-2, self.y+height-4)
-        or  scene:isSolidNoOob(self.x-width-2, self.y-height+4))
-        and scene:isSolidNoOob(self.x-width-2, self.y) then
+        if (self:isSolid(self.x-width-2, self.y+height-4, true)
+        or  self:isSolid(self.x-width-2, self.y-height+4, true))
+        and self:isSolid(self.x-width-2, self.y, true) then
             self.onWall = -1
             self.coyoteFrames = 7
         end
@@ -248,7 +248,7 @@ function Player:update()
         local x = self.x + self.gx + math.cos(self.gunAngle)*20
         local y = self.y + self.gy + math.sin(self.gunAngle)*20
         local angle = self.gunAngle + utils.lerp(-0.1,0.1, math.random())
-        scene:createThing(Bullet(x,y,angle))
+        self:createThing(Bullet(x,y,angle))
         engine.shake = 5
         self.speed.x = self.speed.x - math.cos(angle)*2
         self.speed.y = self.speed.y - math.sin(angle)*2
@@ -264,8 +264,10 @@ function Player:die()
     for i=1, 3 do
         local x, y = utils.lengthdir(math.random()*2*math.pi, utils.randomRange(10,20))
         x, y = x + self.x, y + self.y
-        scene:createThing(Boom(x,y))
+        self:createThing(Boom(x,y))
     end
+
+    engine.shake = 10
 end
 
 function Player:hit(attacker)

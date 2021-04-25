@@ -18,11 +18,10 @@ function Bullet:new(x,y,angle,owner,speed,time)
     self.size = 1
     local player = scenemanager.get().player
     self.owner = owner or player
+    self.firstFrame = true
 
     if self.owner == player then
         sound:play(utils.randomRange(0.8,1.2))
-    elseif self:isLevelActive() then
-        esound:play(utils.randomRange(0.8,1.2))
     end
 end
 
@@ -31,12 +30,17 @@ function Bullet:update()
     self.x = self.x + self.speed.x
     self.y = self.y + self.speed.y
 
+    if self.firstFrame and self:isLevelActive() and self.owner ~= scene.player then
+        esound:play(utils.randomRange(0.8,1.2))
+        self.firstFrame = false
+    end
+
     for i=1, self.speed.mag, 2 do
         local angle = utils.angle(0,0,self.speed.x,self.speed.y)
-        local hit = scene:isSolid(self.x + math.cos(angle)*i, self.y + math.sin(angle)*i)
+        local hit = self:isSolid(self.x + math.cos(angle)*i, self.y + math.sin(angle)*i, true)
         if hit and not self.dead then
             if self:isLevelActive() then colSound:play() end
-            scene:createThing(Impact(self.x,self.y))
+            self:createThing(Impact(self.x,self.y))
         end
         self.dead = self.dead or hit
     end
@@ -50,22 +54,27 @@ function Bullet:update()
         self.animIndex = 2
     end
 
-    for _, enemy in ipairs(scene.enemyList) do
-        if enemy:collisionAt(self.x,self.y) and enemy ~= self.owner then
-            utils.choose({hitSound, hitSound2}):play(utils.randomRange(0.8,1.2))
-            enemy:hit(self)
-            self.dead = true
-            scene:createThing(Impact(self.x,self.y))
+    if not self.owner:instanceOf(Enemy) then
+        for _, enemy in ipairs(scene.enemyList) do
+            if enemy:collisionAt(self.x,self.y)
+            and enemy.levelIndex == self.levelIndex
+            and enemy ~= self.owner then
+                utils.choose({hitSound, hitSound2}):play(utils.randomRange(0.8,1.2))
+                enemy:hit(self)
+                self.dead = true
+                self:createThing(Impact(self.x,self.y))
+            end
         end
     end
 
     local player = scene.player
     if math.abs(self.x - player.x) <= 12
     and math.abs(self.y - player.y) <= 32
-    and player ~= self.owner then
+    and player ~= self.owner
+    and self:isLevelActive() then
         player:hit(self)
         self.dead = true
-        scene:createThing(Impact(self.x,self.y))
+        self:createThing(Impact(self.x,self.y))
     end
 end
 

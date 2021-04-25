@@ -47,15 +47,15 @@ function console:update(dt)
     end
 end
 
-function console:draw()
+function console:draw(gwidth, gheight)
     local r,g,b,a = lg.getColor()
     local anim = self.anim^2
 
     lg.setColor(0.1,0.1,0.1, 0.75)
     lg.push()
-    local height = lg.getHeight()/2
+    local height = gheight and gheight/2 or lg.getHeight()/2
     lg.translate(0, (anim - 1)*height)
-    lg.rectangle("fill", 0,0, lg.getWidth(),height)
+    lg.rectangle("fill", 0,0, gwidth or lg.getWidth(),height)
 
     local lastFont = lg.getFont()
     lg.setFont(self.font)
@@ -86,6 +86,8 @@ function console:addLine(line)
         table.remove(self.lines)
     end
 end
+
+console.log = console.addLine
 
 function console:addCommand(name, func)
     self.commands[name] = func
@@ -137,6 +139,11 @@ function console:keypressed(k)
         self:execute(self.text)
         self.commandIndex = 0
         self.text = ""
+
+        if love.keyboard.isDown("lshift")
+        or love.keyboard.isDown("rshift") then
+            toggle(false)
+        end
     end
 
     -- queue up the last used command

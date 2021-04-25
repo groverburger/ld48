@@ -8,18 +8,21 @@ local function shoot(self)
     self.alarms.blink:set(8)
     local scene = scenemanager.get()
     local angle = math.acos(self.xdir)
-    scene:createThing(Bullet(self.x + self.xdir*32,self.y,angle,self,15,70))
+    local bullet = self:createThing(Bullet(self.x + self.xdir*32,self.y,angle,self,15,70))
 end
 
 function Eye:new(x,y)
-    local scene = scenemanager.get()
-    self.xdir = scene:isSolid(x+32, y) and -1 or 1
-    Eye.super.new(self, x + (self.xdir == 1 and 48 or 16),y)
+    Eye.super.new(self, x + 32, y + 32)
 
     self.alarms = {
         shoot = Alarm(shoot, self):set(60),
         blink = Alarm(),
     }
+end
+
+function Eye:init()
+    self.xdir = self:isSolid(self.x+64, self.y, true,true,true) and -1 or 1
+    self.x = self.x + self.xdir*48
 end
 
 function Eye:update()
