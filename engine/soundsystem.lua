@@ -65,7 +65,8 @@ function sound:play(pitch, x,y,z)
     -- play on the next frame
     -- so that this sound can get updated before it starts playing
     -- preventing weird sound cutoff glitches
-    self.queuedPlay = true
+    --self.queuedPlay = true
+    self.source:play()
 
     return self
 end

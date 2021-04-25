@@ -91,10 +91,10 @@ function GameScene:new()
     self.levelThings = {}
 
     self.depthProps = {
-        [18] = {
+        [15] = {
             scale = 12,
             xoff = 0,
-            yoff = -400,
+            yoff = -600,
             sprite = lg.newImage("assets/sprites/castle.png"),
         },
     }

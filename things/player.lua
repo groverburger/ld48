@@ -53,15 +53,15 @@ function Player:new(x,y)
     }
 end
 
-function Player:update()
-    local walkSpeed = 1.1
-    local airSpeed = 0.7
-    local walkFriction = 0.9
-    local stopFriction = 0.65
-    local maxWalkSpeed = 8--walkSpeed / (1-walkFriction)
-    local scene = scenemanager.get()
-    local width, height = 12, 32
+local walkSpeed = 1.1
+local airSpeed = 0.7
+local walkFriction = 0.9
+local stopFriction = 0.65
+local maxWalkSpeed = 8--walkSpeed / (1-walkFriction)
+local scene = scenemanager.get()
+local width, height = 12, 32
 
+function Player:update()
     -- update all my alarms
     for _, alarm in pairs(self.alarms) do
         alarm:update()
@@ -121,25 +121,7 @@ function Player:update()
 
     -- start the jump
     if self.coyoteFrames > 0 and input.isPressed("jump") then
-        if self.currentWarp then
-            self.spawnPoint.x = self.x
-            self.spawnPoint.y = self.y
-            scene.cutscene = WarpCutscene(self.currentWarp:instanceOf(BackWarp) and -1 or 1)
-            return
-        end
-
-        self.coyoteFrames = 0
-        self.speed.y = -15
-        self.stretch.x = 0.4
-        self.stretch.y = 1.5
-
-        if self.onWall ~= 0 then
-            self.speed.x = self.onWall*-0.8*maxWalkSpeed
-            self.onWall = 0
-            self.disabledAirControl = 7
-        end
-
-        jumpSound:play(utils.randomRange(0.8,1.2))
+        self:jump()
     end
 
     self.coyoteFrames = math.max(self.coyoteFrames - 1, 0)
@@ -253,6 +235,30 @@ function Player:update()
         self.speed.x = self.speed.x - math.cos(angle)*2
         self.speed.y = self.speed.y - math.sin(angle)*2
     end
+end
+
+function Player:jump()
+    local scene = scenemanager.get()
+
+    if self.currentWarp then
+        self.spawnPoint.x = self.x
+        self.spawnPoint.y = self.y
+        scene.cutscene = WarpCutscene(self.currentWarp:instanceOf(BackWarp) and -1 or 1)
+        return
+    end
+
+    self.coyoteFrames = 0
+    self.speed.y = -15
+    self.stretch.x = 0.4
+    self.stretch.y = 1.5
+
+    if self.onWall ~= 0 then
+        self.speed.x = self.onWall*-0.8*maxWalkSpeed
+        self.onWall = 0
+        self.disabledAirControl = 7
+    end
+
+    jumpSound:play(utils.randomRange(0.8,1.2))
 end
 
 function Player:die()

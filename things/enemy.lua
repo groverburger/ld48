@@ -4,6 +4,8 @@ Enemy = class(Thing)
 
 local hitShader = lg.newShader("assets/shaders/white.frag")
 local deathSound = soundsystem.newSound("assets/sounds/edeath.wav"):setBaseVolume(0.3)
+local hitSound = soundsystem.newSound("assets/sounds/bullethit.wav"):setBaseVolume(0.3)
+local hitSound2 = soundsystem.newSound("assets/sounds/bullethit2.wav"):setBaseVolume(0.3)
 
 function Enemy:new(x,y)
     Enemy.super.new(self, x,y)
@@ -14,6 +16,7 @@ end
 function Enemy:hit(bullet)
     self.hp = self.hp - 1
     self.hitflash = 4
+    utils.choose({hitSound, hitSound2}):play(utils.randomRange(0.8,1.2))
     love.timer.sleep(0.02)
 end
 
@@ -25,7 +28,12 @@ function Enemy:update()
     if self:isLevelActive() then
         local player = scenemanager.get().player
         if utils.distance(player.x, player.y, self.x, self.y) <= 40 then
-            player:hit(self)
+            if player.speed.y > 1 then
+                self:hit(player)
+                player:jump()
+            else
+                player:hit(self)
+            end
         end
     end
 end

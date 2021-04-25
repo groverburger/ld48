@@ -5,8 +5,6 @@ Bullet.sprite = utils.newAnimation("assets/sprites/bullet.png")
 local sound = soundsystem.newSound("assets/sounds/gun1.wav"):setBaseVolume(0.7)
 local esound = soundsystem.newSound("assets/sounds/ebullet.wav"):setBaseVolume(0.4)
 local colSound = soundsystem.newSound("assets/sounds/bulletcol.wav"):setBaseVolume(0.2)
-local hitSound = soundsystem.newSound("assets/sounds/bullethit.wav"):setBaseVolume(0.3)
-local hitSound2 = soundsystem.newSound("assets/sounds/bullethit2.wav"):setBaseVolume(0.3)
 
 function Bullet:new(x,y,angle,owner,speed,time)
     Bullet.super.new(self, x,y)
@@ -59,7 +57,6 @@ function Bullet:update()
             if enemy:collisionAt(self.x,self.y)
             and enemy.levelIndex == self.levelIndex
             and enemy ~= self.owner then
-                utils.choose({hitSound, hitSound2}):play(utils.randomRange(0.8,1.2))
                 enemy:hit(self)
                 self.dead = true
                 self:createThing(Impact(self.x,self.y))
