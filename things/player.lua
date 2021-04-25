@@ -266,6 +266,7 @@ function Player:die()
     if self.alarms.respawn:isActive() then return end
     deathSound:play()
     self.alarms.respawn:set(60)
+    self.currentWarp = nil
 
     local scene = scenemanager.get()
     for i=1, 3 do

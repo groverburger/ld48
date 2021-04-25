@@ -4,6 +4,7 @@ GameScene = class()
 -- load the game map
 ----------------------------------------------------------------------------------------------------
 
+local castlePoint = 7
 local map = json.decode(love.filesystem.read("assets/map.ldtk"))
 local levels = {}
 local levelTexture = lg.newImage("assets/sprites/tile.png")
@@ -274,7 +275,11 @@ local function getDepth(i)
 end
 
 function GameScene:draw()
-    lg.clear(lume.color(colors.hex.skyblue))
+    if self.levelIndex < castlePoint then
+        lg.clear(lume.color(colors.hex.skyblue))
+    else
+        lg.clear(lume.color("#555555"))
+    end
 
     local nearestDepth = 1 + 10*self.depthOffset^2
     local furthestLevel = self.levelIndex+furthest
@@ -289,6 +294,9 @@ function GameScene:draw()
         -- higher depth is closer
         local depth = getDepth(i)
         local r,g,b = lume.color("#7D95C4")
+        if self.levelIndex >= castlePoint then
+            r,g,b = lume.color("#444444")
+        end
         local alpha = 1--utils.map(depth, 0.18,0.2, 0,1)
 
         if i <= self.levelIndex then

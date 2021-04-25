@@ -6,6 +6,11 @@ King.state = 1
 
 local throne = lg.newImage("assets/sprites/throne.png")
 
+local startSound = soundsystem.newSound("assets/sounds/bossstart.wav")
+local laughSound = soundsystem.newSound("assets/sounds/bosslaugh.wav")
+local teleportSound = soundsystem.newSound("assets/sounds/bosstp.wav")
+local impactSound = soundsystem.newSound("assets/sounds/bossimpact.wav")
+
 local function randomize(self)
     local choices = {
         self.shoot,
@@ -20,7 +25,7 @@ local function randomize(self)
     end
 
     self.alarms.action.callback = utils.choose(choices)
-    self.alarms.action:set(70)
+    self.alarms.action:set(60)
 end
 
 function King:shoot()
@@ -39,8 +44,10 @@ end
 function King:teleport()
     randomize(self)
 
+    teleportSound:play(utils.randomRange(0.8,1.2))
+
     local angle = math.random()*2*math.pi
-    local r = utils.randomRange(0,200)
+    local r = utils.randomRange(0,500)
     self.x = self.ox + math.cos(angle)*r
     self.y = self.oy + math.abs(math.sin(angle))*r*-1
 end
@@ -104,11 +111,18 @@ local function wakeup(self)
     self.state = 2
     scenemanager.get().cameraTracking = true
     randomize(self)
+    impactSound:play()
+end
+
+local function laugh(self)
+    laughSound:play(utils.randomRange(0.8,1.2))
+    self.alarms.laugh:set(utils.randomRange(60*6,60*10)*2)
 end
 
 function King:new(x,y)
     King.super.new(self, x+128,y+128)
-    self.hp = 80
+    self.hp = 70
+    self.ohp = self.hp
     self.ox = x+128
     self.oy = y+128
     self.bulletStream = 0
@@ -116,6 +130,7 @@ function King:new(x,y)
     self.alarms = {
         wakeup = Alarm(wakeup, self),
         action = Alarm(randomize, self),
+        laugh = Alarm(laugh, self):set(200),
     }
 end
 
@@ -125,8 +140,9 @@ function King:update()
     local player = scene.player
 
     if self.state == 1 and self:isLevelActive() and not self.alarms.wakeup:isActive() then
-        self.alarms.wakeup:set(150)
+        self.alarms.wakeup:set(130)
         scene.cameraTracking = false
+        startSound:play()
     end
 
     if self.alarms.wakeup:isActive() then
@@ -149,6 +165,29 @@ function King:update()
     self.animIndex = self.state
 end
 
+function King:onDeath()
+    local scene = scenemanager.get()
+    scene.win = true
+
+    scene.enemyList = {}
+    local i = 1
+    while i <= #scene.thingList do
+        local thing = scene.thingList[i]
+
+        if thing:instanceOf(Enemy)
+        or thing:instanceOf(Bullet)
+        or thing:instanceOf(summonball) then
+            thing.dead = true
+            if thing.onDeath then
+                thing:onDeath()
+            end
+            table.remove(scene.thingList, i)
+        else
+            i = i + 1
+        end
+    end
+end
+
 function King:hit(attacker)
     if self.state == 2 then
         King.super.hit(self, attacker)
@@ -158,8 +197,17 @@ end
 function King:draw()
     lg.draw(throne, 640, 15*64/2 - 36, 0, 1, 1, throne:getWidth()/2, throne:getHeight()/2)
 
-    local wakeshake = self.alarms.wakeup:isActive() and self.alarms.wakeup:getProgress()*math.cos(math.random()*2*math.pi)*2 or 0
+    local wakeshake = self.alarms.wakeup:isActive() and self.alarms.wakeup:getProgress()*math.cos(math.random()*2*math.pi)*4 or 0
     local dx = self.x + wakeshake
     local dy = self.y
     self:subdraw(dx,dy)
+
+    if self.state == 2 then
+        local w = 200
+        local h = 10
+        lg.setColor(0.1,0.1,0.1)
+        lg.rectangle("fill", self.x-w/2,self.y-100,w,h)
+        colors.red()
+        lg.rectangle("fill", self.x-w/2,self.y-100,w*self.hp/self.ohp,h)
+    end
 end
