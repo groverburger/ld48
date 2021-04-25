@@ -3,9 +3,9 @@ require "things/thing"
 Enemy = class(Thing)
 
 local hitShader = lg.newShader("assets/shaders/white.frag")
-local deathSound = soundsystem.newSound("assets/sounds/edeath.wav"):setBaseVolume(0.3)
-local hitSound = soundsystem.newSound("assets/sounds/bullethit.wav"):setBaseVolume(0.3)
-local hitSound2 = soundsystem.newSound("assets/sounds/bullethit2.wav"):setBaseVolume(0.3)
+local deathSound = soundsystem.newSound("assets/sounds/edeath.wav"):setBaseVolume(0.7)
+local hitSound = soundsystem.newSound("assets/sounds/bullethit.wav"):setBaseVolume(0.5)
+local hitSound2 = soundsystem.newSound("assets/sounds/bullethit2.wav"):setBaseVolume(0.5)
 
 function Enemy:new(x,y)
     Enemy.super.new(self, x,y)

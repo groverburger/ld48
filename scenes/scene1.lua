@@ -1,10 +1,13 @@
 GameScene = class()
 
+local music1 = soundsystem.newMusic("assets/music/level1.mp3", 0.35)
+local music2 = soundsystem.newMusic("assets/music/level2.mp3", 0.35)
+local bossMusic = soundsystem.newMusic("assets/music/boss.mp3", 0.5)
+
 ----------------------------------------------------------------------------------------------------
 -- load the game map
 ----------------------------------------------------------------------------------------------------
 
-local castlePoint = 6.1
 local map = json.decode(love.filesystem.read("assets/map.ldtk"))
 local levels = {}
 local levelTexture = lg.newImage("assets/sprites/tile.png")
@@ -85,22 +88,28 @@ end
 
 local bgFadeShader = lg.newShader("assets/shaders/bgfade.frag")
 
+local castle = 9
 function GameScene:new()
     self.camera = {x=640,y=7.5*64}
     self.cutscene = nil
     self.depthOffset = 0
     self.levelThings = {}
     self.cameraTracking = true
+    self.lastLevelIndex = 1
 
     self.depthProps = {
-        [7] = {
+        [castle] = {
             scale = 10,
             xoff = 0,
             yoff = -500,
             sprite = lg.newImage("assets/sprites/castle.png"),
         },
     }
+
+    music1:play()
 end
+
+local castlePoint = castle - 0.9
 
 function GameScene:init()
     self.levelIndex = 1
@@ -112,12 +121,9 @@ end
 
 function GameScene:createThing(thing, levelIndex)
     assert(levelIndex, "no level index given!")
+
     thing.levelIndex = levelIndex
-    --if levelIndex == self.levelIndex then
-        --table.insert(self.thingList, thing)
-    --else
-        table.insert(self.levelThings[levelIndex], thing)
-    --end
+    table.insert(self.levelThings[levelIndex], thing)
 
     if thing:instanceOf(Enemy) and levelIndex == self.levelIndex then
         table.insert(self.enemyList, thing)
@@ -227,6 +233,16 @@ function GameScene:update()
         self.pausedThisFrame = false
         return
     end
+
+    if self.levelIndex >= castlePoint and self.lastLevelIndex < castlePoint then
+        music1:stop()
+        music2:play()
+    end
+    if self.levelIndex == #levels and self.lastLevelIndex < #levels then
+        music2:stop()
+        bossMusic:play()
+    end
+    self.lastLevelIndex = self.levelIndex
 
     -- update all things in the scene, cull the dead ones
     for _, v in pairs(neighbors) do

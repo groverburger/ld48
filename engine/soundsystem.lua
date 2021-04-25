@@ -66,6 +66,7 @@ function sound:play(pitch, x,y,z)
     -- so that this sound can get updated before it starts playing
     -- preventing weird sound cutoff glitches
     --self.queuedPlay = true
+    self.source:setVolume(self.volume * self.baseVolume)
     self.source:play()
 
     return self
@@ -142,20 +143,6 @@ function pooledSound:ownAndPlay(owner, ...)
         self.ownerOfIndex[self.index] = owner
         return self:play(...)
     end
-    --[[
-    local attempts = #self
-    for i=0, attempts-1 do
-        local index = self.index+i
-        if index > #self then index = index - #self end
-
-        if not self.ownerOfIndex[index] then
-            self.ownerOfIndex[index] = owner
-            self.index = index
-            self[index]:play(...)
-            return self[index]
-        end
-    end
-    ]]
 end
 
 function pooledSound:disownAndStop(owner)
@@ -251,7 +238,8 @@ function soundsystem.newPooledSound(...)
 end
 
 function soundsystem.newMusic(path, volume)
-    local this = sound(path, "stream", volume)
+    local this = sound(path, "stream")
+    this:setBaseVolume(volume or 1)
     musicList[this] = this
     this.source:setLooping(true)
     return this

@@ -1,7 +1,7 @@
 WarpCutscene = class()
 
-local warpSound = soundsystem.newSound("assets/sounds/warp.wav"):setBaseVolume()
-local warpStartSound = soundsystem.newSound("assets/sounds/warpstart.wav"):setBaseVolume(0.5)
+local warpSound = soundsystem.newSound("assets/sounds/warp.wav"):setBaseVolume(1)
+local warpStartSound = soundsystem.newSound("assets/sounds/warpstart.wav"):setBaseVolume(1)
 
 function WarpCutscene:new(warpDir)
     self.drawcalls = {}

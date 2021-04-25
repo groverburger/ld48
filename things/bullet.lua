@@ -4,7 +4,7 @@ Bullet = class(Thing)
 Bullet.sprite = utils.newAnimation("assets/sprites/bullet.png")
 local sound = soundsystem.newSound("assets/sounds/gun1.wav"):setBaseVolume(0.7)
 local esound = soundsystem.newSound("assets/sounds/ebullet.wav"):setBaseVolume(0.4)
-local colSound = soundsystem.newSound("assets/sounds/bulletcol.wav"):setBaseVolume(0.2)
+local colSound = soundsystem.newSound("assets/sounds/bulletcol.wav"):setBaseVolume(0.3)
 
 function Bullet:new(x,y,angle,owner,speed,time)
     Bullet.super.new(self, x,y)
