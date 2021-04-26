@@ -12,7 +12,7 @@ function TitleScene:new()
 end
 
 function TitleScene:update()
-    if input.isDown("shoot") or input.isDown("jump") then
+    if input.isReleased("shoot") then
         music:stop()
         scenemanager.set(GameScene())
     end
@@ -20,6 +20,7 @@ function TitleScene:update()
 end
 
 local function drawtext(str,dx,dy)
+    --[[
     colors.white()
     local r = lg.getFont() == font and 5 or 3
     if lg.getFont() == tinyfont then r = 2 end
@@ -27,6 +28,7 @@ local function drawtext(str,dx,dy)
         local dx, dy = dx + math.cos(i)*r, dy + math.sin(i)*r
         lg.print(str, dx,dy)
     end
+    ]]
 
     colors.black()
     lg.print(str, dx,dy)
@@ -35,10 +37,10 @@ end
 function TitleScene:draw()
     lg.draw(bg)
     lg.setFont(font)
-    drawtext("Into the Castle", 64,240)
+    --drawtext("Into the Castle", 64,240)
 
     lg.setFont(smallfont)
-    drawtext("Click to start!", 64, 768-350 + math.sin(time)*4)
+    drawtext("Click to start!", 100, 150 + math.sin(time)*4)
     lg.setFont(tinyfont)
-    drawtext("Created by groverburger for Ludum Dare 48 in 48 hours\n@grover_burger on Twitter", 64,768-100)
+    drawtext("Created by groverburger for Ludum Dare 48 in 48 hours\n@grover_burger on Twitter", 64,768-70)
 end

@@ -20,6 +20,7 @@ function hooks.pre_load(args)
     end)
 
     console:addCommand("level", function (args)
+        scenemanager.set(GameScene())
         local scene = scenemanager.get()
         scene:setLevelActive(tonumber(args[2]))
 

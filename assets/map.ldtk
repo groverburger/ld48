@@ -1269,17 +1269,6 @@
 						},
 						{
 							"__identifier": "StillStar",
-							"__grid": [28,26],
-							"__pivot": [0,0],
-							"__tile": null,
-							"width": 64,
-							"height": 64,
-							"defUid": 36,
-							"px": [448,416],
-							"fieldInstances": []
-						},
-						{
-							"__identifier": "StillStar",
 							"__grid": [20,24],
 							"__pivot": [0,0],
 							"__tile": null,
@@ -1287,17 +1276,6 @@
 							"height": 64,
 							"defUid": 36,
 							"px": [320,384],
-							"fieldInstances": []
-						},
-						{
-							"__identifier": "StillStar",
-							"__grid": [36,29],
-							"__pivot": [0,0],
-							"__tile": null,
-							"width": 64,
-							"height": 64,
-							"defUid": 36,
-							"px": [576,464],
 							"fieldInstances": []
 						},
 						{
@@ -1351,6 +1329,17 @@
 							"height": 64,
 							"defUid": 36,
 							"px": [384,400],
+							"fieldInstances": []
+						},
+						{
+							"__identifier": "StillStar",
+							"__grid": [32,28],
+							"__pivot": [0,0],
+							"__tile": null,
+							"width": 64,
+							"height": 64,
+							"defUid": 36,
+							"px": [512,448],
 							"fieldInstances": []
 						}
 					]
@@ -1520,17 +1509,6 @@
 							"fieldInstances": [{ "__identifier": "keycolor", "__value": null, "__type": "String", "defUid": 30, "realEditorValues": [] }]
 						},
 						{
-							"__identifier": "Bat",
-							"__grid": [16,4],
-							"__pivot": [0,0],
-							"__tile": null,
-							"width": 64,
-							"height": 64,
-							"defUid": 11,
-							"px": [256,64],
-							"fieldInstances": [{ "__identifier": "keycolor", "__value": null, "__type": "String", "defUid": 30, "realEditorValues": [] }]
-						},
-						{
 							"__identifier": "Warp",
 							"__grid": [2,20],
 							"__pivot": [0,0],
@@ -1540,6 +1518,83 @@
 							"defUid": 5,
 							"px": [32,320],
 							"fieldInstances": []
+						},
+						{
+							"__identifier": "StillStar",
+							"__grid": [28,32],
+							"__pivot": [0,0],
+							"__tile": null,
+							"width": 64,
+							"height": 64,
+							"defUid": 36,
+							"px": [448,512],
+							"fieldInstances": []
+						},
+						{
+							"__identifier": "StillStar",
+							"__grid": [44,36],
+							"__pivot": [0,0],
+							"__tile": null,
+							"width": 64,
+							"height": 64,
+							"defUid": 36,
+							"px": [704,576],
+							"fieldInstances": []
+						},
+						{
+							"__identifier": "StillStar",
+							"__grid": [48,38],
+							"__pivot": [0,0],
+							"__tile": null,
+							"width": 64,
+							"height": 64,
+							"defUid": 36,
+							"px": [768,608],
+							"fieldInstances": []
+						},
+						{
+							"__identifier": "StillStar",
+							"__grid": [60,40],
+							"__pivot": [0,0],
+							"__tile": null,
+							"width": 64,
+							"height": 64,
+							"defUid": 36,
+							"px": [960,640],
+							"fieldInstances": []
+						},
+						{
+							"__identifier": "StillStar",
+							"__grid": [24,30],
+							"__pivot": [0,0],
+							"__tile": null,
+							"width": 64,
+							"height": 64,
+							"defUid": 36,
+							"px": [384,480],
+							"fieldInstances": []
+						},
+						{
+							"__identifier": "StillStar",
+							"__grid": [12,24],
+							"__pivot": [0,0],
+							"__tile": null,
+							"width": 64,
+							"height": 64,
+							"defUid": 36,
+							"px": [192,384],
+							"fieldInstances": []
+						},
+						{
+							"__identifier": "Bat",
+							"__grid": [18,4],
+							"__pivot": [0,0],
+							"__tile": null,
+							"width": 64,
+							"height": 64,
+							"defUid": 11,
+							"px": [288,64],
+							"fieldInstances": [{ "__identifier": "keycolor", "__value": null, "__type": "String", "defUid": 30, "realEditorValues": [] }]
 						}
 					]
 				},
