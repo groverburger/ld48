@@ -4,7 +4,7 @@ local scene
 
 function scenemanager.set(newscene)
     scene = newscene
-    scene:init()
+    if scene.init then scene:init() end
     engine.resetFramerateSmoothing()
 end
 

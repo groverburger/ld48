@@ -1,5 +1,5 @@
 function love.load(arg)
-    scenemanager.set(GameScene())
+    scenemanager.set(TitleScene())
 end
 
 function love.update()
@@ -25,4 +25,4 @@ love.run = require("engine")({
 input.addButton("left", {"a"})
 input.addButton("right", {"d"})
 input.addButton("jump", {"space", "w"})
-input.addButton("shoot", {}, {1})
+input.addButton("shoot", {}, {1,2,3})
