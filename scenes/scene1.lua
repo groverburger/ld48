@@ -105,8 +105,6 @@ function GameScene:new()
             sprite = lg.newImage("assets/sprites/castle.png"),
         },
     }
-
-    music1:play()
 end
 
 local castlePoint = castle - 0.9
@@ -117,6 +115,7 @@ function GameScene:init()
         self:loadLevel(i, level)
     end
     self:setLevelActive(1)
+    music1:play()
 end
 
 function GameScene:createThing(thing, levelIndex)

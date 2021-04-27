@@ -37,8 +37,6 @@ function hooks.pre_load(args)
     for i, arg in ipairs(args) do
         totalArgs = totalArgs .. arg .. " "
     end
-
-    love.window.maximize()
 end
 
 function hooks.post_load()

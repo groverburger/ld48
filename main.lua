@@ -1,3 +1,5 @@
+local paused
+
 function love.load(arg)
     scenemanager.set(TitleScene())
 end
@@ -5,8 +7,17 @@ end
 function love.update()
     local scene = scenemanager.get()
 
-    if scene.update then
+    if scene.update and not paused then
         scene:update()
+    end
+end
+
+function love.keypressed(k)
+    if k == "q" then
+        paused = not paused
+    end
+    if k == "e" then
+        lg.captureScreenshot(os.time() .. ".png")
     end
 end
 

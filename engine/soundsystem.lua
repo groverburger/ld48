@@ -328,6 +328,11 @@ function soundsystem.stopAllMusic()
     end
 end
 
+function soundsystem.stopAll()
+    soundsystem.stopAllSounds()
+    soundsystem.stopAllMusic()
+end
+
 function soundsystem.getDistanceFromListener(x,y,z)
     local lx,ly,lz = love.audio.getPosition()
     return math.sqrt((x-lx)^2 + (y-ly)^2 + (z and ((z-lz)^2) or 0))
