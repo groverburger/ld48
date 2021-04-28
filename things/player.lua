@@ -298,7 +298,13 @@ function Player:draw()
     if self.alarms.respawn:isActive() then return end
 
     local interp = engine.getInterpolation()
-    local dx, dy = self.x + self.speed.x * interp, self.y + self.speed.y * interp
+    local dx, dy = self.x, self.y
+
+    -- only interpolate when not in a cutscene
+    -- to stop weirdness when transitioning levels
+    if not scenemanager.get().wasPausedThisFrame then
+        dx, dy = dx + self.speed.x * interp, dy + self.speed.y * interp
+    end
 
     colors.white()
     local sx, sy = lg.transformPoint(dx, dy)

@@ -1,5 +1,7 @@
 local paused
 
+love.window.setIcon(love.image.newImageData("assets/sprites/gameicon.png"))
+
 function love.load(arg)
     scenemanager.set(TitleScene())
 end

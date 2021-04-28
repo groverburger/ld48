@@ -228,6 +228,7 @@ function GameScene:update()
         end
     end
 
+    self.wasPausedThisFrame = self.pausedThisFrame
     if self.pausedThisFrame then
         self.pausedThisFrame = false
         return

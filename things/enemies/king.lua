@@ -22,7 +22,8 @@ local function randomize(self)
         lume.remove(choices, self.summon)
     end
 
-    self.alarms.action.callback = utils.choose(choices)
+    self.index = (self.index%#choices) + 1
+    self.alarms.action.callback = choices[self.index]
     self.alarms.action:set(60)
 end
 
@@ -124,6 +125,7 @@ function King:new(x,y)
     self.ox = x+128
     self.oy = y+128
     self.bulletStream = 0
+    self.index = 1
 
     self.alarms = {
         wakeup = Alarm(wakeup, self),
@@ -148,9 +150,9 @@ function King:update()
         scene.camera.y = utils.lerp(scene.camera.y, self.y, 0.1)
     end
 
+    -- shotgun bullets
     if self.bulletStream > 0 then
         self.bulletStream = self.bulletStream - 1
-
         if self.bulletStream%7 == 0 then
             local angle = utils.angle(self.x,self.y, player.x,player.y)
             local off = 0.075
@@ -161,6 +163,10 @@ function King:update()
     end
 
     self.animIndex = self.state
+end
+
+function King:collisionAt(x,y)
+    return math.abs(x - self.x) <= 64 and math.abs(y - self.y) <= 64
 end
 
 function King:onDeath()

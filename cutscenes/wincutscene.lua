@@ -1,6 +1,11 @@
 WinCutscene = class()
 
+local music = soundsystem.newMusic("assets/music/win.mp3")
+
 function WinCutscene:new(throne)
+    soundsystem.stopAllMusic()
+    music:play()
+
     self.drawcalls = {}
     local function draw(...)
         table.insert(self.drawcalls, {...})
@@ -14,7 +19,6 @@ function WinCutscene:new(throne)
 
         while i < 200 do
             i = i + 1
-            print(i)
             scene:pauseFrame()
             player.x = utils.lerp(player.x, throne.x, 0.025)
             player.y = utils.lerp(player.y, throne.y, 0.025)
@@ -65,12 +69,40 @@ function WinCutscene:update()
     end
 end
 
+-- this is absolutely atrocious
+-- but necessary because lua treats nil as an argument in varargs
 function WinCutscene:draw()
     for _, drawcall in ipairs(self.drawcalls) do
-        if drawcall[1] == lg.rect then
-            (drawcall[1] or print)(drawcall[2], drawcall[3], drawcall[4], drawcall[5], drawcall[6]);
-        else
-            (drawcall[1] or print)(drawcall[2], drawcall[3], drawcall[4], drawcall[5], drawcall[6], drawcall[7], drawcall[8]);
+        if drawcall[1] then
+            if drawcall[8] then
+                drawcall[1](drawcall[2], drawcall[3], drawcall[4], drawcall[5], drawcall[6], drawcall[7], drawcall[8]);
+            else
+                if drawcall[7] then
+                    drawcall[1](drawcall[2], drawcall[3], drawcall[4], drawcall[5], drawcall[6], drawcall[7]);
+                else
+                    if drawcall[6] then
+                        drawcall[1](drawcall[2], drawcall[3], drawcall[4], drawcall[5], drawcall[6]);
+                    else
+                        if drawcall[5] then
+                            drawcall[1](drawcall[2], drawcall[3], drawcall[4], drawcall[5]);
+                        else
+                            if drawcall[4] then
+                                drawcall[1](drawcall[2], drawcall[3], drawcall[4]);
+                            else
+                                if drawcall[3] then
+                                    drawcall[1](drawcall[2], drawcall[3]);
+                                else
+                                    if drawcall[2] then
+                                        drawcall[1](drawcall[2]);
+                                    else
+                                        drawcall[1]();
+                                    end
+                                end
+                            end
+                        end
+                    end
+                end
+            end
         end
     end
 end
