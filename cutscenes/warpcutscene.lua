@@ -10,7 +10,7 @@ function WarpCutscene:new(warpDir)
     end
 
     self.routine = coroutine.create(function ()
-        local scene = scenemanager.get()
+        local scene = scene()
         local player = scene.player
         local warpThing = player.currentWarp
         player.currentWarp = nil

@@ -18,6 +18,8 @@ local function requireAll(folder)
     end
 end
 
+local pausedAudio = {}
+
 return function (settings)
     --------------------------------------------------------------------------------
     -- basic setup
@@ -101,6 +103,15 @@ return function (settings)
                     if name == "resize" and not fixedCanvas then
                         canvas = lg.newCanvas()
                     end
+
+                    -- pause and unpause audio when the window changes focus
+                    if name == "focus" then
+                        if a then
+                            for _, v in ipairs(pausedAudio) do v:play() end
+                        else
+                            pausedAudio = love.audio.pause()
+                        end
+                    end
                 end
             end
 
@@ -113,8 +124,9 @@ return function (settings)
                 -- get the delta time
                 local delta = love.timer.step()
 
-                -- don't let the delta time get above 1/10
-                delta = math.min(delta, 1/10)
+                -- set some bounds on delta time
+                delta = math.min(delta, 0.1)
+                delta = math.max(delta, 0.0000001)
 
                 if engine.settings.framerateSmoothing then
                     table.insert(rollingAverage, delta)

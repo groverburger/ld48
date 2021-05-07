@@ -12,7 +12,7 @@ function WinCutscene:new(throne)
     end
 
     self.routine = coroutine.create(function ()
-        local scene = scenemanager.get()
+        local scene = scene()
         local player = scene.player
         local i = 0
         scene.cameraTracking = false
