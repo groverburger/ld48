@@ -3,7 +3,7 @@
 -- MIT License
 
 return function(parent)
-    local class = {}
+    local class = {super = parent}
     local classMetatable = {__index = parent}
     local instanceMetatable = {__index = class}
 
@@ -19,11 +19,6 @@ return function(parent)
     -- a class's metatable contains __call to instantiate it
     -- as well as a __index pointing to its parent class if it has one
     setmetatable(class, classMetatable)
-
-    -- if a class has a parent, you can access it it through the .super property
-    if parent then
-        class.super = setmetatable({}, {__index = parent})
-    end
 
     -- get the class that this instance is derived from
     function class:getClass()

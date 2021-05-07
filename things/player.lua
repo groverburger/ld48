@@ -38,6 +38,7 @@ function Player:new(x,y)
     self.onWall = 0
     self.onGround = false
     self.coyoteFrames = 7
+    self.wannaJumpFrames = 0
     self.disabledAirControl = 0
 
     self.animIndex = 1
@@ -114,7 +115,12 @@ function Player:update()
     end
 
     -- start the jump
-    if self.coyoteFrames > 0 and input.isPressed("jump") then
+    self.wannaJumpFrames = math.max(self.wannaJumpFrames - 1, 0)
+    if input.isPressed("jump") then
+        self.wannaJumpFrames = 7
+    end
+
+    if self.coyoteFrames > 0 and self.wannaJumpFrames > 0 then
         self:jump()
     end
 
@@ -253,6 +259,9 @@ end
 function Player:jump()
     local scene = scenemanager.get()
 
+    self.wannaJumpFrames = 0
+    self.coyoteFrames = 0
+
     if self.currentWarp and self.onGround then
         self.spawnPoint.x = self.x
         self.spawnPoint.y = self.y
@@ -260,7 +269,6 @@ function Player:jump()
         return
     end
 
-    self.coyoteFrames = 0
     self.speed.y = -15
     self.stretch.x = 0.4
     self.stretch.y = 1.5

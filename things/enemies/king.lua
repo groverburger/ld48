@@ -94,10 +94,7 @@ end
 function King:summon()
     randomize(self)
 
-    local type = utils.choose({
-        Star,
-        StillStar,
-    })
+    local type = utils.choose(Star, StillStar)
 
     local amount = math.random() < 0.5 and 3 or 2
 

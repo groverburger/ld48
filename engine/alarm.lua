@@ -49,7 +49,7 @@ function Alarm:isActive()
     return self.time ~= math.huge
 end
 
-function Alarm:getProgress(interpolation)
+function Alarm:getProgress()
     return math.min(1 - self.time / self.lastTime, 1)
 end
 

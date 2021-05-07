@@ -16,7 +16,7 @@ end
 function Enemy:hit(bullet)
     self.hp = self.hp - 1
     self.hitflash = 4
-    utils.choose({hitSound, hitSound2}):play(utils.randomRange(0.8,1.2))
+    utils.choose(hitSound, hitSound2):play(utils.randomRange(0.8,1.2))
     love.timer.sleep(0.02)
 end
 

@@ -33,6 +33,7 @@ end
 love.run = require("engine")({
     gameWidth = 1024,
     gameHeight = 768,
+    framerateSmoothing = true,
 })
 
 input.addButton("left", {"a"})

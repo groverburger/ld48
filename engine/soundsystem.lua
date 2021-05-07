@@ -238,7 +238,7 @@ function soundsystem.newPooledSound(...)
 end
 
 function soundsystem.newMusic(path, volume)
-    local this = sound(path, "static")
+    local this = sound(path, "stream")
     this:setBaseVolume(volume or 1)
     musicList[this] = this
     this.source:setLooping(true)

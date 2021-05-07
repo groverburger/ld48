@@ -1,5 +1,18 @@
 local path = ...
 
+local function requireAll(folder)
+    local items = love.filesystem.getDirectoryItems(folder)
+    for _, item in ipairs(items) do
+        local file = folder .. '/' .. item
+        local type = love.filesystem.getInfo(file).type
+        if type == "file" then
+            require(file:sub(1,-5))
+        elseif type == "directory" then
+            requireAll(file)
+        end
+    end
+end
+
 return function (settings)
     --------------------------------------------------------------------------------
     -- basic setup
@@ -49,9 +62,9 @@ return function (settings)
     soundsystem = require(path .. "/soundsystem")
 
     -- load the components of the game
-    utils.requireAll("things")
-    utils.requireAll("scenes")
-    utils.requireAll("cutscenes")
+    requireAll("things")
+    requireAll("scenes")
+    requireAll("cutscenes")
 
     -- pcalls don't work in web, so this automatically
     -- becomes disabled in the release build!
@@ -91,19 +104,26 @@ return function (settings)
                 -- update
                 --------------------------------------------------------------------------------
 
-                -- smooth out the delta time
+                -- get the delta time
                 local delta = love.timer.step()
-                table.insert(rollingAverage, math.min(delta))
-                if #rollingAverage > 60 then
-                    table.remove(rollingAverage, 1)
-                end
-                local avg = 0
-                for i,v in ipairs(rollingAverage) do
-                    avg = avg + v
+
+                -- don't let the delta time get above 1/10
+                delta = math.min(delta, 1/10)
+
+                if engine.settings.framerateSmoothing then
+                    table.insert(rollingAverage, delta)
+                    if #rollingAverage > 60 then
+                        table.remove(rollingAverage, 1)
+                    end
+                    local avg = 0
+                    for i, v in ipairs(rollingAverage) do
+                        avg = avg + v
+                    end
+                    delta = avg / #rollingAverage
                 end
 
                 -- fixed timestep
-                accumulator = accumulator + avg/#rollingAverage
+                accumulator = accumulator + delta
                 local iter = 0
                 while accumulator > frametime and iter < 5 do
                     input.update()
@@ -120,12 +140,12 @@ return function (settings)
                 --------------------------------------------------------------------------------
 
                 -- render the game onto a canvas
-                if love.graphics and love.graphics.isActive() then
+                if lg and lg.isActive() then
                     -- set the canvas
                     lg.origin()
                     lg.clear(0,0,0,0)
                     lg.setCanvas(canvas)
-                    lg.clear(love.graphics.getBackgroundColor())
+                    lg.clear(lg.getBackgroundColor())
 
                     if love.draw then love.draw() end
 
@@ -144,7 +164,6 @@ return function (settings)
 
                 love.timer.sleep(0.001)
             else
-                love.timer.step()
                 love.timer.sleep(0.05)
                 love.timer.step()
             end
