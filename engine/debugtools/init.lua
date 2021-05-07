@@ -16,12 +16,12 @@ function hooks.pre_load(args)
     end)
 
     console:addCommand("reset", function (args)
-        scenemanager.set(GameScene())
+        scene(GameScene())
     end)
 
     console:addCommand("level", function (args)
-        scenemanager.set(GameScene())
-        local scene = scenemanager.get()
+        scene(GameScene())
+        local scene = scene()
         scene:setLevelActive(tonumber(args[2]))
 
         if args[3] and args[4] then
@@ -45,8 +45,6 @@ function hooks.post_load()
     for _, command in ipairs(commandList) do
         console:execute(lume.trim(command))
     end
-
-    local scene = scenemanager.get()
 end
 
 function hooks.pre_update()

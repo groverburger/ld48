@@ -26,7 +26,7 @@ function Enemy:update()
     self.dead = self.dead or self.hp <= 0
 
     if self:isLevelActive() then
-        local player = scenemanager.get().player
+        local player = scene().player
         if utils.distance(player.x, player.y, self.x, self.y) <= 40 then
             if player.speed.y > 1 then
                 self:hit(player)
@@ -44,7 +44,7 @@ function Enemy:collisionAt(x,y)
 end
 
 function Enemy:onDeath()
-    local scene = scenemanager.get()
+    local scene = scene()
     for i, enemy in ipairs(scene.enemyList) do
         if enemy == self then
             table.remove(scene.enemyList, i)

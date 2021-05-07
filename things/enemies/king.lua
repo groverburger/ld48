@@ -17,7 +17,7 @@ local function randomize(self)
         self.summon,
     }
 
-    local scene = scenemanager.get()
+    local scene = scene()
     if #scene.enemyList > 15 then
         lume.remove(choices, self.summon)
     end
@@ -105,7 +105,7 @@ end
 
 local function wakeup(self)
     self.state = 2
-    scenemanager.get().cameraTracking = true
+    scene().cameraTracking = true
     randomize(self)
     impactSound:play()
 end
@@ -133,7 +133,7 @@ end
 
 function King:update()
     King.super.update(self)
-    local scene = scenemanager.get()
+    local scene = scene()
     local player = scene.player
 
     if self.state == 1 and self:isLevelActive() and not self.alarms.wakeup:isActive() and player.onGround then
@@ -167,7 +167,7 @@ function King:collisionAt(x,y)
 end
 
 function King:onDeath()
-    local scene = scenemanager.get()
+    local scene = scene()
     scene.win = true
 
     scene.enemyList = {}

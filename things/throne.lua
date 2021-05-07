@@ -15,7 +15,7 @@ end
 function Throne:update()
     Throne.super.update(self)
 
-    local scene = scenemanager.get()
+    local scene = scene()
     local player = scene.player
     if self.king.dead
     and utils.distance(self.x,self.y,player.x,player.y) <= 200 then

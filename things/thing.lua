@@ -10,7 +10,6 @@ function Thing:new(x, y)
 end
 
 function Thing:update()
-    -- update my alarms
     if self.alarms then
         for _, alarm in pairs(self.alarms) do
             alarm:update()
@@ -34,17 +33,16 @@ function Thing:animate(anim)
 end
 
 function Thing:isLevelActive()
-    local scene = scenemanager.get()
+    local scene = scene()
     return scene.levelIndex == self.levelIndex
 end
 
 function Thing:createThing(thing)
-    local scene = scenemanager.get()
-    return scene:createThing(thing, self.levelIndex)
+    return scene():createThing(thing, self.levelIndex)
 end
 
 function Thing:isSolid(x,y, tile,hoob,voob)
-    local scene = scenemanager.get()
+    local scene = scene()
     local level = scene:getLevel(self.levelIndex)
 
     if hoob and (x <= 0 or x >= level.width*64) then return true end

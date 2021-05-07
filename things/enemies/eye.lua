@@ -8,7 +8,7 @@ local anim = {1,2}
 local function shoot(self)
     self.alarms.shoot:reset()
     self.alarms.blink:set(8)
-    local scene = scenemanager.get()
+    local scene = scene()
     local angle = math.acos(self.xdir)
     local bullet = self:createThing(Bullet(self.x + self.xdir*32,self.y,angle,self,15,70))
 end

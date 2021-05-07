@@ -14,7 +14,7 @@ function Key:update()
     self.y = self.y + math.sin(self.time)
     self.time = self.time + 0.1
 
-    local scene = scenemanager.get()
+    local scene = scene()
     local player = scene.player
     if self:isLevelActive()
     and utils.distance(self.x,self.y, player.x,player.y) <= 64

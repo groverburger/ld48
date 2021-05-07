@@ -10,7 +10,7 @@ end
 
 function Text:draw()
     lg.setFont(font)
-    local scene = scenemanager.get()
+    local scene = scene()
     local alpha = 1 - math.abs(self.levelIndex - scene.levelIndex - scene.depthOffset)
     self.message = self.message and string.gsub(self.message, "#", "\n") or "message wasn't loaded!"
 

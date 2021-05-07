@@ -17,7 +17,7 @@ end
 function TitleScene:update()
     if input.isReleased("shoot") then
         music:stop()
-        scenemanager.set(GameScene())
+        scene(GameScene())
     end
     time = time + 0.05
 end

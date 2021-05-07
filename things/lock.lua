@@ -8,7 +8,7 @@ function Lock:new(x,y)
 end
 
 function Lock:init()
-    local scene = scenemanager.get()
+    local scene = scene()
     local level = scene:getLevel(self.levelIndex)
     level[math.floor(self.x/64) + 1][math.floor(self.y/64) + 1] = 1
 end
@@ -16,7 +16,7 @@ end
 function Lock:update()
     Lock.super.update(self)
 
-    local scene = scenemanager.get()
+    local scene = scene()
     local player = scene.player
     if self:isLevelActive()
     and utils.distance(self.x,self.y, player.x,player.y) <= 100
@@ -27,7 +27,7 @@ function Lock:update()
 end
 
 function Lock:onDeath()
-    local scene = scenemanager.get()
+    local scene = scene()
     local level = scene:getLevel(self.levelIndex)
     level[math.floor(self.x/64) + 1][math.floor(self.y/64) + 1] = 0
 

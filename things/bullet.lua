@@ -14,7 +14,7 @@ function Bullet:new(x,y,angle,owner,speed,time)
     self.life = Alarm():set(time or 18)
     self.animIndex = 0
     self.size = 1
-    local player = scenemanager.get().player
+    local player = scene().player
     self.owner = owner or player
     self.firstFrame = true
 
@@ -24,7 +24,7 @@ function Bullet:new(x,y,angle,owner,speed,time)
 end
 
 function Bullet:update()
-    local scene = scenemanager.get()
+    local scene = scene()
     self.x = self.x + self.speed.x
     self.y = self.y + self.speed.y
 

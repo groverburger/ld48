@@ -14,7 +14,7 @@ function Warp:new(x, y)
 end
 
 function Warp:update()
-    local scene = scenemanager.get()
+    local scene = scene()
     local player = scene.player
     if math.abs(player.x - self.x) <= 80
     and self.y - player.y < 128

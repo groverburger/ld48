@@ -13,7 +13,7 @@ local function shoot(self)
 end
 
 local function shot(self)
-    local scene = scenemanager.get()
+    local scene = scene()
     local player = scene.player
     local angle = utils.angle(self.x,self.y,player.x,player.y)
     local bullet = self:createThing(Bullet(self.x,self.y,angle,self,15,70))

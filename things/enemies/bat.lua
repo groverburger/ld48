@@ -43,7 +43,7 @@ function Bat:update()
         end
     end
 
-    local scene = scenemanager.get()
+    local scene = scene()
     local player = scene.player
     if self.state == 1 then
         if math.abs(player.x-self.x) < 250
@@ -70,7 +70,7 @@ function Bat:update()
 end
 
 function Bat:draw()
-    local scene = scenemanager.get()
+    local scene = scene()
     local dir = self.state == 2 and scene.player.x < self.x and -1 or 1
 
     self:drawKey()

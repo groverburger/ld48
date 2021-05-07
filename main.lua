@@ -3,12 +3,11 @@ local paused
 love.window.setIcon(love.image.newImageData("assets/sprites/gameicon.png"))
 
 function love.load(arg)
-    scenemanager.set(TitleScene())
+    scene(TitleScene())
 end
 
 function love.update()
-    local scene = scenemanager.get()
-
+    local scene = scene()
     if scene.update and not paused then
         scene:update()
     end
@@ -24,17 +23,17 @@ function love.keypressed(k)
 end
 
 function love.draw()
-    local scene = scenemanager.get()
+    local scene = scene()
     if scene.draw then
         scene:draw()
     end
 end
 
-love.run = require("engine")({
+love.run = require "engine" {
     gameWidth = 1024,
     gameHeight = 768,
     framerateSmoothing = true,
-})
+}
 
 input.addButton("left", {"a"})
 input.addButton("right", {"d"})

@@ -286,7 +286,7 @@ end
 local furthest = 20
 
 local function getDepth(i)
-    local scene = scenemanager.get()
+    local scene = scene()
     return utils.lerp(0.1, 1, utils.map(i - scene.depthOffset, scene.levelIndex, scene.levelIndex+furthest, 1, 0)^5)
 end
 

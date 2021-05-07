@@ -24,8 +24,7 @@ local function respawn(self)
         self.speed[i] = 0
     end
 
-    local scene = scenemanager.get()
-    scene:resetLevel()
+    scene():resetLevel()
 end
 
 function Player:new(x,y)
@@ -60,7 +59,6 @@ local airSpeed = 0.7
 local walkFriction = 0.9
 local stopFriction = 0.65
 local maxWalkSpeed = 8--walkSpeed / (1-walkFriction)
-local scene = scenemanager.get()
 local width, height = 12, 32
 
 function Player:update()
@@ -257,15 +255,13 @@ function Player:update()
 end
 
 function Player:jump()
-    local scene = scenemanager.get()
-
     self.wannaJumpFrames = 0
     self.coyoteFrames = 0
 
     if self.currentWarp and self.onGround then
         self.spawnPoint.x = self.x
         self.spawnPoint.y = self.y
-        scene.cutscene = WarpCutscene(self.currentWarp:instanceOf(BackWarp) and -1 or 1)
+        scene().cutscene = WarpCutscene(self.currentWarp:instanceOf(BackWarp) and -1 or 1)
         return
     end
 
@@ -288,7 +284,6 @@ function Player:die()
     self.alarms.respawn:set(60)
     self.currentWarp = nil
 
-    local scene = scenemanager.get()
     for i=1, 3 do
         local x, y = utils.lengthdir(math.random()*2*math.pi, utils.randomRange(10,20))
         x, y = x + self.x, y + self.y
@@ -310,7 +305,7 @@ function Player:draw()
 
     -- only interpolate when not in a cutscene
     -- to stop weirdness when transitioning levels
-    if not scenemanager.get().wasPausedThisFrame then
+    if not scene().wasPausedThisFrame then
         dx, dy = dx + self.speed.x * interp, dy + self.speed.y * interp
     end
 

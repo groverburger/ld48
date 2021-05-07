@@ -9,7 +9,7 @@ local function shoot(self)
     self.alarms.shoot:set(60)
     if not self:isLevelActive() then return end
 
-    local scene = scenemanager.get()
+    local scene = scene()
     local player = scene.player
     local angle = utils.angle(self.x, self.y, player.x, player.y)
     --scene:createThing(Bullet(self.x,self.y,angle,self,15,25))
@@ -30,7 +30,7 @@ end
 function Star:update()
     Star.super.update(self)
 
-    local scene = scenemanager.get()
+    local scene = scene()
     if self:isSolid(self.x + self.speed.x, self.y, true,true,true) then
         self.speed.x = self.speed.x * -1
     end

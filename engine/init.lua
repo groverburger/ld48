@@ -1,3 +1,8 @@
+-- pinwheel engine by groverburger
+--
+-- main.lua should contain only game-specific code
+-- the engine should contain all abstracted out game agnostic boilerplate
+
 local path = ...
 
 local function requireAll(folder)
@@ -50,13 +55,14 @@ return function (settings)
     --------------------------------------------------------------------------------
 
     -- make some useful libraries globally scoped
+    -- libraries are lowercase, classes are uppercase
     lume = require(path .. "/lume")
     inspect = require(path .. "/inspect")
     class = require(path .. "/oops")
     utils = require(path .. "/utils")
     Alarm = require(path .. "/alarm")
     json = require(path .. "/json")
-    scenemanager = require(path .. "/scenemanager")
+    scene = require(path .. "/scene")
     input = require(path .. "/input")
     colors = require(path .. "/colors")
     soundsystem = require(path .. "/soundsystem")
@@ -164,6 +170,8 @@ return function (settings)
 
                 love.timer.sleep(0.001)
             else
+                -- sleep for longer and don't do anything
+                -- when the window is not in focus
                 love.timer.sleep(0.05)
                 love.timer.step()
             end
