@@ -2,7 +2,7 @@ Key = class(Thing)
 Key.sprite = utils.newAnimation("assets/sprites/key.png")
 Key.keycolor = "#ffffff"
 
-local sound = soundsystem.newSound("assets/sounds/keyget.wav"):setBaseVolume(0.5)
+local sound = audio.newSound("assets/sounds/keyget.wav", 0.5)
 
 function Key:new(x,y)
     Key.super.new(self, x,y)

@@ -1,6 +1,6 @@
 require "things/enemies/enemy"
 
-local batfly = soundsystem.newSound("assets/sounds/batfly.wav")
+local batfly = audio.newSound("assets/sounds/batfly.wav")
 
 Bat = class(Enemy)
 Bat.sprite = utils.newAnimation("assets/sprites/bat.png")

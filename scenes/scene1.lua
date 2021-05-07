@@ -1,8 +1,8 @@
 GameScene = class()
 
-local music1 = soundsystem.newMusic("assets/music/level1.mp3", 0.35)
-local music2 = soundsystem.newMusic("assets/music/level2.mp3", 0.35)
-local bossMusic = soundsystem.newMusic("assets/music/boss.mp3", 0.5)
+local music1 = audio.newMusic("assets/music/level1.mp3", 0.35)
+local music2 = audio.newMusic("assets/music/level2.mp3", 0.35)
+local bossMusic = audio.newMusic("assets/music/boss.mp3", 0.5)
 
 ----------------------------------------------------------------------------------------------------
 -- load the game map

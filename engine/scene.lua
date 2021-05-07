@@ -3,7 +3,7 @@ local scene
 return function (newscene)
     if newscene then
         scene = newscene
-        soundsystem.stopAll()
+        love.audio.stop()
         if scene.init then scene:init() end
         engine.resetFramerateSmoothing()
     end

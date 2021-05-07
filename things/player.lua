@@ -5,9 +5,9 @@ Player = class(Thing)
 local sprite = utils.newAnimation("assets/sprites/lad.png")
 local gunarm = lg.newImage("assets/sprites/gunarm.png")
 
-local jumpSound = soundsystem.newSound("assets/sounds/jump.wav"):setBaseVolume(0.5)
-local landSound = soundsystem.newSound("assets/sounds/land.wav"):setBaseVolume(0.25)
-local deathSound = soundsystem.newSound("assets/sounds/death.wav"):setBaseVolume()
+local jumpSound = audio.newSound("assets/sounds/jump.wav", 0.5)
+local landSound = audio.newSound("assets/sounds/land.wav", 0.25)
+local deathSound = audio.newSound("assets/sounds/death.wav")
 
 local animations = {
     idle = {1,2},
@@ -103,7 +103,7 @@ function Player:update()
         if not wasOnGround and self.speed.y > 8 then
             self.stretch.x = 1.5
             self.stretch.y = 0.4
-            landSound:play(utils.randomRange(0.8,1.2))
+            landSound:play()
         end
 
         self.speed.y = 0
@@ -275,7 +275,7 @@ function Player:jump()
         self.disabledAirControl = 7
     end
 
-    jumpSound:play(utils.randomRange(0.8,1.2))
+    jumpSound:play()
 end
 
 function Player:die()

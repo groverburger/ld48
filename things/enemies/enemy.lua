@@ -3,9 +3,9 @@ require "things/thing"
 Enemy = class(Thing)
 
 local hitShader = lg.newShader("assets/shaders/white.frag")
-local deathSound = soundsystem.newSound("assets/sounds/edeath.wav"):setBaseVolume(0.7)
-local hitSound = soundsystem.newSound("assets/sounds/bullethit.wav"):setBaseVolume(0.5)
-local hitSound2 = soundsystem.newSound("assets/sounds/bullethit2.wav"):setBaseVolume(0.5)
+local deathSound = audio.newSound("assets/sounds/edeath.wav", 0.7)
+local hitSound = audio.newSound("assets/sounds/bullethit.wav", 0.5)
+local hitSound2 = audio.newSound("assets/sounds/bullethit2.wav", 0.5)
 
 function Enemy:new(x,y)
     Enemy.super.new(self, x,y)
@@ -16,7 +16,7 @@ end
 function Enemy:hit(bullet)
     self.hp = self.hp - 1
     self.hitflash = 4
-    utils.choose(hitSound, hitSound2):play(utils.randomRange(0.8,1.2))
+    utils.choose(hitSound, hitSound2):play()
     love.timer.sleep(0.02)
 end
 
@@ -28,10 +28,10 @@ function Enemy:update()
     if self:isLevelActive() then
         local player = scene().player
         if utils.distance(player.x, player.y, self.x, self.y) <= 40 then
-            if player.speed.y > 1 then
+            if player.speed.y > 0.25 then
                 self:hit(player)
                 player:jump()
-            elseif player.speed.y <= 1 and player.y < self.y then
+            elseif player.speed.y < 0 and player.y < self.y then
             else
                 player:hit(self)
             end
@@ -51,7 +51,7 @@ function Enemy:onDeath()
         end
     end
 
-    deathSound:play(utils.randomRange(0.8,1.2))
+    deathSound:play()
     for i=1, 3 do
         local x, y = utils.lengthdir(math.random()*2*math.pi, utils.randomRange(10,20))
         x, y = x + self.x, y + self.y

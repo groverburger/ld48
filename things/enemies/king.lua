@@ -4,10 +4,10 @@ King = class(Enemy)
 King.sprite = utils.newAnimation("assets/sprites/king.png")
 King.state = 1
 
-local startSound = soundsystem.newSound("assets/sounds/bossstart.wav")
-local laughSound = soundsystem.newSound("assets/sounds/bosslaugh.wav")
-local teleportSound = soundsystem.newSound("assets/sounds/bosstp.wav")
-local impactSound = soundsystem.newSound("assets/sounds/bossimpact.wav")
+local startSound = audio.newSound("assets/sounds/bossstart.wav", 1, 1)
+local laughSound = audio.newSound("assets/sounds/bosslaugh.wav")
+local teleportSound = audio.newSound("assets/sounds/bosstp.wav")
+local impactSound = audio.newSound("assets/sounds/bossimpact.wav", 1, 1)
 
 local function randomize(self)
     local choices = {
@@ -42,9 +42,7 @@ end
 
 function King:teleport()
     randomize(self)
-
-    teleportSound:play(utils.randomRange(0.8,1.2))
-
+    teleportSound:play()
     local angle = math.random()*2*math.pi
     local r = utils.randomRange(0,500)
     self.x = self.ox + math.cos(angle)*r
@@ -111,7 +109,7 @@ local function wakeup(self)
 end
 
 local function laugh(self)
-    laughSound:play(utils.randomRange(0.8,1.2))
+    laughSound:play()
     self.alarms.laugh:set(utils.randomRange(60*6,60*10)*3)
 end
 

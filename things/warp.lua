@@ -3,7 +3,7 @@ require "things/thing"
 Warp = class(Thing)
 Warp.sprite = utils.newAnimation("assets/sprites/warp.png")
 
-local stepSound = soundsystem.newSound("assets/sounds/steponwarp.wav"):setBaseVolume(0.25)
+local stepSound = audio.newSound("assets/sounds/steponwarp.wav", 0.25)
 
 local ready = {2}
 local notready = {1}
@@ -21,7 +21,7 @@ function Warp:update()
     and player.y < self.y
     and self.levelIndex == scene.levelIndex then
         if player.currentWarp ~= self then
-            stepSound:play(utils.randomRange(0.8,1.2))
+            stepSound:play()
         end
 
         player.currentWarp = self

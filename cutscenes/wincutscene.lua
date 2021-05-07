@@ -1,6 +1,6 @@
 WinCutscene = class()
 
-local music = soundsystem.newMusic("assets/music/win.mp3")
+local music = audio.newMusic("assets/music/win.mp3")
 
 function WinCutscene:new(throne)
     soundsystem.stopAllMusic()

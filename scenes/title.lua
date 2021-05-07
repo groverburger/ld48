@@ -4,7 +4,7 @@ local bg = lg.newImage("assets/sprites/title.png")
 local font = lg.newFont("assets/comicneuebold.ttf", 64)
 local smallfont = lg.newFont("assets/comicneuebold.ttf", 48)
 local tinyfont = lg.newFont("assets/comicneuebold.ttf", 24)
-local music = soundsystem.newMusic("assets/music/title.mp3", 0.35)
+local music = audio.newMusic("assets/music/title.mp3", 0.35)
 local time = 0
 
 -- quick fix for the game being a little loud
@@ -16,7 +16,6 @@ end
 
 function TitleScene:update()
     if input.isReleased("shoot") then
-        music:stop()
         scene(GameScene())
     end
     time = time + 0.05

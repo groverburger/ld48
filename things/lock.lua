@@ -1,7 +1,7 @@
 Lock = class(Thing)
 Lock.sprite = utils.newAnimation("assets/sprites/lock.png")
 
-local deathSound = soundsystem.newSound("assets/sounds/edeath.wav"):setBaseVolume(0.3)
+local deathSound = audio.newSound("assets/sounds/edeath.wav", 0.3)
 
 function Lock:new(x,y)
     Lock.super.new(self, x,y)
@@ -31,7 +31,7 @@ function Lock:onDeath()
     local level = scene:getLevel(self.levelIndex)
     level[math.floor(self.x/64) + 1][math.floor(self.y/64) + 1] = 0
 
-    deathSound:play(utils.randomRange(0.8,1.2))
+    deathSound:play()
     for i=1, 3 do
         local x, y = utils.lengthdir(math.random()*2*math.pi, utils.randomRange(10,20))
         x, y = x + self.x, y + self.y

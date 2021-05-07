@@ -46,7 +46,7 @@ function audio.newSound(path, volume, pitch)
     return sound
 end
 
-function audio.newMusic(music, volume, pitch)
+function audio.newMusic(path, volume, pitch)
     local music = noise(path, false)
     if volume then music.volume = volume end
     music.pitch = pitch or 1

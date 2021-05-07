@@ -2,9 +2,9 @@ require "things/thing"
 
 Bullet = class(Thing)
 Bullet.sprite = utils.newAnimation("assets/sprites/bullet.png")
-local sound = soundsystem.newSound("assets/sounds/gun1.wav"):setBaseVolume(0.7)
-local esound = soundsystem.newSound("assets/sounds/ebullet.wav"):setBaseVolume(0.4)
-local colSound = soundsystem.newSound("assets/sounds/bulletcol.wav"):setBaseVolume(0.3)
+local sound = audio.newSound("assets/sounds/gun1.wav", 0.7)
+local esound = audio.newSound("assets/sounds/ebullet.wav", 0.4)
+local colSound = audio.newSound("assets/sounds/bulletcol.wav", 0.3)
 
 function Bullet:new(x,y,angle,owner,speed,time)
     Bullet.super.new(self, x,y)
@@ -19,7 +19,7 @@ function Bullet:new(x,y,angle,owner,speed,time)
     self.firstFrame = true
 
     if self.owner == player then
-        sound:play(utils.randomRange(0.8,1.2))
+        sound:play()
     end
 end
 
@@ -29,7 +29,7 @@ function Bullet:update()
     self.y = self.y + self.speed.y
 
     if self.firstFrame and self:isLevelActive() and self.owner ~= scene.player then
-        esound:play(utils.randomRange(0.8,1.2))
+        esound:play()
         self.firstFrame = false
     end
 
