@@ -130,6 +130,7 @@ function lurker.onerror(e, nostacktrace)
   local stacktrace = nostacktrace and "" or
                      lume.trim((debug.traceback("", 2):gsub("\t", "")))
   local msg = lume.format("{1}\n\n{2}", {e, stacktrace})
+  print(e)
   local colors = {
     { lume.color("#1e1e2c", 256) },
     { lume.color("#f0a3a3", 256) },

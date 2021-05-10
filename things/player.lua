@@ -304,9 +304,8 @@ function Player:die()
     engine.shake = 10
 end
 
-function Player:hit(attacker)
-    self:die()
-end
+-- one hit kills, the hit function is just a reference to the die function
+Player.hit = Player.die
 
 function Player:draw()
     if self.alarms.respawn:isActive() then return end

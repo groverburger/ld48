@@ -102,4 +102,7 @@ function input.isReleased(btn)
     return btn and btn.isReleased
 end
 
+input.addButton("leftmouse", {}, {1})
+input.addButton("rightmouse", {}, {2})
+
 return input

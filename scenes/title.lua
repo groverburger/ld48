@@ -7,15 +7,35 @@ local tinyfont = lg.newFont("assets/comicneuebold.ttf", 24)
 local music = audio.newMusic("assets/music/title.mp3", 0.35)
 local time = 0
 
-local ui = Interface(1024/2 - 125, 768/2 - 200, 250,400)
-ui:cut("top", 40):setContent("1")
-ui:cut("top", 40):setContent("2")
-ui:cut("top", 40):setContent("3")
-ui:cut("top", 40):setContent("4")
-ui:cut("top", 40):setContent("5")
-ui:cut("top", 40):setContent("6")
---ui.content = "this is an interface!!!!! this is an interface! this is so epiccc!! oh my god!"
---ui.content = lg.newImage("assets/sprites/lad.png")
+local showMenu = true
+local closeMenu = function ()
+    showMenu = false
+end
+local w, h = 400, 270
+local menu = Interface(1024/2 - w/2, 768/2 - h/2, w, h)
+menu:cut("bottom", 36)
+    :undercut("left", 140)
+    :undercut("right", 140)
+    :setContent("accept")
+    :setAlign("center")
+    :attach(GuiButton(closeMenu))
+    :showBorder()
+menu:cut("top", 70)
+    :setContent("audio settings")
+    :setAlign("center")
+    :setMargin(10)
+local label = menu:cut("left", 200)
+h = 32
+label:cut("top", h):setContent("master volume:")
+menu:cut("top", h):attach(GuiSlider())
+menu:cut("top", 16)
+label:cut("top", 16)
+label:cut("top", h):setContent("music volume:")
+menu:cut("top", h):attach(GuiSlider())
+menu:cut("top", 16)
+label:cut("top", 16)
+label:cut("top", h):setContent("sound volume:")
+menu:cut("top", h):attach(GuiSlider())
 
 -- quick fix for the game being a little loud
 love.audio.setVolume(0.8)
@@ -25,9 +45,11 @@ function TitleScene:init()
 end
 
 function TitleScene:update()
+    --[[
     if input.isReleased("shoot") then
         scene(GameScene())
     end
+    ]]
     time = time + 0.05
 end
 
@@ -40,7 +62,9 @@ function TitleScene:draw()
     lg.draw(bg)
     lg.setFont(font)
 
-    ui:draw()
+    if showMenu then
+        menu:draw()
+    end
 
     lg.setFont(smallfont)
     drawtext("Click to start!", 100, 150 + math.sin(time)*4)

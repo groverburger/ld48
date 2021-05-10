@@ -54,18 +54,18 @@ return function (settings)
     inspect = require(path .. "/inspect")
     class = require(path .. "/oops")
     utils = require(path .. "/utils")
-    Alarm = require(path .. "/alarm")
-    require(path .. "/rectcut")
     json = require(path .. "/json")
     scene = require(path .. "/scene")
     input = require(path .. "/input")
     colors = require(path .. "/colors")
     audio = require(path .. "/audio")
+    require(path .. "/alarm")
+    require(path .. "/rectcut")
 
     -- load the components of the game
     requireAll("things")
-    requireAll("scenes")
     requireAll("cutscenes")
+    requireAll("scenes")
 
     -- pcalls don't work in web, so this automatically
     -- becomes disabled in the release build!
