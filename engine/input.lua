@@ -23,7 +23,6 @@ function button:new(name, keys, mouseButtons)
     self.mouseButtons = mouseButtons
     self.keys = keys
     self.name = name
-
     self.isDown = false
     self.isReleased = false
     self.isPressed = false
@@ -52,14 +51,7 @@ function button:update()
 
     -- update these one-frame events
     self.isPressed = not self.wasDown and self.isDown
-    if self.isPressed then
-        input.onPressed(self.name)
-    end
-
     self.isReleased = self.wasDown and not self.isDown
-    if self.isReleased then
-        input.onReleased(self.name)
-    end
 
     -- save isDown for next frame
     self.wasDown = self.isDown
@@ -109,9 +101,5 @@ function input.isReleased(btn)
     local btn = buttonList[btn]
     return btn and btn.isReleased
 end
-
--- override these!
-function input.onPressed(btn) end
-function input.onReleased(btn) end
 
 return input

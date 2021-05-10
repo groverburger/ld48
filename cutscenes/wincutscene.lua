@@ -1,12 +1,15 @@
-WinCutscene = class()
+require "cutscenes/cutscene"
+
+WinCutscene = class(Cutscene)
 
 local music = audio.newMusic("assets/music/win.mp3")
 
 function WinCutscene:new(throne)
-    soundsystem.stopAllMusic()
+    WinCutscene.super.new(self)
+
+    love.audio.stop()
     music:play()
 
-    self.drawcalls = {}
     local function draw(...)
         table.insert(self.drawcalls, {...})
     end
@@ -32,7 +35,7 @@ function WinCutscene:new(throne)
             if i > 30 then
                 local str = "you win!"
                 draw(colors.white,utils.map(i, 30,60, 0,1, true))
-                draw(lg.print, str, player.x - lg.getFont():getWidth(str)/2, player.y - 200)
+                draw(lg.print, str, 1024/2 - lg.getFont():getWidth(str)/2, 768/2 - 100)
             end
 
             coroutine.yield()
@@ -42,8 +45,8 @@ function WinCutscene:new(throne)
             i = i + 1
             scene:pauseFrame()
 
-            draw(colors.black, utils.map(i, 200,210, 0,1, true))
-            draw(lg.rect, "fill", 0, 0, 1024, 768)
+            draw(colors.black, utils.map(i, 200,260, 0,1, true))
+            draw(lg.rectangle, "fill", 0, 0, 1024, 768)
             local str = "created by groverburger (zach b)"
             draw(colors.white)
             draw(lg.print, str, 1024/2 - lg.getFont():getWidth(str)/2, 768/2 - 100)
@@ -57,52 +60,4 @@ function WinCutscene:new(throne)
             coroutine.yield()
         end
     end)
-end
-
-function WinCutscene:update()
-    if coroutine.status(self.routine) ~= "dead" then
-        lume.clear(self.drawcalls)
-        local success, value = coroutine.resume(self.routine)
-        assert(success, value)
-    else
-        self.dead = true
-    end
-end
-
--- this is absolutely atrocious
--- but necessary because lua treats nil as an argument in varargs
-function WinCutscene:draw()
-    for _, drawcall in ipairs(self.drawcalls) do
-        if drawcall[1] then
-            if drawcall[8] then
-                drawcall[1](drawcall[2], drawcall[3], drawcall[4], drawcall[5], drawcall[6], drawcall[7], drawcall[8]);
-            else
-                if drawcall[7] then
-                    drawcall[1](drawcall[2], drawcall[3], drawcall[4], drawcall[5], drawcall[6], drawcall[7]);
-                else
-                    if drawcall[6] then
-                        drawcall[1](drawcall[2], drawcall[3], drawcall[4], drawcall[5], drawcall[6]);
-                    else
-                        if drawcall[5] then
-                            drawcall[1](drawcall[2], drawcall[3], drawcall[4], drawcall[5]);
-                        else
-                            if drawcall[4] then
-                                drawcall[1](drawcall[2], drawcall[3], drawcall[4]);
-                            else
-                                if drawcall[3] then
-                                    drawcall[1](drawcall[2], drawcall[3]);
-                                else
-                                    if drawcall[2] then
-                                        drawcall[1](drawcall[2]);
-                                    else
-                                        drawcall[1]();
-                                    end
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-        end
-    end
 end

@@ -5,7 +5,7 @@ return function (newscene)
         scene = newscene
         love.audio.stop()
         if scene.init then scene:init() end
-        engine.resetFramerateSmoothing()
+        love.timer.step()
     end
 
     return scene

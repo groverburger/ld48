@@ -1,10 +1,13 @@
-WarpCutscene = class()
+require "cutscenes/cutscene"
+
+WarpCutscene = class(Cutscene)
 
 local warpSound = audio.newSound("assets/sounds/warp.wav", 1, 1)
 local warpStartSound = audio.newSound("assets/sounds/warpstart.wav", 1, 1)
 
 function WarpCutscene:new(warpDir)
-    self.drawcalls = {}
+    WarpCutscene.super.new(self)
+
     local function draw(...)
         table.insert(self.drawcalls, {...})
     end
@@ -51,20 +54,4 @@ function WarpCutscene:new(warpDir)
         scene.levelIndex = scene.levelIndex + warpDir
         scene:setLevelActive(scene.levelIndex)
     end)
-end
-
-function WarpCutscene:update()
-    if coroutine.status(self.routine) ~= "dead" then
-        lume.clear(self.drawcalls)
-        local success, value = coroutine.resume(self.routine)
-        assert(success, value)
-    else
-        self.dead = true
-    end
-end
-
-function WarpCutscene:draw()
-    for _, drawcall in ipairs(self.drawcalls) do
-        drawcall[1](drawcall[2], drawcall[3], drawcall[4], drawcall[5], drawcall[6], drawcall[7], drawcall[8])
-    end
 end

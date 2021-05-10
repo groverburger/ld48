@@ -32,6 +32,7 @@ function Enemy:update()
                 self:hit(player)
                 player:jump()
             elseif player.speed.y < 0 and player.y < self.y then
+                -- let the player jump away from enemies after they've jumped on them
             else
                 player:hit(self)
             end

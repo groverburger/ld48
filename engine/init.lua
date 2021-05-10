@@ -44,14 +44,6 @@ return function (settings)
         shakeSize = 1,
     }
 
-    function engine.getInterpolation()
-        return accumulator / frametime
-    end
-
-    function engine.resetFramerateSmoothing()
-        rollingAverage = {}
-    end
-
     --------------------------------------------------------------------------------
     -- load modules
     --------------------------------------------------------------------------------
@@ -63,6 +55,7 @@ return function (settings)
     class = require(path .. "/oops")
     utils = require(path .. "/utils")
     Alarm = require(path .. "/alarm")
+    require(path .. "/rectcut")
     json = require(path .. "/json")
     scene = require(path .. "/scene")
     input = require(path .. "/input")
@@ -101,11 +94,13 @@ return function (settings)
                     -- resize the canvas according to engine settings
                     local fixedCanvas = engine.settings.gameWidth or engine.settings.gameHeight
                     if name == "resize" and not fixedCanvas then
+                        love.timer.step()
                         canvas = lg.newCanvas()
                     end
 
                     -- pause and unpause audio when the window changes focus
                     if name == "focus" then
+                        love.timer.step()
                         if a then
                             for _, v in ipairs(pausedAudio) do v:play() end
                         else
@@ -116,7 +111,7 @@ return function (settings)
             end
 
             -- don't update or draw when game window is not focused
-            if love.window.hasFocus() then
+            if love.window.hasFocus() and lg.isActive() then
                 --------------------------------------------------------------------------------
                 -- update
                 --------------------------------------------------------------------------------
@@ -128,36 +123,19 @@ return function (settings)
                 delta = math.min(delta, 0.1)
                 delta = math.max(delta, 0.0000001)
 
-                if engine.settings.framerateSmoothing then
-                    table.insert(rollingAverage, delta)
-                    if #rollingAverage > 60 then
-                        table.remove(rollingAverage, 1)
-                    end
-                    local avg = 0
-                    for i, v in ipairs(rollingAverage) do
-                        avg = avg + v
-                    end
-                    delta = avg / #rollingAverage
-                end
-
                 -- fixed timestep
+                -- update once, then draw once in a 1:1 ratio, so we don't have to worry about interpolation
                 accumulator = accumulator + delta
                 local iter = 0
+                local updated = false
                 while accumulator > frametime and iter < 5 do
                     input.update()
                     engine.shake = math.max(engine.shake - 1, 0)
                     accumulator = accumulator - frametime
                     iter = iter + 1
+                    updated = true
                     if love.update then love.update() end
-                end
-                accumulator = accumulator % frametime
 
-                --------------------------------------------------------------------------------
-                -- draw
-                --------------------------------------------------------------------------------
-
-                -- render the game onto a canvas
-                if lg and lg.isActive() then
                     -- set the canvas
                     lg.origin()
                     lg.clear(0,0,0,0)
@@ -175,7 +153,11 @@ return function (settings)
                     local shakex = shake > 0 and math.sin(math.random()*2*math.pi)*shakeSize*screenSize or 0
                     local shakey = shake > 0 and math.sin(math.random()*2*math.pi)*shakeSize*screenSize or 0
                     lg.draw(canvas, lg.getWidth()/2 + shakex, lg.getHeight()/2 + shakey, 0, screenSize, screenSize, canvas:getWidth()/2, canvas:getHeight()/2)
+                end
+                accumulator = accumulator % frametime
 
+                -- only swap buffers if the game updated, to prevent stutter
+                if updated then
                     lg.present()
                 end
 

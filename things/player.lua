@@ -23,7 +23,7 @@ local function respawn(self)
         self[i] = v
         self.speed[i] = 0
     end
-
+    self.currentWarp = nil
     scene():resetLevel()
 end
 
@@ -73,10 +73,19 @@ function Player:update()
     -- vertical physics
     --------------------------------------------------------------------------------
 
-    -- gravity
     if self.onWall ~= 0 then
-        self.speed.y = utils.lerp(self.speed.y, 3, 0.1)
+        -- slide on wall
+        local slideSpeed = 3
+
+        -- change speed more gradually when going up compared to going down
+        if self.speed.y < 0 then
+            self.speed.y = utils.lerp(self.speed.y, slideSpeed, 0.1)
+        else
+            self.speed.y = utils.lerp(self.speed.y, slideSpeed, 0.25)
+        end
     else
+        -- add gravity 
+        -- gravity is halved when going up, makes jumps feel better
         if self.speed.y <= 0 then
             self.speed.y = self.speed.y + 0.75
         else
@@ -222,12 +231,14 @@ function Player:update()
     -- animation
     --------------------------------------------------------------------------------
 
+    -- control walking animation
     if math.abs(self.speed.x) > 0.1 then
         self:animate(animations.walk)
     else
         self:animate(animations.idle)
     end
 
+    -- in air and wall sliding animations
     if not self.onGround then
         self.animIndex = 3
 
@@ -236,6 +247,7 @@ function Player:update()
         end
     end
 
+    -- unsquash and unstretch
     for i, v in pairs(self.stretch) do
         self.stretch[i] = utils.lerp(v, 1, 0.25)
     end
@@ -282,7 +294,6 @@ function Player:die()
     if self.alarms.respawn:isActive() then return end
     deathSound:play()
     self.alarms.respawn:set(60)
-    self.currentWarp = nil
 
     for i=1, 3 do
         local x, y = utils.lengthdir(math.random()*2*math.pi, utils.randomRange(10,20))
@@ -300,16 +311,8 @@ end
 function Player:draw()
     if self.alarms.respawn:isActive() then return end
 
-    local interp = engine.getInterpolation()
-    local dx, dy = self.x, self.y
-
-    -- only interpolate when not in a cutscene
-    -- to stop weirdness when transitioning levels
-    if not scene().wasPausedThisFrame then
-        dx, dy = dx + self.speed.x * interp, dy + self.speed.y * interp
-    end
-
     colors.white()
+    local dx, dy = self.x, self.y
     local sx, sy = lg.transformPoint(dx, dy)
     local gunAngle = utils.angle(sx, sy, input.mouse.x, input.mouse.y)
     local gunflip = utils.sign(math.cos(gunAngle))

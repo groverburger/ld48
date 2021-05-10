@@ -235,11 +235,11 @@ function GameScene:update()
     end
 
     if self.levelIndex >= castlePoint and self.lastLevelIndex < castlePoint then
-        music1:stop()
+        music1.source:stop()
         music2:play()
     end
     if self.levelIndex == #levels and self.lastLevelIndex < #levels then
-        music2:stop()
+        music2.source:stop()
         bossMusic:play()
     end
     self.lastLevelIndex = self.levelIndex
@@ -366,11 +366,11 @@ function GameScene:draw()
         colors.white()
         self.player:draw()
     end
+    lg.pop()
 
     if self.cutscene then
         self.cutscene:draw()
     end
-    lg.pop()
 
     local i = 0
     local player = self.player

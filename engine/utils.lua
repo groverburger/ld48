@@ -28,10 +28,6 @@ function utils.sign(n)
     return (n > 0 and 1) or (n < 0 and -1) or 0
 end
 
-function utils.triangleWave(number)
-    return math.acos(math.cos(number*math.pi))/math.pi
-end
-
 function utils.clamp(n, min, max)
     if min < max then
         return math.min(math.max(n, min), max)

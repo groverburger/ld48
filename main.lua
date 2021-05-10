@@ -1,5 +1,3 @@
-local paused
-
 love.window.setIcon(love.image.newImageData("assets/sprites/gameicon.png"))
 
 function love.load(arg)
@@ -8,17 +6,8 @@ end
 
 function love.update()
     local scene = scene()
-    if scene.update and not paused then
+    if scene.update then
         scene:update()
-    end
-end
-
-function love.keypressed(k)
-    if k == "q" then
-        paused = not paused
-    end
-    if k == "e" then
-        lg.captureScreenshot(os.time() .. ".png")
     end
 end
 
@@ -32,7 +21,6 @@ end
 love.run = require "engine" {
     gameWidth = 1024,
     gameHeight = 768,
-    framerateSmoothing = true,
 }
 
 input.addButton("left", {"a"})
