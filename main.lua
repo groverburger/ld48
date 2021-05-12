@@ -4,7 +4,7 @@ love.run = require "engine" {
     gamewidth = 1024,
     gameheight = 768,
     debug = true,
-    postprocessing = love.graphics.newShader("assets/shaders/pixelscale.frag")
+    --postprocessing = love.graphics.newShader("assets/shaders/pixelscale.frag")
 }
 
 local showPauseMenu, showAudioMenu, paused
@@ -28,7 +28,7 @@ pauseMenu:cut("top", 36)
     :attach(GuiButton(function() showAudioMenu = true; showPauseMenu = false end))
     :setContent("audio settings")
     :setAlign("center")
-    :showBorder()
+    :setBorder(true)
 pauseMenu:cut("top", 20)
 pauseMenu:cut("top", 36)
     :undercut("left", 20)
@@ -36,7 +36,7 @@ pauseMenu:cut("top", 36)
     :attach(GuiButton(function() love.event.push("quit") end))
     :setContent("quit game")
     :setAlign("center")
-    :showBorder()
+    :setBorder(true)
 pauseMenu:cut("bottom", 16)
 pauseMenu:cut("bottom", 36)
     :undercut("left", 65)
@@ -44,7 +44,7 @@ pauseMenu:cut("bottom", 36)
     :setContent("resume")
     :setAlign("center")
     :attach(GuiButton(function() showPauseMenu = false; paused = false end))
-    :showBorder()
+    :setBorder(true)
 
 audioMenu = GuiForm(1024/2 - 400/2, 768/2 - 270/2, 400, 270):setFont(uifont)
 audioMenu:cut("bottom", 36)
@@ -53,7 +53,7 @@ audioMenu:cut("bottom", 36)
     :setContent("ok")
     :setAlign("center")
     :attach(GuiButton(function() showAudioMenu = false; showPauseMenu = true end))
-    :showBorder()
+    :setBorder(true)
 audioMenu:cut("top", 70)
     :setContent("audio settings")
     :setAlign("center")
@@ -72,9 +72,9 @@ label:cut("top", h):setContent("sound volume:")
 audioMenu:cut("top", h):attach(GuiSlider(volumes, "sound", 1))
 
 function love.load(args)
-    engine.settings.postprocessing:send("width", 1024)
-    engine.settings.postprocessing:send("height", 768)
-    engine.settings.postprocessing:send("uvmod", 1)
+    --engine.settings.postprocessing:send("width", 1024)
+    --engine.settings.postprocessing:send("height", 768)
+    --engine.settings.postprocessing:send("uvmod", 1)
     scene(TitleScene())
 end
 
