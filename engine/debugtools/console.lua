@@ -45,6 +45,7 @@ function console:update(dt)
     else
         self.anim = math.max(self.anim - dt*rate, 0)
     end
+    return self.enabled
 end
 
 function console:draw(gwidth, gheight)

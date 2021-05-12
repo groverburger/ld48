@@ -28,6 +28,7 @@ local function respawn(self)
 end
 
 function Player:new(x,y)
+    Player.super.new(self, x,y)
     self.x = x
     self.y = y
     self.speed = {x=0,y=0}
@@ -46,6 +47,7 @@ function Player:new(x,y)
     self.keys = {}
     self.currentWarp = nil
     self.gunAngle = 0
+    self.newGunAngle = 0
     self.gx, self.gy = x, y
     self.reloaded = true
     self.alarms = {
@@ -253,6 +255,7 @@ function Player:update()
     end
 
     -- shoot!
+    self.gunAngle = self.newGunAngle
     if input.isDown("shoot") and self.reloaded then
         self.reloaded = false
         self.alarms.gun:reset()
@@ -313,15 +316,15 @@ function Player:draw()
     colors.white()
     local dx, dy = self.x, self.y
     local sx, sy = lg.transformPoint(dx, dy)
-    local gunAngle = utils.angle(sx, sy, input.mouse.x, input.mouse.y)
-    local gunflip = utils.sign(math.cos(gunAngle))
+    self.newGunAngle = utils.angle(sx, sy, input.mouse.x, input.mouse.y)
+    local gunflip = utils.sign(math.cos(self.gunAngle))
     local gx, gy = 7*gunflip, 10
     if self.onWall ~= 0 then
         if gunflip == self.onWall then
-            if math.sin(gunAngle) < 0 then
-                gunAngle = math.pi*1.5
+            if math.sin(self.gunAngle) < 0 then
+                self.gunAngle = math.pi*1.5
             else
-                gunAngle = math.pi*0.5
+                self.gunAngle = math.pi*0.5
             end
         end
 
@@ -330,9 +333,7 @@ function Player:draw()
     end
 
     -- store this calculation for reals here because this is the easiest place to do it
-    self.gunAngle = gunAngle
     self.gx, self.gy = gx, gy
-
     lg.draw(sprite.source, sprite[self.animIndex], dx, dy + 32*math.max(1-self.stretch.y, 0), 0, gunflip*self.stretch.x, self.stretch.y, 24, 32)
-    lg.draw(gunarm, dx + gx, dy + gy, gunAngle, 1, gunflip, 0, 16)
+    lg.draw(gunarm, dx + gx, dy + gy, self.gunAngle, 1, gunflip, 0, 16)
 end

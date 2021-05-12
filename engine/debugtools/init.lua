@@ -1,16 +1,17 @@
-local console = require(... .. "/console")
-local lurker = require(... .. "/lurker")
+local path = ...
+local console = require(path .. "/console")
+local lurker
 
 ----------------------------------------------------------------------------------------------------
 -- debug hooks
 ----------------------------------------------------------------------------------------------------
 
-local hooks = {}
+local debugtools = {}
 
-local totalArgs = ""
 local showMem
-local paused = false
-function hooks.pre_load(args)
+function debugtools.load(args)
+    lurker = require(path .. "/lurker")
+
     console:addCommand("showmem", function (args)
         showMem = not showMem
     end)
@@ -34,12 +35,11 @@ function hooks.pre_load(args)
     end)
 
     -- compile all args into one long string
+    local totalArgs = ""
     for i, arg in ipairs(args) do
         totalArgs = totalArgs .. arg .. " "
     end
-end
 
-function hooks.post_load()
     -- split totalArgs by semicolon, and pass each as a command to console
     local commandList = lume.split(totalArgs, ",")
     for _, command in ipairs(commandList) do
@@ -47,64 +47,25 @@ function hooks.post_load()
     end
 end
 
-function hooks.pre_update()
-    lurker.update()
-    console:update()
+function debugtools.update()
+    if lurker then lurker.update() end
+    return console:update()
 end
 
-function hooks.post_draw()
-    console:draw(engine.settings.gameWidth, engine.settings.gameHeight)
+function debugtools.draw()
+    console:draw(lg.getWidth(), lg.getHeight())
     if showMem then
         lg.setColor(0,0,0)
         lg.print(utils.round(collectgarbage("count")))
     end
 end
 
-function hooks.pre_textinput(text)
-    console:textinput(text)
+function debugtools.textinput(text)
+    return console:textinput(text)
 end
 
-function hooks.pre_keypressed(k)
-    if k == "escape" and not console.enabled then
-        love.event.push("quit")
-    end
-
-    if not console:keypressed(k) then
-        if k == "p" then
-            paused = not paused
-        end
-    end
+function debugtools.keypressed(k)
+    console:keypressed(k)
 end
 
-----------------------------------------------------------------------------------------------------
--- love hijacking
-----------------------------------------------------------------------------------------------------
--- hijack the love callback functions
--- in order to call a debug hook before they're called
-
-local hijack = {
-    "load",
-    "update",
-    "draw",
-    "keypressed",
-    "mousepressed",
-    "textinput"
-}
-
-local loveRefs = {}
-for _, key in ipairs(hijack) do
-    loveRefs[key] = love[key]
-
-    love[key] = function(...)
-        local hijackedArgument
-        if hooks["pre_" .. key] then
-            hijackedArgument = hooks["pre_" .. key](...)
-        end
-        if loveRefs[key] then
-            loveRefs[key](hijackedArgument or ...)
-        end
-        if hooks["post_" .. key] then
-            hooks["post_" .. key](...)
-        end
-    end
-end
+return debugtools

@@ -4,6 +4,8 @@
 -- the engine should contain all abstracted out game agnostic boilerplate
 
 local path = ...
+local pausedAudio = {}
+local debugtools
 
 local function requireAll(folder)
     local items = love.filesystem.getDirectoryItems(folder)
@@ -18,8 +20,6 @@ local function requireAll(folder)
     end
 end
 
-local pausedAudio = {}
-
 return function (settings)
     --------------------------------------------------------------------------------
     -- basic setup
@@ -32,7 +32,7 @@ return function (settings)
     local accumulator = 0
     local frametime = 1/60
     local rollingAverage = {}
-    local canvas = lg.newCanvas(settings.gameWidth, settings.gameHeight)
+    local canvas = {lg.newCanvas(settings.gameWidth, settings.gameHeight), depth = true}
 
     --------------------------------------------------------------------------------
     -- initialize engine
@@ -59,21 +59,19 @@ return function (settings)
     input = require(path .. "/input")
     colors = require(path .. "/colors")
     audio = require(path .. "/audio")
-    require(path .. "/alarm")
-    require(path .. "/rectcut")
 
     -- load the components of the game
     requireAll("things")
-    requireAll("cutscenes")
     requireAll("scenes")
+    requireAll("misc")
 
-    -- pcalls don't work in web, so this automatically
-    -- becomes disabled in the release build!
-    xpcall(require, print, "engine/debugtools")
+    -- optionally load in debugtools, make sure disable for release!
+    debugtools = settings.debug and require(path .. "/debugtools")
 
     -- hijack love.run with a better one
     return function ()
         if love.load then love.load(love.arg.parseGameArguments(arg), arg) end
+        if debugtools then debugtools.load(arg) end
 
         -- don't include load time in timestep
         love.timer.step()
@@ -89,13 +87,17 @@ return function (settings)
                             return a or 0
                         end
                     end
-                    love.handlers[name](a,b,c,d,e,f)
+
+                    -- debugtools gets priority
+                    if not (debugtools and debugtools[name] and debugtools[name](a,b,c,d,e,f)) then
+                        love.handlers[name](a,b,c,d,e,f)
+                    end
 
                     -- resize the canvas according to engine settings
                     local fixedCanvas = engine.settings.gameWidth or engine.settings.gameHeight
                     if name == "resize" and not fixedCanvas then
                         love.timer.step()
-                        canvas = lg.newCanvas()
+                        canvas[1] = lg.newCanvas()
                     end
 
                     -- pause and unpause audio when the window changes focus
@@ -112,10 +114,6 @@ return function (settings)
 
             -- don't update or draw when game window is not focused
             if love.window.hasFocus() and lg.isActive() then
-                --------------------------------------------------------------------------------
-                -- update
-                --------------------------------------------------------------------------------
-
                 -- get the delta time
                 local delta = love.timer.step()
 
@@ -129,30 +127,33 @@ return function (settings)
                 local iter = 0
                 local updated = false
                 while accumulator > frametime and iter < 5 do
-                    input.update()
-                    engine.shake = math.max(engine.shake - 1, 0)
                     accumulator = accumulator - frametime
+                    engine.shake = math.max(engine.shake - 1, 0)
                     iter = iter + 1
                     updated = true
+
+                    -- only update input if not in debug console
+                    if not (debugtools and debugtools.update()) then input.update() end
+
+                    -- update the game
                     if love.update then love.update() end
 
-                    -- set the canvas
+                    -- draw the game to a canvas,
+                    -- then draw the canvas scaled on the screen
                     lg.origin()
                     lg.clear(0,0,0,0)
                     lg.setCanvas(canvas)
                     lg.clear(lg.getBackgroundColor())
-
                     if love.draw then love.draw() end
-
-                    -- render the canvas
                     lg.setColor(1,1,1)
                     lg.setCanvas()
-                    local screenSize = math.min(lg.getWidth()/canvas:getWidth(), lg.getHeight()/canvas:getHeight())
+                    local screenSize = math.min(lg.getWidth()/canvas[1]:getWidth(), lg.getHeight()/canvas[1]:getHeight())
                     local shake = engine.shake
                     local shakeSize = engine.shakeSize
                     local shakex = shake > 0 and math.sin(math.random()*2*math.pi)*shakeSize*screenSize or 0
                     local shakey = shake > 0 and math.sin(math.random()*2*math.pi)*shakeSize*screenSize or 0
-                    lg.draw(canvas, lg.getWidth()/2 + shakex, lg.getHeight()/2 + shakey, 0, screenSize, screenSize, canvas:getWidth()/2, canvas:getHeight()/2)
+                    lg.draw(canvas[1], lg.getWidth()/2 + shakex, lg.getHeight()/2 + shakey, 0, screenSize, screenSize, canvas[1]:getWidth()/2, canvas[1]:getHeight()/2)
+                    if debugtools then debugtools.draw() end
                 end
                 accumulator = accumulator % frametime
 

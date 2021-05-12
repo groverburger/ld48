@@ -1,8 +1,10 @@
 GuiSlider = class()
 
-function GuiSlider:new(value)
+function GuiSlider:new(table, key, value)
     self.value = value or 0.5
     self.grabbed = false
+    self.table = table
+    self.key = key or 1
 end
 
 function GuiSlider:draw(x,y,w,h)
@@ -14,15 +16,20 @@ function GuiSlider:draw(x,y,w,h)
     local vx = utils.lerp(x, x + w, self.value)
 
     -- do the behavior
-    if utils.distance(input.mouse.x, input.mouse.y, vx, y) <= r+4
-    and input.isPressed("leftmouse")
+    if input.isPressed("leftmouse")
     and not self.grabbed then
-        self.grabbed = true
-        self.offset = vx - input.mouse.x
+        if utils.distance(input.mouse.x, input.mouse.y, vx, y) <= r+4 then
+            self.grabbed = true
+            self.offset = vx - input.mouse.x
+        elseif math.abs(y - input.mouse.y) <= r and math.abs((x+x+w)/2 - input.mouse.x) <= w/2 then
+            self.grabbed = true
+            self.offset = 0
+        end
     end
     self.grabbed = self.grabbed and input.isDown("leftmouse")
     if self.grabbed then
         self.value = utils.map(input.mouse.x + self.offset, x, x+w, 0, 1, true)
+        self.table[self.key] = self.value
     end
 
     local vx = utils.lerp(x, x + w, self.value)

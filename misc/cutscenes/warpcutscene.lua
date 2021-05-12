@@ -1,4 +1,4 @@
-require "cutscenes/cutscene"
+require "misc/cutscenes/cutscene"
 
 WarpCutscene = class(Cutscene)
 
