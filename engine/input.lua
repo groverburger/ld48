@@ -1,5 +1,6 @@
 local input = {}
-
+local controllers = {}
+local baton = require(engine.path .. "/baton")
 local mouse = {
     x = love.mouse.getX(),
     y = love.mouse.getY(),
@@ -9,71 +10,22 @@ local mouse = {
     yLast = love.mouse.getY(),
 }
 input.mouse = mouse
+input.controllers = controllers
 
-----------------------------------------------------------------------------------------------------
--- internal button class
-----------------------------------------------------------------------------------------------------
-
-local button = class()
-button.keys = {}
-button.mouseButtons = {}
-button.wasPressed = false
-
-function button:new(name, keys, mouseButtons)
-    self.mouseButtons = mouseButtons
-    self.keys = keys
-    self.name = name
-    self.isDown = false
-    self.isReleased = false
-    self.isPressed = false
-    self.wasDown = false
-end
-
-function button:update()
-    -- determine if this button is down this frame
-    self.isDown = false
-
-    for _, btn in pairs(self.mouseButtons) do
-        if love.mouse.isDown(btn) then
-            self.isDown = true
-            break
-        end
-    end
-
-    if not self.isDown then
-        for _, key in pairs(self.keys) do
-            if love.keyboard.isDown(key) then
-                self.isDown = true
-                break
-            end
-        end
-    end
-
-    -- update these one-frame events
-    self.isPressed = not self.wasDown and self.isDown
-    self.isReleased = self.wasDown and not self.isDown
-
-    -- save isDown for next frame
-    self.wasDown = self.isDown
-end
-
-----------------------------------------------------------------------------------------------------
--- buttons api
-----------------------------------------------------------------------------------------------------
-
-local buttonList = {}
-function input.addButton(name, ...)
-    buttonList[name] = button(name, ...)
-    return buttonList[name]
+function input.newController(name, ...)
+    local this = baton.new(...)
+    controllers[name] = this
+    return this
 end
 
 function input.update()
-    for name, btn in pairs(buttonList) do
-        btn:update()
+    for _, c in pairs(controllers) do
+        c:update()
     end
+
     mouse.xLast = mouse.x
     mouse.yLast = mouse.y
-    local width, height = engine.settings.gameWidth, engine.settings.gameHeight
+    local width, height = engine.settings.gamewidth, engine.settings.gameheight
 
     if width and height then
         local size = math.min(lg.getWidth()/width, lg.getHeight()/height)
@@ -86,23 +38,5 @@ function input.update()
     mouse.xMove = mouse.x - mouse.xLast
     mouse.yMove = mouse.y - mouse.yLast
 end
-
-function input.isDown(btn)
-    local btn = buttonList[btn]
-    return btn and btn.isDown
-end
-
-function input.isPressed(btn)
-    local btn = buttonList[btn]
-    return btn and btn.isPressed
-end
-
-function input.isReleased(btn)
-    local btn = buttonList[btn]
-    return btn and btn.isReleased
-end
-
-input.addButton("leftmouse", {}, {1})
-input.addButton("rightmouse", {}, {2})
 
 return input

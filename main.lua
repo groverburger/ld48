@@ -1,22 +1,21 @@
 love.window.setIcon(love.image.newImageData("assets/sprites/gameicon.png"))
 
 love.run = require "engine" {
-    gameWidth = 1024,
-    gameHeight = 768,
+    gamewidth = 1024,
+    gameheight = 768,
     debug = true,
+    postprocessing = love.graphics.newShader("assets/shaders/pixelscale.frag")
 }
-
-input.addButton("left", {"a"})
-input.addButton("right", {"d"})
-input.addButton("jump", {"space", "w"})
-input.addButton("shoot", {}, {1,2,3})
-input.addButton("pause", {"escape", "return"})
 
 local showPauseMenu, showAudioMenu, paused
 local pauseMenu, audioMenu
 local volumes = {}
 
 local uifont = lg.newFont("assets/comicneuebold.ttf", 20)
+
+input.newController("menu", {controls = {ok = {"mouse:1"}}})
+local button = "ok"
+local controller = "menu"
 
 pauseMenu = GuiForm(1024/2 - 250/2, 768/2 - 200/2, 250, 300):setFont(uifont)
 pauseMenu:cut("top", 70)
@@ -73,6 +72,9 @@ label:cut("top", h):setContent("sound volume:")
 audioMenu:cut("top", h):attach(GuiSlider(volumes, "sound", 1))
 
 function love.load(args)
+    engine.settings.postprocessing:send("width", 1024)
+    engine.settings.postprocessing:send("height", 768)
+    engine.settings.postprocessing:send("uvmod", 1)
     scene(TitleScene())
 end
 
@@ -82,7 +84,7 @@ function love.update()
         scene:update()
     end
 
-    if input.isPressed("pause") then
+    if love.keyboard.isDown("escape") then
         paused = true
         showPauseMenu = true
     end

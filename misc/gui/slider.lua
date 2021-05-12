@@ -1,4 +1,6 @@
 GuiSlider = class()
+GuiSlider.controller = "menu"
+GuiSlider.button = "ok"
 
 function GuiSlider:new(table, key, value)
     self.value = value or 0.5
@@ -16,9 +18,9 @@ function GuiSlider:draw(x,y,w,h)
     local vx = utils.lerp(x, x + w, self.value)
 
     -- do the behavior
-    if input.isPressed("leftmouse")
+    if input.controllers[self.controller]:pressed(self.button)
     and not self.grabbed then
-        if utils.distance(input.mouse.x, input.mouse.y, vx, y) <= r+4 then
+        if utils.distance(input.mouse.x, input.mouse.y, vx, y) <= r then
             self.grabbed = true
             self.offset = vx - input.mouse.x
         elseif math.abs(y - input.mouse.y) <= r and math.abs((x+x+w)/2 - input.mouse.x) <= w/2 then
@@ -26,7 +28,7 @@ function GuiSlider:draw(x,y,w,h)
             self.offset = 0
         end
     end
-    self.grabbed = self.grabbed and input.isDown("leftmouse")
+    self.grabbed = self.grabbed and input.controllers[self.controller]:down(self.button)
     if self.grabbed then
         self.value = utils.map(input.mouse.x + self.offset, x, x+w, 0, 1, true)
         self.table[self.key] = self.value

@@ -14,6 +14,16 @@ local animations = {
     walk = {1,3, speed=0.15},
 }
 
+local controllerData = {
+    controls = {
+        left = {"key:a"},
+        right = {"key:d"},
+        jump = {"key:w", "key:space"},
+        shoot = {"mouse:1", "mouse:2", "mouse:3"},
+    },
+}
+local controller = input.newController("player", controllerData)
+
 local function reload(self)
     self.reloaded = true
 end
@@ -125,7 +135,7 @@ function Player:update()
 
     -- start the jump
     self.wannaJumpFrames = math.max(self.wannaJumpFrames - 1, 0)
-    if input.isPressed("jump") then
+    if controller:pressed("jump") then
         self.wannaJumpFrames = 7
     end
 
@@ -151,7 +161,7 @@ function Player:update()
     self.disabledAirControl = math.max(self.disabledAirControl - 1, 0)
 
     -- variable jump height
-    if not input.isDown("jump") and self.speed.y < 0 then
+    if not controller:down("jump") and self.speed.y < 0 then
         self.speed.y = self.speed.y * 0.7
     end
 
@@ -166,11 +176,11 @@ function Player:update()
     local walking = false
     local speed = self.onGround and walkSpeed or airSpeed
     if self.onGround or self.disabledAirControl <= 0 then
-        if input.isDown("right") then
+        if controller:down("right") then
             self.speed.x = self.speed.x + speed
             self.speed.x = math.min(self.speed.x, maxWalkSpeed)
             walking = true
-        elseif input.isDown("left") then
+        elseif controller:down("left") then
             self.speed.x = self.speed.x - speed
             self.speed.x = math.max(self.speed.x, -maxWalkSpeed)
             walking = true
@@ -256,7 +266,7 @@ function Player:update()
 
     -- shoot!
     self.gunAngle = self.newGunAngle
-    if input.isDown("shoot") and self.reloaded then
+    if controller:down("shoot") and self.reloaded then
         self.reloaded = false
         self.alarms.gun:reset()
         local x = self.x + self.gx + math.cos(self.gunAngle)*20
@@ -321,10 +331,10 @@ function Player:draw()
     local gx, gy = 7*gunflip, 10
     if self.onWall ~= 0 then
         if gunflip == self.onWall then
-            if math.sin(self.gunAngle) < 0 then
-                self.gunAngle = math.pi*1.5
+            if math.sin(self.newGunAngle) < 0 then
+                self.newGunAngle = math.pi*1.5
             else
-                self.gunAngle = math.pi*0.5
+                self.newGunAngle = math.pi*0.5
             end
         end
 

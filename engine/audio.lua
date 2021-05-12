@@ -1,7 +1,6 @@
 local audio = {}
-audio.soundVolume = 1
-audio.musicVolume = 1
-audio.masterVolume = 1
+local soundVolume = 1
+local musicVolume = 1
 
 local soundList = {}
 local musicList = {}
@@ -11,11 +10,11 @@ noise.pitch = {0.8, 1.2}
 noise.volume = 1
 
 local function updateNoiseVolume(noise)
-    noise.source:setVolume(noise.volume * (noise.isSound and audio.soundVolume or audio.musicVolume))
+    noise.source:setVolume(noise.volume * (noise.isSound and soundVolume or musicVolume))
 end
 
 function noise:new(path, isSound)
-    self.source = love.audio.newSource(path, isSound and "static" or "stream")
+    self.source = love.audio.newSource(path, (isSound and not engine.settings.web) and "static" or "stream")
     self.isSound = isSound
 end
 
@@ -56,13 +55,21 @@ function audio.newMusic(path, volume, pitch)
 end
 
 function audio.setSoundVolume(volume)
-    audio.soundVolume = volume
+    soundVolume = volume
     for _, v in ipairs(soundList) do updateNoiseVolume(v) end
 end
 
+function audio.getSoundVolume()
+    return soundVolume
+end
+
 function audio.setMusicVolume(volume)
-    audio.musicVolume = volume
+    musicVolume = volume
     for _, v in ipairs(musicList) do updateNoiseVolume(v) end
+end
+
+function audio.getMusicVolume()
+    return musicVolume
 end
 
 return audio

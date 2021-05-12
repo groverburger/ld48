@@ -7,12 +7,14 @@ local tinyfont = lg.newFont("assets/comicneuebold.ttf", 24)
 local music = audio.newMusic("assets/music/title.mp3", 0.35)
 local time = 0
 
+local controller = input.controllers.player
+
 function TitleScene:init()
     music:play()
 end
 
 function TitleScene:update()
-    if input.isReleased("shoot") then
+    if controller:released("shoot") then
         scene(GameScene())
     end
     time = time + 0.05

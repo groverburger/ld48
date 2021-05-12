@@ -1,6 +1,6 @@
 Cutscene = class()
 
-function Cutscene:new(throne)
+function Cutscene:new()
     self.drawcalls = {}
 end
 

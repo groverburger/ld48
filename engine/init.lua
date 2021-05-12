@@ -30,18 +30,26 @@ return function (settings)
     lg = love.graphics
     lg.setDefaultFilter("nearest")
     local accumulator = 0
-    local frametime = 1/60
+    local frametime = settings.frametime or 1/60
     local rollingAverage = {}
-    local canvas = {lg.newCanvas(settings.gameWidth, settings.gameHeight), depth = true}
+    local canvas = {lg.newCanvas(settings.gamewidth, settings.gameheight), depth = true}
 
     --------------------------------------------------------------------------------
     -- initialize engine
     --------------------------------------------------------------------------------
+    -- settings:
+    --   gamewidth: int
+    --   gameheight: int
+    --   debug: bool
+    --   frametime: int
+    --   web: bool
+    --   postprocessing: shader
 
     engine = {
         settings = settings or {},
         shake = 0,
         shakeSize = 1,
+        path = path,
     }
 
     --------------------------------------------------------------------------------
@@ -94,7 +102,7 @@ return function (settings)
                     end
 
                     -- resize the canvas according to engine settings
-                    local fixedCanvas = engine.settings.gameWidth or engine.settings.gameHeight
+                    local fixedCanvas = engine.settings.gamewidth or engine.settings.gameheight
                     if name == "resize" and not fixedCanvas then
                         love.timer.step()
                         canvas[1] = lg.newCanvas()
@@ -147,12 +155,14 @@ return function (settings)
                     if love.draw then love.draw() end
                     lg.setColor(1,1,1)
                     lg.setCanvas()
+                    lg.setShader(engine.settings.postprocessing)
                     local screenSize = math.min(lg.getWidth()/canvas[1]:getWidth(), lg.getHeight()/canvas[1]:getHeight())
                     local shake = engine.shake
                     local shakeSize = engine.shakeSize
                     local shakex = shake > 0 and math.sin(math.random()*2*math.pi)*shakeSize*screenSize or 0
                     local shakey = shake > 0 and math.sin(math.random()*2*math.pi)*shakeSize*screenSize or 0
                     lg.draw(canvas[1], lg.getWidth()/2 + shakex, lg.getHeight()/2 + shakey, 0, screenSize, screenSize, canvas[1]:getWidth()/2, canvas[1]:getHeight()/2)
+                    lg.setShader()
                     if debugtools then debugtools.draw() end
                 end
                 accumulator = accumulator % frametime
