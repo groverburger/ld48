@@ -1,4 +1,8 @@
 GuiForm = class()
+GuiForm.controller = "menu"
+GuiForm.scrollup = "scrollup"
+GuiForm.scrolldown = "scrolldown"
+GuiForm.freeScroll = true
 
 function GuiForm:new(x,y,w,h)
     self.x = x
@@ -103,16 +107,26 @@ function GuiForm:setFont(what)
     return self
 end
 
-function GuiForm:setScrollable(dir, amount)
-    self.scrolldir = dir
-
+function GuiForm:setScrollable(dir, amount, scrollbar)
     if dir == "down" then
+        if scrollbar then
+            local scroll = self:cut("left", self.w-(tonumber(scrollbar) or 10)):setScrollable(dir, amount)
+            self:attach(GuiScrollbarV(scroll))
+            return scroll, self
+        end
+        self.scrolldir = dir
         self.h = self.h + amount
         self.totalh = self.totalh + amount
         return self
     end
 
     if dir == "right" then
+        if scrollbar then
+            local scroll = self:cut("top", self.h-(tonumber(scrollbar) or 10)):setScrollable(dir, amount)
+            self:attach(GuiScrollbarH(scroll))
+            return scroll, self
+        end
+        self.scrolldir = dir
         self.w = self.w + amount
         self.totalw = self.totalw + amount
         return self
@@ -122,15 +136,30 @@ function GuiForm:setScrollable(dir, amount)
 end
 
 function GuiForm:scroll(dx,dy)
-    self.vx = utils.clamp(self.vx + dx, 0, self.totalw - self.vw)
-    self.vy = utils.clamp(self.vy + dy, 0, self.totalh - self.vh)
+    assert(self.scrolldir, "This GuiForm is not scrollable!")
+    self.vx = self.vx + dx
+    self.vy = self.vy + dy
+    return self
+end
+
+function GuiForm:setScrollAmount(x,y)
+    assert(self.scrolldir, "This GuiForm is not scrollable!")
+    self.vx = utils.lerp(0, self.totalw - self.vw, x or 0)
+    self.vy = utils.lerp(0, self.totalh - self.vh, y or 0)
+    return self
 end
 
 function GuiForm:draw(xoff,yoff)
-    -- keep all children in view when not scrolling
     if not self.scrolldir then
+        -- keep all children in view when not scrolling
+        self.vx = 0
+        self.vy = 0
         self.vw = self.ow
         self.vh = self.oh
+    else
+        -- keep scroll in bounds when scrolling
+        self.vx = utils.clamp(self.vx, 0, self.totalw - self.vw)
+        self.vy = utils.clamp(self.vy, 0, self.totalh - self.vh)
     end
 
     -- if this is the top-level form, save the previous graphics transform
@@ -138,8 +167,8 @@ function GuiForm:draw(xoff,yoff)
     local original = xoff == nil
     if original then lg.push("all") end
 
-    local xoff = xoff or 0
-    local yoff = yoff or 0
+    local xoff = xoff and utils.round(xoff) or 0
+    local yoff = yoff and utils.round(yoff) or 0
 
     -- get previous scissor, and intersect with it
     local sx,sy,sw,sh = lg.getScissor()
@@ -147,6 +176,21 @@ function GuiForm:draw(xoff,yoff)
         lg.intersectScissor(xoff + self.ox, yoff + self.oy, self.vw, self.vh)
     else
         lg.setScissor(xoff + self.ox, yoff + self.oy, self.ow, self.oh)
+    end
+
+    -- let the user use their scroll buttons when hovering
+    local _sx,_sy,_sw,_sh = lg.getScissor()
+    if  input.mouse.x >= _sx     and input.mouse.y >= _sy
+    and input.mouse.y <= _sx+_sw and input.mouse.y <= _sy+_sw and self.freeScroll then
+        if input.controllers[self.controller]:down(self.scrollup) then
+            self.vy = self.vy - 8
+        end
+        if input.controllers[self.controller]:down(self.scrolldown) then
+            self.vy = self.vy + 8
+        end
+
+        self.vx = utils.clamp(self.vx, 0, self.totalw - self.vw)
+        self.vy = utils.clamp(self.vy, 0, self.totalh - self.vh)
     end
 
     local xoff = xoff - self.vx

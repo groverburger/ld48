@@ -34,8 +34,13 @@ function GuiSlider:draw(x,y,w,h)
         self.table[self.key] = self.value
     end
 
+    -- draw line and circle
     local vx = utils.lerp(x, x + w, self.value)
-    lg.line(x, y, x + w, y)
+    local lw = lg.getLineWidth()
+    lg.setLineWidth(lw + 3)
+    lg.line(x, y, vx, y)
+    lg.setLineWidth(lw)
+    lg.line(vx, y, x + w, y)
     lg.setColor(1,1,1)
     lg.circle("fill", vx, y, r)
 end

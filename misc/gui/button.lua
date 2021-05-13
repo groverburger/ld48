@@ -17,9 +17,10 @@ function GuiButton:draw(x,y,w,h)
 
     if hovered and scissorhovered then
         lg.setColor(1,1,1, 0.25)
-        lg.rectangle("fill", x,y,w,h)
         if input.controllers[self.controller]:pressed(self.button) then
+            lg.setColor(1,1,1, 0.5)
             self.callback()
         end
+        lg.rectangle("fill", x,y,w,h)
     end
 end

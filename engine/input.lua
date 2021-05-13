@@ -8,6 +8,7 @@ local mouse = {
     yMove = 0,
     xLast = love.mouse.getX(),
     yLast = love.mouse.getY(),
+    scroll = 0,
 }
 input.mouse = mouse
 input.controllers = controllers
@@ -22,7 +23,9 @@ function input.update()
     for _, c in pairs(controllers) do
         c:update()
     end
+end
 
+function input.updateMouse()
     mouse.xLast = mouse.x
     mouse.yLast = mouse.y
     local width, height = engine.settings.gamewidth, engine.settings.gameheight
@@ -37,6 +40,28 @@ function input.update()
 
     mouse.xMove = mouse.x - mouse.xLast
     mouse.yMove = mouse.y - mouse.yLast
+end
+
+function input.mouseCheck(button)
+    if button == "wd" then
+        return mouse.scroll < 0
+    end
+
+    if button == "wu" then
+        return mouse.scroll > 0
+    end
+
+    if button == "left" then
+        return love.mouse.isDown(1)
+    end
+
+    if button == "right" then
+        return love.mouse.isDown(2)
+    end
+
+    if button == "middle" then
+        return love.mouse.isDown(3)
+    end
 end
 
 return input

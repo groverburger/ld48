@@ -117,6 +117,17 @@ return function (settings)
                             pausedAudio = love.audio.pause()
                         end
                     end
+
+                    -- so input can use mouse wheel as button presses
+                    if name == "wheelmoved" then
+                        input.mouse.scroll = b
+                    end
+
+                    -- only attach virtual mouse to real mouse when real mouse is moved
+                    -- so controllers can also move the virtual mouse
+                    if name == "mousemoved" then
+                        input.updateMouse()
+                    end
                 end
             end
 
@@ -164,6 +175,7 @@ return function (settings)
                     lg.draw(canvas[1], lg.getWidth()/2 + shakex, lg.getHeight()/2 + shakey, 0, screenSize, screenSize, canvas[1]:getWidth()/2, canvas[1]:getHeight()/2)
                     lg.setShader()
                     if debugtools then debugtools.draw() end
+                    input.mouse.scroll = 0
                 end
                 accumulator = accumulator % frametime
 

@@ -13,7 +13,7 @@ local volumes = {}
 
 local uifont = lg.newFont("assets/comicneuebold.ttf", 20)
 
-input.newController("menu", {controls = {ok = {"mouse:1"}}})
+input.newController("menu", {controls = {ok = {"mouse:left"}, scrolldown = {"mouse:wd"}, scrollup = {"mouse:wu"}}})
 local button = "ok"
 local controller = "menu"
 
