@@ -1,6 +1,6 @@
 love.window.setIcon(love.image.newImageData("assets/sprites/gameicon.png"))
 
-love.run = require "engine" {
+require "engine" {
     gamewidth = 1024,
     gameheight = 768,
     debug = true,

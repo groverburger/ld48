@@ -77,7 +77,7 @@ return function (settings)
     debugtools = settings.debug and require(path .. "/debugtools")
 
     -- hijack love.run with a better one
-    return function ()
+    love.run = function ()
         if love.load then love.load(love.arg.parseGameArguments(arg), arg) end
         if debugtools then debugtools.load(arg) end
 
