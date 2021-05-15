@@ -17,11 +17,19 @@ input.newController("menu", {controls = {ok = {"mouse:left"}, scrolldown = {"mou
 local button = "ok"
 local controller = "menu"
 
-pauseMenu = GuiForm(1024/2 - 250/2, 768/2 - 200/2, 250, 300):setFont(uifont)
+pauseMenu = GuiForm(1024/2 - 250/2, 768/2 - 238/2, 250, 238):setFont(uifont)
 pauseMenu:cut("top", 70)
     :setContent("paused")
     :setAlign("center")
     :setMargin(10)
+pauseMenu:cut("top", 36)
+    :undercut("left", 20)
+    :undercut("right", 20)
+    :attach(GuiButton(function() showPauseMenu = false; paused = false end))
+    :setContent("resume")
+    :setAlign("center")
+    :setBorder(true)
+pauseMenu:cut("top", 20)
 pauseMenu:cut("top", 36)
     :undercut("left", 20)
     :undercut("right", 20)
@@ -37,19 +45,13 @@ pauseMenu:cut("top", 36)
     :setContent("quit game")
     :setAlign("center")
     :setBorder(true)
-pauseMenu:cut("bottom", 16)
-pauseMenu:cut("bottom", 36)
-    :undercut("left", 65)
-    :undercut("right", 65)
-    :setContent("resume")
-    :setAlign("center")
-    :attach(GuiButton(function() showPauseMenu = false; paused = false end))
-    :setBorder(true)
 
 audioMenu = GuiForm(1024/2 - 400/2, 768/2 - 270/2, 400, 270):setFont(uifont)
+audioMenu = audioMenu:undercut("right", 16):undercut("left", 16)
+audioMenu:cut("bottom", 16)
 audioMenu:cut("bottom", 36)
-    :undercut("left", 140)
-    :undercut("right", 140)
+    :undercut("left", 140-16)
+    :undercut("right", 140-16)
     :setContent("ok")
     :setAlign("center")
     :attach(GuiButton(function() showAudioMenu = false; showPauseMenu = true end))
@@ -76,6 +78,7 @@ function love.load(args)
     --engine.settings.postprocessing:send("height", 768)
     --engine.settings.postprocessing:send("uvmod", 1)
     scene(TitleScene())
+    love.mouse.setVisible(false)
 end
 
 function love.update()
@@ -89,6 +92,8 @@ function love.update()
         showPauseMenu = true
     end
 end
+
+local mouseCursor = lg.newImage("assets/sprites/cursor3.png")
 
 function love.draw()
     local scene = scene()
@@ -106,5 +111,7 @@ function love.draw()
         audio.setSoundVolume(volumes.sound and volumes.sound^2 or 1)
         audio.setMusicVolume(volumes.music and volumes.music^2 or 1)
     end
-end
 
+    colors.white()
+    lg.draw(mouseCursor, input.mouse.x, input.mouse.y, 0, 1, 1, 16, 16)
+end

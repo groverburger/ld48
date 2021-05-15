@@ -327,7 +327,7 @@ function Player:draw()
     local dx, dy = self.x, self.y
     local sx, sy = lg.transformPoint(dx, dy)
     self.newGunAngle = utils.angle(sx, sy, input.mouse.x, input.mouse.y)
-    local gunflip = utils.sign(math.cos(self.gunAngle))
+    local gunflip = utils.sign(math.cos(self.newGunAngle))
     local gx, gy = 7*gunflip, 10
     if self.onWall ~= 0 then
         if gunflip == self.onWall then

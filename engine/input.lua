@@ -38,6 +38,8 @@ function input.updateMouse()
         mouse.x, mouse.y = love.mouse.getPosition()
     end
 
+    mouse.x = utils.clamp(mouse.x, 0, engine.settings.gamewidth-1)
+    mouse.y = utils.clamp(mouse.y, 0, engine.settings.gameheight-1)
     mouse.xMove = mouse.x - mouse.xLast
     mouse.yMove = mouse.y - mouse.yLast
 end

@@ -14,7 +14,7 @@ local function updateNoiseVolume(noise)
 end
 
 function noise:new(path, isSound)
-    self.source = love.audio.newSource(path, (isSound and not engine.settings.web) and "static" or "stream")
+    self.source = love.audio.newSource(path, (isSound or engine.settings.web) and "static" or "stream")
     self.isSound = isSound
 end
 

@@ -145,7 +145,7 @@ return function (settings)
                 accumulator = accumulator + delta
                 local iter = 0
                 local updated = false
-                while accumulator > frametime and iter < 5 do
+                while accumulator >= frametime and iter < 5 do
                     accumulator = accumulator - frametime
                     engine.shake = math.max(engine.shake - 1, 0)
                     iter = iter + 1

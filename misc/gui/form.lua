@@ -25,6 +25,7 @@ function GuiForm:new(x,y,w,h)
 
     self.margin = 4
     self.children = {}
+    self.attached = {}
     self.align = "left"
 end
 
@@ -82,8 +83,12 @@ function GuiForm:setContent(what)
     return self
 end
 
-function GuiForm:attach(what)
-    self.attached = what
+function GuiForm:attach(...)
+    local count = select("#", ...)
+    for i=1, count do
+        local item = select(i, ...)
+        table.insert(self.attached, item)
+    end
     return self
 end
 
@@ -233,8 +238,10 @@ function GuiForm:drawContent(xoff,yoff)
     -- draw attached element only when it is visible
     -- this prevents elements out of scrollview from being interacted with
     local sx,sy,sw,sh = lg.getScissor()
-    if self.attached and sw > 0 and sh > 0 then
-        self.attached:draw(dx,dy,self.w,self.h)
+    if #self.attached > 0 and sw > 0 and sh > 0 then
+        for _, attached in ipairs(self.attached) do
+            attached:draw(dx,dy,self.w,self.h)
+        end
     end
 
     -- draw content of this guiform

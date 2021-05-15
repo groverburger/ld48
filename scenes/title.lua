@@ -60,7 +60,7 @@ end
 
 function TitleScene:update()
     if controller:released("shoot") then
-        --scene(GameScene())
+        scene(GameScene())
     end
     time = time + 1
 end
@@ -74,7 +74,7 @@ function TitleScene:draw()
     lg.draw(bg)
     lg.setFont(font)
 
-    hmenu:draw()
+    --menu:draw()
     --hmenu:setScrollAmount(time/300, nil)
     --scroll:scroll(0,1)
     --submenu:setScrollAmount(nil, time/300)
